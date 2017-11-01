@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(SFML 2 REQUIRED)
+find_package(SFML COMPONENTS Graphics System Window REQUIRED)
 find_package(Lua53 REQUIRED)
 
 
@@ -31,6 +31,7 @@ target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/include/
 						${LUA53_INCLUDE_DIR}
 						${SFML_INCLUDE_DIR}
+						${SOL2_ROOT}
 )
 
 target_link_libraries(Zadymka
