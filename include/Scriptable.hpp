@@ -23,8 +23,20 @@ public:
             T::exposeToLua();
             exposed = true;
         }
+        m_luaRef = sol::make_object(Lua::getState(), static_cast<T*>(this));
     }
     virtual ~Scriptable() = default;
+    sol::table getMetatable()
+    {
+        sol::userdata ud = m_luaRef;
+        return ud[sol::metatable_key];
+    }
+    sol::object getLuaReference()
+    {
+        return m_luaRef;
+    }
+protected:
+    sol::object m_luaRef;
 };
 
 #endif

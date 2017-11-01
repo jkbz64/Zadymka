@@ -8,6 +8,13 @@ Game::Game()
 
 }
 
+struct lul
+{
+    int a;
+};
+
+#include <iostream>
+
 void Game::run()
 {
     auto& state = Lua::getState();
@@ -20,7 +27,7 @@ void Game::run()
     const std::string title = state.get_or("window_title", std::string("Zadymka"));
     m_window.create(sf::VideoMode(width, height, sf::VideoMode::getDesktopMode().bitsPerPixel),
                     title,
-                    sf::Style::Default);
+                    sf::Style::None);
     while(m_window.isOpen())
     {
         sf::Event event;
