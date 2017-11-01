@@ -28,6 +28,7 @@ add_executable(Zadymka ${HDRS} ${SRCS})
 
 
 target_include_directories(Zadymka PUBLIC
+						${CMAKE_SOURCE_DIR}/include/
 						${LUA53_INCLUDE_DIR}
 						${SFML_INCLUDE_DIR}
 )
