@@ -1,8 +1,6 @@
 #ifndef SCRIPTABLE_HPP
 #define SCRIPTABLE_HPP
 #include <sol/state.hpp>
-#include <type_traits>
-#include <iostream>
 
 struct Lua
 {

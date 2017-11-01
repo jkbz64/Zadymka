@@ -12,6 +12,7 @@ void Game::run()
 {
     auto& state = Lua::getState();
     state.open_libraries();
+    //Load init script
     state.safe_script_file("init.lua");
     const unsigned int width = state.get_or("window_width", 800);
     const unsigned int height = state.get_or("window_height", 600);
@@ -27,8 +28,16 @@ void Game::run()
             if (event.type == sf::Event::Closed)
                 m_window.close();
         }
+        //Update
+
+
+        //Fixed update
+
+
+        //Interpolation
 
         m_window.clear();
+        //Render
         m_window.display();
     }
 }
