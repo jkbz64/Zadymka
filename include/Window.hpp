@@ -10,7 +10,14 @@ public:
     static void exposeToLua();
     Window();
     virtual ~Window() = default;
+
+    void close();
 protected:
+    virtual void onCreate() override;
+    virtual void onResize() override;
+    sol::function m_onOpen;
+    sol::function m_onResize;
+    sol::function m_onClose;
 };
 
 

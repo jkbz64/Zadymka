@@ -17,7 +17,10 @@ void Window::exposeToLua()
                                 window.setSize(sf::Vector2u(w, h));
                              },
                              "setFramerateLimit", &Window::setFramerateLimit,
-                             "setVSync", &Window::setVerticalSyncEnabled
+                             "setVSync", &Window::setVerticalSyncEnabled,
+                             "onOpen", &Window::m_onOpen,
+                             "onResize", &Window::m_onResize,
+                             "onClose", &Window::m_onClose
     );
 }
 
@@ -26,6 +29,28 @@ Window::Window()  :
       Scriptable<Window>()
 {
 
+}
+
+
+void Window::close()
+{
+    if(m_onClose.valid())
+        m_onClose.call();
+    sf::RenderWindow::close();
+}
+
+void Window::onCreate()
+{
+    sf::RenderWindow::onCreate();
+    if(m_onOpen.valid())
+        m_onOpen.call();
+}
+
+void Window::onResize()
+{
+    sf::RenderWindow::onResize();
+    if(m_onResize.valid())
+        m_onResize.call();
 }
 
 

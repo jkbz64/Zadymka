@@ -12,6 +12,7 @@ void Game::run()
 {
     auto& state = Lua::getState();
     state.open_libraries();
+    state.set("window", &m_window);
     //Load init script
     state.safe_script_file("init.lua");
     const unsigned int width = state.get_or("window_width", 800);
