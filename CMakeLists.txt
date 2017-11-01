@@ -38,3 +38,5 @@ target_link_libraries(Zadymka
 					${LUA53_LIBRARIES}
 					${SFML_LIBRARIES}
 )
+
+configure_file(init.lua init.lua)

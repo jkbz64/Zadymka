@@ -10,8 +10,15 @@ Game::Game()
 
 void Game::run()
 {
-    Lua::getState().open_libraries();
-    m_window.create(sf::VideoMode(800, 600), "Zadymka", sf::Style::Default);
+    auto& state = Lua::getState();
+    state.open_libraries();
+    state.safe_script_file("init.lua");
+    const unsigned int width = state.get_or("window_width", 800);
+    const unsigned int height = state.get_or("window_height", 600);
+    const std::string title = state.get_or("window_title", std::string("Zadymka"));
+    m_window.create(sf::VideoMode(width, height, sf::VideoMode::getDesktopMode().bitsPerPixel),
+                    title,
+                    sf::Style::Default);
     while(m_window.isOpen())
     {
         sf::Event event;
