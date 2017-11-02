@@ -15,12 +15,13 @@ void Game::run()
     state.open_libraries();
     //Load middleclass
     state.require_file("class", "lib/middleclass.lua");
-    m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
-                    "Zadymka",
-                    sf::Style::Default);
     //Expose
     state.set("window", &m_window);
     state.set("stateManager", &m_stateManager);
+
+    m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
+                    "Zadymka",
+                    sf::Style::Default);
 
     //Load init script
     state.safe_script_file("init.lua");

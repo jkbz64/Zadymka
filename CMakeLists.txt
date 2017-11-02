@@ -17,9 +17,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(SFML COMPONENTS Graphics System Window REQUIRED)
 find_package(Lua53 REQUIRED)
 
-
-set(SOL2_ROOT ${CMAKE_SOURCE_DIR}/lib/sol2)
-
 #
 file(GLOB HDRS include/*.hpp)
 file(GLOB SRCS src/*.cpp)
@@ -30,8 +27,8 @@ add_executable(Zadymka ${HDRS} ${SRCS})
 target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/include/
 						${LUA53_INCLUDE_DIR}
+						${CMAKE_SOURCE_DIR}/lib/sol2
 						${SFML_INCLUDE_DIR}
-						${SOL2_ROOT}
 )
 
 target_link_libraries(Zadymka
@@ -42,3 +39,4 @@ target_link_libraries(Zadymka
 configure_file(data/init.lua ${CMAKE_BINARY_DIR}/init.lua)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 configure_file(data/lib/middleclass/middleclass.lua ${CMAKE_BINARY_DIR}/lib/middleclass.lua)
+file(COPY data/states DESTINATION ${CMAKE_BINARY_DIR})
