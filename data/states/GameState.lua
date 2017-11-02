@@ -1,7 +1,7 @@
 local GameState = class('GameState')
 
 function GameState:initialize()
-
+    self.camera = Camera:new()
 end
 
 function GameState:cleanup()

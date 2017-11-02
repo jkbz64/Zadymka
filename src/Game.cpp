@@ -23,11 +23,12 @@ void Game::run()
                     "Zadymka",
                     sf::Style::Default);
 
+    Camera::exposeToLua();
     //Load init script
     state.safe_script_file("init.lua");
 
     sf::Clock clock;
-    const float dt = 1.0 / 60.0;
+    const float dt = 1.0 / 10.0;
 
     float currentTime = clock.getElapsedTime().asSeconds();
     float accumulator = 0.f;
@@ -51,7 +52,7 @@ void Game::run()
 
         const auto& currentState = m_stateManager.getCurrentState();
         //Update logic
-        currentState.update(1.0/60.0);
+        currentState.update(dt);
 
         //Fixed update
         while(accumulator >= dt)
@@ -63,6 +64,7 @@ void Game::run()
         //Interpolation - TODO
         const float alpha = accumulator / dt;
 
+        m_window.setView(currentState.getView());
         //Clear screen
         m_window.clear(sf::Color(0, 125, 125));
         //Render

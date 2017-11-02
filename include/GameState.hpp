@@ -2,6 +2,7 @@
 #define GAMESTATE_HPP
 #include <sol/function.hpp>
 #include <sol/object.hpp>
+#include <Camera.hpp>
 
 //More like proxy, not even real game state
 class GameState
@@ -23,27 +24,27 @@ public:
     GameState(sol::object gameState)
     {
         m_state = gameState;
-        sol::userdata ud = gameState;
-        sol::table metatable = ud[sol::metatable_key];
-        m_cleanup = [metatable, gameState]()
+        sol::table table = m_state;
+        m_cleanup = [this, table]()
         {
-            metatable["cleanup"].call(gameState);
+            table["cleanup"].call(m_state);
         };
 
-        m_update = [metatable, gameState](float dt)
+        m_update = [this, table](float dt)
         {
-            metatable["update"].call(gameState, dt);
+            table["update"].call(m_state, dt);
         };
 
-        m_fixedUpdate = [metatable, gameState](float dt)
+        m_fixedUpdate = [this, table](float dt)
         {
-            metatable["fixedUpdate"].call(gameState, dt);
+            table["fixedUpdate"].call(m_state, dt);
         };
 
-        m_draw = [metatable, gameState]()
+        m_draw = [this, table]()
         {
-            metatable["draw"].call(gameState);
+            table["draw"].call(m_state);
         };
+        m_view = table["camera"];
     }
 
     void cleanup()
@@ -66,6 +67,11 @@ public:
         m_draw();
     }
 
+    sf::View getView() const
+    {
+        return m_view.as<Camera>();
+    }
+
     sol::object getState()
     {
         return m_state;
@@ -76,6 +82,7 @@ protected:
     std::function<void(float)> m_update;
     std::function<void(float)> m_fixedUpdate;
     std::function<void()> m_draw;
+    sol::object m_view;
 };
 
 #endif

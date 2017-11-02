@@ -13,6 +13,7 @@ public:
 
     void close();
 
+    //Draw fncs
     void drawText(const std::string&, int x, int y, const std::string&, unsigned int);
 protected:
     virtual void onCreate() override;
@@ -21,7 +22,6 @@ protected:
     sol::function m_onOpen;
     sol::function m_onResize;
     sol::function m_onClose;
-
 
     //Draw stuff
     std::unordered_map<std::string, sf::Font> m_cachedFonts;

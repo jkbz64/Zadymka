@@ -21,7 +21,6 @@ StateManager::StateManager() :
 
 }
 
-
 void StateManager::setState(const std::string& name)
 {
     sol::object state = Lua::getState().script("return dofile('states/" + name + ".lua')()");
