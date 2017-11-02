@@ -1,4 +1,5 @@
 #include <Window.hpp>
+#include <iostream>
 
 void Window::exposeToLua()
 {
@@ -20,7 +21,9 @@ void Window::exposeToLua()
                              "setVSync", &Window::setVerticalSyncEnabled,
                              "onOpen", &Window::m_onOpen,
                              "onResize", &Window::m_onResize,
-                             "onClose", &Window::m_onClose
+                             "onClose", &Window::m_onClose,
+                             //Draw
+                             "drawText", &Window::drawText
     );
 }
 
@@ -51,6 +54,26 @@ void Window::onResize()
     sf::RenderWindow::onResize();
     if(m_onResize.valid())
         m_onResize.call();
+}
+
+void Window::drawText(const std::string& text, int x, int y, const std::string& fontName, unsigned int charSize)
+{
+    if(m_cachedFonts.find(fontName) == m_cachedFonts.end())
+    {
+        sf::Font& font = m_cachedFonts[fontName] = sf::Font();
+        if(!font.loadFromFile("fonts/" + fontName))
+        {
+            std::cerr << "Failed to load font " + fontName + "\n";
+            m_cachedFonts.erase(fontName);
+        }
+    }
+
+    sf::Text drawText;
+    drawText.setFont(m_cachedFonts[fontName]);
+    drawText.setString(text);
+    drawText.setCharacterSize(charSize);
+    drawText.setPosition(x, y);
+    draw(drawText);
 }
 
 

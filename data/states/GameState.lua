@@ -1,7 +1,11 @@
 local GameState = class('GameState')
 
 function GameState:initialize()
-    
+
+end
+
+function GameState:cleanup()
+
 end
 
 function GameState:update(dt) end

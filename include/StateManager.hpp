@@ -9,6 +9,7 @@ public:
     static void exposeToLua();
     StateManager();
     void setState(const std::string&);
+    void popState();
     GameState& getCurrentState();
 private:
     std::vector<GameState> m_gameStates;

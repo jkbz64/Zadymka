@@ -1,10 +1,17 @@
 #include <StateManager.hpp>
+#include <iostream>
 
 void StateManager::exposeToLua()
 {
     Lua::getState().new_usertype<StateManager>("StateManager",
                                                "new", sol::no_constructor,
-                                               "setState", &StateManager::setState
+                                               "setState", &StateManager::setState,
+                                               "popBack", &StateManager::popState,
+                                               "getCurrentState", [](StateManager& mgr)
+                                               {
+                                                   return mgr.getCurrentState().getState();
+                                               }
+
     );
 }
 
@@ -14,7 +21,6 @@ StateManager::StateManager() :
 
 }
 
-#include <iostream>
 
 void StateManager::setState(const std::string& name)
 {
@@ -26,10 +32,16 @@ void StateManager::setState(const std::string& name)
         std::cerr << name + " is not subclass of GameState\n";
 }
 
+void StateManager::popState()
+{
+    if(!m_gameStates.empty())
+        m_gameStates.pop_back();
+}
+
 GameState& StateManager::getCurrentState()
 {
     if(m_gameStates.empty())
         return m_nullState;
     else
-        return m_gameStates.front();
+        return m_gameStates.back();
 }

@@ -9,15 +9,27 @@ class GameState
 public:
     GameState()
     {
+        m_cleanup = [](){};
         m_update = [](float){};
         m_fixedUpdate = [](float){};
         m_draw = [](){};
     }
 
+    ~GameState()
+    {
+        cleanup();
+    }
+
     GameState(sol::object gameState)
     {
+        m_state = gameState;
         sol::userdata ud = gameState;
         sol::table metatable = ud[sol::metatable_key];
+        m_cleanup = [metatable, gameState]()
+        {
+            metatable["cleanup"].call(gameState);
+        };
+
         m_update = [metatable, gameState](float dt)
         {
             metatable["update"].call(gameState, dt);
@@ -34,6 +46,11 @@ public:
         };
     }
 
+    void cleanup()
+    {
+        m_cleanup();
+    }
+
     void update(float dt) const
     {
         m_update(dt);
@@ -48,7 +65,14 @@ public:
     {
         m_draw();
     }
+
+    sol::object getState()
+    {
+        return m_state;
+    }
 protected:
+    sol::object m_state;
+    std::function<void()> m_cleanup;
     std::function<void(float)> m_update;
     std::function<void(float)> m_fixedUpdate;
     std::function<void()> m_draw;

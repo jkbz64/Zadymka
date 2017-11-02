@@ -64,7 +64,7 @@ void Game::run()
         const float alpha = accumulator / dt;
 
         //Clear screen
-        m_window.clear();
+        m_window.clear(sf::Color(0, 125, 125));
         //Render
         currentState.draw();
         m_window.display();
