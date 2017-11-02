@@ -39,4 +39,6 @@ target_link_libraries(Zadymka
 					${SFML_LIBRARIES}
 )
 
-configure_file(init.lua init.lua)
+configure_file(data/init.lua ${CMAKE_BINARY_DIR}/init.lua)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+configure_file(lib/middleclass/middleclass.lua ${CMAKE_BINARY_DIR}/lib/middleclass.lua)

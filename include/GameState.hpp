@@ -34,17 +34,17 @@ public:
         };
     }
 
-    void update(float dt)
+    void update(float dt) const
     {
         m_update(dt);
     }
 
-    void fixedUpdate(float dt)
+    void fixedUpdate(float dt) const
     {
         m_fixedUpdate(dt);
     }
 
-    void draw()
+    void draw() const
     {
         m_draw();
     }
