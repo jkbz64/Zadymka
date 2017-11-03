@@ -3,8 +3,6 @@ local MenuState = class('MenuState', GameState)
 
 function MenuState:initialize()
     GameState.initialize(self)
-    local entity = self.entityManager:createEntity()
-    print(entity:getID())
 end
 
 function MenuState:update(dt)

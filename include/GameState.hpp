@@ -3,6 +3,7 @@
 
 #include <Lua.hpp>
 #include <Camera.hpp>
+#include <EntityManager.hpp>
 
 //More like proxy, not even real game state
 class GameState
@@ -45,6 +46,7 @@ public:
             table["draw"].call(m_state);
         };
         m_view = table["camera"];
+        m_entityManager = table["entityManager"];
     }
 
     void cleanup()
@@ -72,6 +74,11 @@ public:
         return m_view.as<Camera>();
     }
 
+    EntityManager& getEntityManager() const
+    {
+        return m_entityManager.as<EntityManager>();
+    }
+
     sol::object getState()
     {
         return m_state;
@@ -83,6 +90,7 @@ protected:
     std::function<void(float)> m_fixedUpdate;
     std::function<void()> m_draw;
     sol::object m_view;
+    sol::object m_entityManager;
 };
 
 #endif
