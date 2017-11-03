@@ -1,13 +1,13 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include <Scriptable.hpp>
 #include <SFML/Graphics/View.hpp>
+#include <Lua.hpp>
 
-class Camera : public sf::View, public Scriptable<Camera>
+class Camera : public sf::View
 {
 public:
-    static void exposeToLua();
+    static void registerClass();
     Camera();
     virtual ~Camera() = default;
 };

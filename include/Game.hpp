@@ -11,6 +11,8 @@ public:
 protected:
     Window m_window;
     StateManager m_stateManager;
+
+    void registerClasses();
 };
 
 #endif

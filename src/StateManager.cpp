@@ -1,7 +1,7 @@
 #include <StateManager.hpp>
 #include <iostream>
 
-void StateManager::exposeToLua()
+void StateManager::registerClass()
 {
     Lua::getState().new_usertype<StateManager>("StateManager",
                                                "new", sol::no_constructor,
@@ -15,8 +15,7 @@ void StateManager::exposeToLua()
     );
 }
 
-StateManager::StateManager() :
-    Scriptable<StateManager>()
+StateManager::StateManager()
 {
 
 }

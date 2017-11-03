@@ -1,7 +1,7 @@
 #ifndef GAMESTATE_HPP
 #define GAMESTATE_HPP
-#include <sol/function.hpp>
-#include <sol/object.hpp>
+
+#include <Lua.hpp>
 #include <Camera.hpp>
 
 //More like proxy, not even real game state

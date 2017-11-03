@@ -2,6 +2,7 @@ local GameState = class('GameState')
 
 function GameState:initialize()
     self.camera = Camera:new()
+    self.entityManager = EntityManager:new()
 end
 
 function GameState:cleanup()

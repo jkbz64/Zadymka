@@ -2,12 +2,13 @@
 #define WINDOW_HPP
 
 #include <SFML/Graphics.hpp>
-#include <Scriptable.hpp>
+#include <unordered_map>
+#include <Lua.hpp>
 
-class Window : public sf::RenderWindow, public Scriptable<Window>
+class Window : public sf::RenderWindow
 {
 public:
-    static void exposeToLua();
+    static void registerClass();
     Window();
     virtual ~Window() = default;
 
@@ -25,6 +26,8 @@ protected:
 
     //Draw stuff
     std::unordered_map<std::string, sf::Font> m_cachedFonts;
+
+
 };
 
 

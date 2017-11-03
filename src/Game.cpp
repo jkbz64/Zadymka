@@ -1,6 +1,7 @@
 #include <Game.hpp>
 #include <SFML/Window/Event.hpp>
 #include <thread>
+#include <EntityManager.hpp>
 
 Game::Game()
     :
@@ -22,13 +23,14 @@ void Game::run()
     m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
                     "Zadymka",
                     sf::Style::Default);
+    //Register lua classes
+    registerClasses();
 
-    Camera::exposeToLua();
     //Load init script
     state.safe_script_file("init.lua");
 
     sf::Clock clock;
-    const float dt = 1.0 / 10.0;
+    const float dt = 1.f / 59.87f;
 
     float currentTime = clock.getElapsedTime().asSeconds();
     float accumulator = 0.f;
@@ -40,16 +42,13 @@ void Game::run()
         if (frameTime > 0.25f)
             frameTime = 0.25f;
         currentTime = newTime;
-
         accumulator += frameTime;
-
         sf::Event event;
         while (m_window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 m_window.close();
         }
-
         const auto& currentState = m_stateManager.getCurrentState();
         //Update logic
         currentState.update(dt);
@@ -73,4 +72,13 @@ void Game::run()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+}
+
+void Game::registerClasses()
+{
+    Camera::registerClass();
+    StateManager::registerClass();
+    Window::registerClass();
+    Entity::registerClass();
+    EntityManager::registerClass();
 }

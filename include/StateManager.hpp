@@ -1,12 +1,11 @@
 #ifndef STATEMANAGER_HPP
 #define STATEMANAGER_HPP
-#include <Scriptable.hpp>
 #include <GameState.hpp>
 
-class StateManager : public Scriptable<StateManager>
+class StateManager
 {
 public:
-    static void exposeToLua();
+    static void registerClass();
     StateManager();
     void setState(const std::string&);
     void popState();

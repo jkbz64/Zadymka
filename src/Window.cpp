@@ -1,7 +1,7 @@
 #include <Window.hpp>
 #include <iostream>
 
-void Window::exposeToLua()
+void Window::registerClass()
 {
     Lua::getState().new_usertype<Window>("Window",
                              "new", sol::no_constructor,
@@ -28,8 +28,7 @@ void Window::exposeToLua()
 }
 
 Window::Window()  :
-      sf::RenderWindow(),
-      Scriptable<Window>()
+      sf::RenderWindow()
 {
 
 }

@@ -1,6 +1,6 @@
 #include <Camera.hpp>
 
-void Camera::exposeToLua()
+void Camera::registerClass()
 {
     Lua::getState().new_usertype<Camera>("Camera",
                                          sol::constructors<Camera()>(),
@@ -16,8 +16,7 @@ void Camera::exposeToLua()
 }
 
 Camera::Camera() :
-    sf::View(),
-    Scriptable<Camera>()
+    sf::View()
 {
     setSize(800, 600);
     setCenter(400, 300);
