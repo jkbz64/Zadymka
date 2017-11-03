@@ -33,7 +33,6 @@ Window::Window()  :
 
 }
 
-
 void Window::close()
 {
     if(m_onClose.valid())

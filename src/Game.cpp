@@ -9,6 +9,7 @@ Game::Game()
 {
 
 }
+#include <iostream>
 
 void Game::run()
 {
