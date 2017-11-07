@@ -5,16 +5,18 @@
 #include <Lua.hpp>
 #include <Entity.hpp>
 #include <functional>
+#include <SystemManager.hpp>
 
 class EntityManager
 {
 public:
     static void registerClass();
-    EntityManager();
+    EntityManager(SystemManager&);
     Entity& createEntity();
     Entity& getEntity(std::size_t);
     std::vector<std::reference_wrapper<Entity>> getEntities();
 private:
+    SystemManager& m_systemManager;
     std::size_t m_poolIndex{0};
     Entity m_nullEntity;
     sol::object m_nullHandle;

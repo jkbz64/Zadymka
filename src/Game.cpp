@@ -2,6 +2,8 @@
 #include <SFML/Window/Event.hpp>
 #include <thread>
 #include <EntityManager.hpp>
+#include <SystemManager.hpp>
+#include <LuaSystem.hpp>
 
 Game::Game()
     :
@@ -9,7 +11,6 @@ Game::Game()
 {
 
 }
-#include <iostream>
 
 void Game::run()
 {
@@ -21,9 +22,11 @@ void Game::run()
     state.set("window", &m_window);
     state.set("stateManager", &m_stateManager);
 
-    m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
+    m_window.create(sf::VideoMode(1920, 1080, sf::VideoMode::getDesktopMode().bitsPerPixel),
                     "Zadymka",
                     sf::Style::Default);
+    m_window.setFramerateLimit(60);
+
     //Register lua classes
     registerClasses();
 
@@ -31,7 +34,7 @@ void Game::run()
     state.safe_script_file("init.lua");
 
     sf::Clock clock;
-    const float dt = 1.f / 59.87f;
+    const float dt = 1.f / 20.0f;
 
     float currentTime = clock.getElapsedTime().asSeconds();
     float accumulator = 0.f;
@@ -57,23 +60,24 @@ void Game::run()
         //Fixed update
         while(accumulator >= dt)
         {
-            //Save previous state - TODO
+            //TODO save current state
             currentState.fixedUpdate(dt);
             accumulator -= dt;
         }
-        //Interpolation - TODO
         const float alpha = accumulator / dt;
 
         m_window.setView(currentState.getView());
         //Clear screen
         m_window.clear(sf::Color(0, 125, 125));
         //Render
-        currentState.draw();
+        currentState.draw(m_window, alpha);
         m_window.display();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
+
+#include <RenderingSystem.hpp>
 
 void Game::registerClasses()
 {
@@ -82,4 +86,8 @@ void Game::registerClasses()
     Window::registerClass();
     Entity::registerClass();
     EntityManager::registerClass();
+    SystemManager::registerClass();
+
+    LuaSystem::registerClass();
+    RenderingSystem::registerClass();
 }

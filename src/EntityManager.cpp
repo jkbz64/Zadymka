@@ -4,7 +4,7 @@
 void EntityManager::registerClass()
 {
     Lua::getState().new_usertype<EntityManager>("EntityManager",
-                                                sol::constructors<EntityManager()>(),
+                                                sol::constructors<EntityManager(SystemManager&)>(),
                                                 "createEntity", [](EntityManager& mgr)
                                                 {
                                                     return mgr.createHandle(mgr.createEntity());
@@ -20,7 +20,8 @@ void EntityManager::registerClass()
     );
 }
 
-EntityManager::EntityManager() :
+EntityManager::EntityManager(SystemManager& manager) :
+    m_systemManager(manager),
     m_nullEntity(nullptr, -1)
 {
     m_magicMetatable = Lua::getState().script(R"(
@@ -53,6 +54,7 @@ Entity& EntityManager::createEntity()
                                        std::forward_as_tuple(this, id));
     auto it = inserted.first;
     auto& e = it->second;
+    m_systemManager.emit("EntityCreated", Lua::getState().create_table_with("entity", &e));
     return e;
 }
 

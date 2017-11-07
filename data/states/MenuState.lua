@@ -3,6 +3,8 @@ local MenuState = class('MenuState', GameState)
 
 function MenuState:initialize()
     GameState.initialize(self)
+    self.system = self.systemManager:addSystem('RenderingSystem')
+	self.entity = self.entityManager:createEntity()
 end
 
 function MenuState:update(dt)
@@ -10,11 +12,12 @@ function MenuState:update(dt)
 end
 
 function MenuState:fixedUpdate(dt)
-    self.camera:move(100 * dt, 0)
+	self.system:saveCurrentState()
+	self.entity:move(100 * dt, 0)
 end
 
-function MenuState:draw()
-    window:drawText('test', 500, 100, 'artyard.ttf', 24)
+function MenuState:draw(window, alpha)
+	self.system:draw(window, alpha)
 end
 
 return MenuState

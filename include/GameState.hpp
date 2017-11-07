@@ -4,6 +4,7 @@
 #include <Lua.hpp>
 #include <Camera.hpp>
 #include <EntityManager.hpp>
+#include <Window.hpp>
 
 //More like proxy, not even real game state
 class GameState
@@ -14,7 +15,7 @@ public:
         m_cleanup = [](){};
         m_update = [](float){};
         m_fixedUpdate = [](float){};
-        m_draw = [](){};
+        m_draw = [](Window&, float){};
     }
 
     ~GameState()
@@ -41,9 +42,9 @@ public:
             table["fixedUpdate"].call(m_state, dt);
         };
 
-        m_draw = [this, table]()
+        m_draw = [this, table](Window& window, float alpha)
         {
-            table["draw"].call(m_state);
+            table["draw"].call(m_state, window, alpha);
         };
         m_view = table["camera"];
         m_entityManager = table["entityManager"];
@@ -64,9 +65,9 @@ public:
         m_fixedUpdate(dt);
     }
 
-    void draw() const
+    void draw(Window& window, float alpha) const
     {
-        m_draw();
+        m_draw(window, alpha);
     }
 
     sf::View getView() const
@@ -88,7 +89,7 @@ protected:
     std::function<void()> m_cleanup;
     std::function<void(float)> m_update;
     std::function<void(float)> m_fixedUpdate;
-    std::function<void()> m_draw;
+    std::function<void(Window&, float)> m_draw;
     sol::object m_view;
     sol::object m_entityManager;
 };
