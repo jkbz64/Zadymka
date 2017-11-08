@@ -2,6 +2,7 @@
 #define GAME_HPP
 #include <Window.hpp>
 #include <StateManager.hpp>
+#include <InputManager.hpp>
 
 class Game
 {
@@ -11,6 +12,7 @@ public:
 protected:
     Window m_window;
     StateManager m_stateManager;
+    InputManager m_inputManager;
 
     void registerClasses();
 };

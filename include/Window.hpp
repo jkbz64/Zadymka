@@ -26,8 +26,6 @@ protected:
 
     //Draw stuff
     std::unordered_map<std::string, sf::Font> m_cachedFonts;
-
-
 };
 
 

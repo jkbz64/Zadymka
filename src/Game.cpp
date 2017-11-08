@@ -2,9 +2,6 @@
 #include <SFML/Window/Event.hpp>
 #include <thread>
 #include <EntityManager.hpp>
-#include <SystemManager.hpp>
-#include <LuaSystem.hpp>
-
 Game::Game()
     :
       m_window()
@@ -25,7 +22,6 @@ void Game::run()
     m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
                     "Zadymka",
                     sf::Style::Default);
-    m_window.setFramerateLimit(60);
 
     //Register lua classes
     registerClasses();
@@ -52,11 +48,11 @@ void Game::run()
         {
             if (event.type == sf::Event::Closed)
                 m_window.close();
+            m_inputManager.update(event);
         }
         const auto& currentState = m_stateManager.getCurrentState();
         //Update logic
         currentState.update(dt);
-
         //Fixed update
         while(accumulator >= dt)
         {
@@ -64,7 +60,6 @@ void Game::run()
             accumulator -= dt;
         }
         const float alpha = accumulator / dt;
-
         m_window.setView(currentState.getView());
         //Clear screen
         m_window.clear(sf::Color(0, 125, 125));
@@ -72,16 +67,19 @@ void Game::run()
         currentState.draw(m_window, alpha);
         m_window.display();
 
-        //std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
+#include <SystemManager.hpp>
+#include <LuaSystem.hpp>
 #include <RenderingSystem.hpp>
 
 void Game::registerClasses()
 {
     Camera::registerClass();
     StateManager::registerClass();
+    InputManager::registerClass();
     Window::registerClass();
     Entity::registerClass();
     EntityManager::registerClass();
