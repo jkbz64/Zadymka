@@ -37,11 +37,6 @@ std::string Entity::getName()
     return m_name;
 }
 
-void Entity::addComponent(const std::string& componentName, sol::variadic_args args)
-{
-    m_components[componentName] = m_manager->createComponent(*this, componentName, args);
-}
-
 void Entity::setPosition(float x, float y)
 {
     m_position.x = x;
@@ -62,4 +57,25 @@ const sf::Vector2f& Entity::getPosition()
 const sf::Vector2f& Entity::getPreviousPosition()
 {
     return m_previousPosition;
+}
+
+void Entity::addComponent(const std::string& componentName, sol::variadic_args args)
+{
+    m_components[componentName] = m_manager->createComponent(*this, componentName, args);
+}
+
+bool Entity::hasComponent(const std::string& name)
+{
+    return m_components.find(name) != std::end(m_components);
+}
+
+bool Entity::hasComponents(const std::vector<std::string>& names)
+{
+    bool has = true;
+    if(!names.empty())
+    {
+        for(const auto& name : names)
+            has = has && hasComponent(name);
+    }
+    return has;
 }

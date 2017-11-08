@@ -21,6 +21,7 @@ protected:
     std::function<void(float)> m_update;
     std::function<void(float)> m_fixedUpdate;
     std::function<void(Window&, float)> m_draw;
+    std::vector<std::string> m_requiredComponents;
 };
 
 #endif

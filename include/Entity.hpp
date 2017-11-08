@@ -11,6 +11,12 @@ class Entity
 public:
     static void registerClass();
     Entity(EntityManager*, int);
+    Entity(const Entity&) = delete;
+    Entity(Entity&&) = delete;
+    Entity& operator=(const Entity&) = delete;
+    Entity& operator=(Entity&&) = delete;
+    ~Entity() = default;
+
     int getID();
     std::string getName();
     void setPosition(float, float);
@@ -18,6 +24,8 @@ public:
     const sf::Vector2f& getPosition();
     const sf::Vector2f& getPreviousPosition();
     void addComponent(const std::string&, sol::variadic_args);
+    bool hasComponent(const std::string&);
+    bool hasComponents(const std::vector<std::string>&);
 private:
     friend class EntityManager;
     friend class RenderingSystem;

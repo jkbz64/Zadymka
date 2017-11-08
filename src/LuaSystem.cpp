@@ -40,6 +40,10 @@ LuaSystem::LuaSystem(const std::string& systemName, sol::object system) :
     {
         m_systemTable["draw"].call(m_luaRef, window, alpha);
     };
+
+    sol::table requiredComponents = m_systemTable.get_or("requiredComponents", sol::table{});
+    for(const auto& componentPair : requiredComponents)
+        m_requiredComponents.emplace_back(componentPair.second.as<std::string>());
 }
 
 void LuaSystem::initialize(SystemManager& mgr)

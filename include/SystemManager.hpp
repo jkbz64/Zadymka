@@ -19,6 +19,8 @@ public:
     static void registerSystem(const std::string&);
 private:
     std::unordered_map<std::string, std::shared_ptr<System>> m_systems;
+    void addEntityToSystems();
+
     std::unordered_map<std::string, std::vector<std::function<void(sol::table)>>> m_eventCallbacks;
     static std::unordered_map<std::string, std::function<std::shared_ptr<System>()>> m_registeredSystems;
 };

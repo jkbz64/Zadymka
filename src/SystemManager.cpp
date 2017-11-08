@@ -28,7 +28,8 @@ std::shared_ptr<System> SystemManager::addSystem(const std::string& systemName)
         sol::object system = Lua::getState().safe_script("return dofile('systems/" + systemName + ".lua')()");
         m_systems[systemName] = std::make_shared<LuaSystem>(systemName, system);
     }
-    m_systems[systemName]->initialize(*this);
+    subscribe("EntityCreated", *m_systems[systemName].get(), &System::onCreatedEntity);
+    m_systems[systemName]->initialize(*this);    
     return m_systems[systemName];
 }
 

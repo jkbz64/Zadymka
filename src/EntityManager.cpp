@@ -58,6 +58,13 @@ Entity& EntityManager::createEntity()
     return e;
 }
 
+void EntityManager::destroyEntity(std::size_t id)
+{
+    auto& entity = m_entities.at(id);
+    m_systemManager.emit("EntityDestroyed", Lua::getState().create_table_with("entity", &entity));
+    m_entities.erase(id);
+}
+
 Entity& EntityManager::getEntity(std::size_t id)
 {
     if(m_entities.find(id) != m_entities.end())
@@ -112,10 +119,12 @@ sol::object EntityManager::createComponent(Entity& entity, const std::string& co
     static sol::function initializeFunc = Lua::getState().script(R"(
     local createComponent = function(componentName, ...)
         local componentClass = dofile('components/' .. componentName .. '.lua')
-        return componentClass(...)
+        return componentClass:new(...)
     end
     return createComponent
     )");
-    //TODO - Add entity to systems
+
+    m_systemManager.emit("ComponentAdded", Lua::getState().create_table_with("entity", &entity,
+                                                                             "componentName", componentName));
     return initializeFunc.call(componentName, args);
 }

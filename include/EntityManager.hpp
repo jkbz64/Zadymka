@@ -13,6 +13,7 @@ public:
     static void registerClass();
     EntityManager(SystemManager&);
     Entity& createEntity();
+    void destroyEntity(std::size_t);
     Entity& getEntity(std::size_t);
     std::vector<std::reference_wrapper<Entity>> getEntities();
 private:

@@ -13,9 +13,6 @@ public:
     {
         Lua::getState().new_usertype<RenderingSystem>("RenderingSystem",
                                                       "new", sol::no_constructor,
-                                                      "update", &RenderingSystem::update,
-                                                      "fixedUpdate", &RenderingSystem::fixedUpdate,
-                                                      "draw", &RenderingSystem::draw,
                                                       "saveCurrentState", &RenderingSystem::saveCurrentState,
                                                       sol::base_classes, sol::bases<System>());
         SystemManager::registerSystem<RenderingSystem>("RenderingSystem");
@@ -32,14 +29,9 @@ public:
         mgr.subscribe("EntityCreated", *this, &RenderingSystem::onEntityCreated);
     }
 
-    virtual void update(float dt) override
-    {
-
-    }
-
     virtual void fixedUpdate(float dt) override
     {
-
+        saveCurrentState();
     }
 
     template<typename T>
