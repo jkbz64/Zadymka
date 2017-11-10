@@ -40,6 +40,4 @@ target_link_libraries(Zadymka
 
 if(DEMO)
 	file(COPY demo/ DESTINATION ${CMAKE_BINARY_DIR})
-	file(RENAME ${CMAKE_BINARY_DIR}/lib/middleclass/middleclass.lua ${CMAKE_BINARY_DIR}/lib/middleclass.lua)
-	file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/middleclass)
 endif()

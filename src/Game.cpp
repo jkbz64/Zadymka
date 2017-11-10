@@ -2,6 +2,9 @@
 #include <SFML/Window/Event.hpp>
 #include <thread>
 #include <EntityManager.hpp>
+
+extern std::string middleclass;
+
 Game::Game()
     :
       m_window()
@@ -14,7 +17,7 @@ void Game::run()
     auto& state = Lua::getState();
     state.open_libraries();
     //Load middleclass
-    state.require_file("class", "lib/middleclass.lua");
+    state.script(middleclass);
     //Expose
     state.set("window", &m_window);
     state.set("stateManager", &m_stateManager);
