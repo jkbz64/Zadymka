@@ -1,5 +1,6 @@
 #include <LuaSystem.hpp>
 #include <SystemManager.hpp>
+#include <EventManager.hpp>
 
 void LuaSystem::registerClass()
 {
@@ -21,7 +22,7 @@ LuaSystem::LuaSystem(const std::string& systemName, sol::object system) :
 {
     m_luaRef = system;
     m_systemTable = m_luaRef;
-    m_initialize = [this](SystemManager& mgr)
+    m_initialize = [this](EventManager& mgr)
     {
         m_systemTable["initialize"].call(m_luaRef, mgr);
     };
@@ -46,7 +47,7 @@ LuaSystem::LuaSystem(const std::string& systemName, sol::object system) :
         m_requiredComponents.emplace_back(componentPair.second.as<std::string>());
 }
 
-void LuaSystem::initialize(SystemManager& mgr)
+void LuaSystem::initialize(EventManager& mgr)
 {
     m_initialize(mgr);
 }

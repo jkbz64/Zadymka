@@ -4,7 +4,7 @@
 void EntityManager::registerClass()
 {
     Lua::getState().new_usertype<EntityManager>("EntityManager",
-                                                sol::constructors<EntityManager(SystemManager&)>(),
+                                                sol::constructors<EntityManager(EventManager&)>(),
                                                 "createEntity", [](EntityManager& mgr)
                                                 {
                                                     return mgr.createHandle(mgr.createEntity());
@@ -20,8 +20,8 @@ void EntityManager::registerClass()
     );
 }
 
-EntityManager::EntityManager(SystemManager& manager) :
-    m_systemManager(manager),
+EntityManager::EntityManager(EventManager& manager) :
+    m_eventManager(manager),
     m_nullEntity(nullptr, -1)
 {
     m_magicMetatable = Lua::getState().script(R"(
@@ -54,14 +54,14 @@ Entity& EntityManager::createEntity()
                                        std::forward_as_tuple(this, id));
     auto it = inserted.first;
     auto& e = it->second;
-    m_systemManager.emit("EntityCreated", Lua::getState().create_table_with("entity", &e));
+    m_eventManager.emit("EntityCreated", Lua::getState().create_table_with("entity", &e));
     return e;
 }
 
 void EntityManager::destroyEntity(std::size_t id)
 {
     auto& entity = m_entities.at(id);
-    m_systemManager.emit("EntityDestroyed", Lua::getState().create_table_with("entity", &entity));
+    m_eventManager.emit("EntityDestroyed", Lua::getState().create_table_with("entity", &entity));
     m_entities.erase(id);
 }
 
@@ -124,7 +124,7 @@ sol::object EntityManager::createComponent(Entity& entity, const std::string& co
     return createComponent
     )");
 
-    m_systemManager.emit("ComponentAdded", Lua::getState().create_table_with("entity", &entity,
+    m_eventManager.emit("ComponentAdded", Lua::getState().create_table_with("entity", &entity,
                                                                              "componentName", componentName));
     return initializeFunc.call(componentName, args);
 }

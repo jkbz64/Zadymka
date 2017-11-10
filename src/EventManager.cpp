@@ -1,0 +1,38 @@
+#include <EventManager.hpp>
+
+void EventManager::registerClass()
+{
+    Lua::getState().new_usertype<EventManager>("EventManager",
+                                               sol::constructors<EventManager()>(),
+                                               "subscribe", static_cast<void (EventManager::*)(const std::string&, sol::object, sol::function)>(&EventManager::subscribe),
+                                               "emit", &EventManager::emit
+                                               );
+}
+
+EventManager::EventManager()
+{
+
+}
+
+void EventManager::subscribe(const std::string& eventName, sol::object obj, sol::function f)
+{
+    if(m_eventCallbacks.find(eventName) == std::end(m_eventCallbacks))
+        m_eventCallbacks[eventName] = std::vector<std::function<void(sol::table)>>();
+    std::vector<std::function<void(sol::table)>>& callbacks = m_eventCallbacks[eventName];
+    callbacks.emplace_back([obj, f](sol::table table)
+    {
+        f.call(obj, table);
+    });
+}
+
+void EventManager::emit(const std::string& eventName, sol::table table)
+{
+    if(m_eventCallbacks.find(eventName) != std::end(m_eventCallbacks))
+    {
+        const auto& callbacks = m_eventCallbacks[eventName];
+        std::for_each(std::begin(callbacks), std::end(callbacks), [&table](std::function<void(sol::table)> f)
+        {
+            f(table);
+        });
+    }
+}

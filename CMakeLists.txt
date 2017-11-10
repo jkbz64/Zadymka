@@ -9,6 +9,8 @@ elseif (CMAKE_BUILD_TYPE MATCHES "Release")
 endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 
+option(DEMO "Build demo?" ON)
+
 # Enforce C++14 standard
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -36,6 +38,8 @@ target_link_libraries(Zadymka
 					${SFML_LIBRARIES}
 )
 
-file(COPY data/ DESTINATION ${CMAKE_BINARY_DIR})
-file(RENAME ${CMAKE_BINARY_DIR}/lib/middleclass/middleclass.lua ${CMAKE_BINARY_DIR}/lib/middleclass.lua)
-file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/middleclass)
+if(DEMO)
+	file(COPY demo/ DESTINATION ${CMAKE_BINARY_DIR})
+	file(RENAME ${CMAKE_BINARY_DIR}/lib/middleclass/middleclass.lua ${CMAKE_BINARY_DIR}/lib/middleclass.lua)
+	file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/middleclass)
+endif()

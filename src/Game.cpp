@@ -22,7 +22,6 @@ void Game::run()
     m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
                     "Zadymka",
                     sf::Style::Default);
-
     //Register lua classes
     registerClasses();
 
@@ -82,6 +81,7 @@ void Game::registerClasses()
     InputManager::registerClass();
     Window::registerClass();
     Entity::registerClass();
+    EventManager::registerClass();
     EntityManager::registerClass();
     SystemManager::registerClass();
 

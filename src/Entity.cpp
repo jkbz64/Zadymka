@@ -15,8 +15,11 @@ void Entity::registerClass()
                                             return std::make_tuple(e.m_position.x, e.m_position.y);
                                          },
                                          "addComponent", &Entity::addComponent,
-                                         "getComponents", [](Entity& e) { return e.m_components; }
+                                         "getComponents", [](Entity& e) { return e.m_components; },
+                                         "has", sol::overload(&Entity::hasComponent, &Entity::hasComponents),
+                                         "components", &Entity::m_components
     );
+    Lua::getState().script_file("entities/Entity.lua");
 }
 
 Entity::Entity(EntityManager* manager, int id) :

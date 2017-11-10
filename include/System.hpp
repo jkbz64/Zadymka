@@ -3,7 +3,7 @@
 #include <Window.hpp>
 #include <Entity.hpp>
 
-class SystemManager;
+class EventManager;
 
 class System
 {
@@ -23,7 +23,7 @@ public:
         m_requiredComponents(std::move(requiredComponents))
     { }
     virtual ~System() = default;
-    virtual void initialize(SystemManager&) = 0;
+    virtual void initialize(EventManager&) = 0;
     virtual void update(float) {}
     virtual void fixedUpdate(float) {}
     virtual void draw(Window&, float) {}

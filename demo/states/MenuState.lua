@@ -5,6 +5,7 @@ function MenuState:initialize()
     GameState.initialize(self)
     self.renderingSystem = self.systemManager:addSystem('RenderingSystem')
     self.entity = self.entityManager:createEntity()
+    self.entity:addComponent('Movable')
 end
 
 function MenuState:update(dt)

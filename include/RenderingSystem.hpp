@@ -2,9 +2,15 @@
 #define RENDERINGSYSTEM_HPP
 
 #include <System.hpp>
-#include <SystemManager.hpp>
+#include <EventManager.hpp>
 #include <Entity.hpp>
 #include <iostream>
+
+template<typename T>
+inline T lerp(T v0, T v1, float t)
+{
+    return (1.f - t) * v0 + t * v1;
+}
 
 class RenderingSystem : public System
 {
@@ -24,7 +30,7 @@ public:
         m_luaRef = sol::make_object(Lua::getState(), this);
     }
 
-    virtual void initialize(SystemManager &mgr) override
+    virtual void initialize(EventManager &mgr) override
     {
         mgr.subscribe("EntityCreated", *this, &RenderingSystem::onEntityCreated);
     }
@@ -32,12 +38,6 @@ public:
     virtual void fixedUpdate(float dt) override
     {
         saveCurrentState();
-    }
-
-    template<typename T>
-    inline T lerp(T v0, T v1, float t)
-    {
-        return (1-t)*v0 + t*v1;
     }
 
     virtual void draw(Window& window, float alpha) override

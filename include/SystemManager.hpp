@@ -4,36 +4,22 @@
 #include <Lua.hpp>
 #include <System.hpp>
 
+class EventManager;
+
 class SystemManager
 {
 public:
     static void registerClass();
-    SystemManager();
+    SystemManager(EventManager&);
     std::shared_ptr<System> addSystem(const std::string&);
     std::shared_ptr<System> getSystem(const std::string&);
     template<class T>
-    void subscribe(const std::string&, T&, void (T::*)(sol::table));
-    void subscribe(const std::string&, sol::object, sol::function);
-    void emit(const std::string&, sol::table);
-    template<class T>
     static void registerSystem(const std::string&);
 private:
+    EventManager& m_eventManager;
     std::unordered_map<std::string, std::shared_ptr<System>> m_systems;
-    std::unordered_map<std::string, std::vector<std::function<void(sol::table)>>> m_eventCallbacks;
     static std::unordered_map<std::string, std::function<std::shared_ptr<System>()>> m_registeredSystems;
 };
-
-template<class T>
-inline void SystemManager::subscribe(const std::string& eventName, T& obj, void (T::*functor)(sol::table))
-{
-    if(m_eventCallbacks.find(eventName) == std::end(m_eventCallbacks))
-        m_eventCallbacks[eventName] = std::vector<std::function<void(sol::table)>>();
-    auto& callbacks = m_eventCallbacks[eventName];
-    callbacks.emplace_back([&obj, functor](sol::table table)
-    {
-        (obj.*functor)(table);
-    });
-}
 
 template<class T>
 inline void SystemManager::registerSystem(const std::string& systemName)
@@ -44,9 +30,5 @@ inline void SystemManager::registerSystem(const std::string& systemName)
         return std::make_shared<T>();
     };
 }
-
-
-
-
 
 #endif
