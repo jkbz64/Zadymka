@@ -1,11 +1,16 @@
-TestSystem = class('TestSystem')
+local System = require('systems/System')
+local TestSystem = class('TestSystem', System)
 
 function TestSystem:initialize()
-    print('init')
+    System.initialize(self)
+end
+
+function TestSystem:init(eventManager, entityManager)
+    
 end
 
 function TestSystem:draw(window)
-    print('lul')
     window:drawText('test', 0, 0, 'artyard.ttf', 24)
 end
+
 return TestSystem

@@ -1,6 +1,7 @@
 #include <LuaSystem.hpp>
 #include <SystemManager.hpp>
 #include <EventManager.hpp>
+#include <EntityManager.hpp>
 
 void LuaSystem::registerClass()
 {
@@ -16,15 +17,16 @@ void LuaSystem::registerClass()
                                             );
 }
 
-
 LuaSystem::LuaSystem(const std::string& systemName, sol::object system) :
-    System("LuaSystem")
+    System(systemName)
 {
     m_luaRef = system;
     m_systemTable = m_luaRef;
-    m_initialize = [this](EventManager& mgr)
+    Lua::scriptArgs("arg[1].entities = arg[2]", system, m_entities);
+
+    m_initialize = [this](EventManager& mgr, EntityManager& e_mgr)
     {
-        m_systemTable["initialize"].call(m_luaRef, mgr);
+        m_systemTable["init"].call(m_luaRef, mgr, e_mgr);
     };
 
     m_update = [this](float dt)
@@ -47,9 +49,9 @@ LuaSystem::LuaSystem(const std::string& systemName, sol::object system) :
         m_requiredComponents.emplace_back(componentPair.second.as<std::string>());
 }
 
-void LuaSystem::initialize(EventManager& mgr)
+void LuaSystem::initialize(EventManager& mgr, EntityManager& e_mgr)
 {
-    m_initialize(mgr);
+    m_initialize(mgr, e_mgr);
 }
 
 void LuaSystem::update(float dt)

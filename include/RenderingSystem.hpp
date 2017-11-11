@@ -30,7 +30,7 @@ public:
         m_luaRef = sol::make_object(Lua::getState(), this);
     }
 
-    virtual void initialize(EventManager &mgr) override
+    virtual void initialize(EventManager &mgr, EntityManager& e_mgr) override
     {
         mgr.subscribe("EntityCreated", *this, &RenderingSystem::onEntityCreated);
     }

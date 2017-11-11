@@ -75,7 +75,7 @@ Entity& EntityManager::getEntity(std::size_t id)
 
 sol::object EntityManager::createHandle(Entity& e)
 {
-    static sol::function createHandleFnc = Lua::getState().script(
+    return Lua::scriptArgs(
     R"(
     function getWrappedSafeFunction(f)
         return function(handle, ...)
@@ -87,22 +87,18 @@ sol::object EntityManager::createHandle(Entity& e)
         end
     end
 
-    local createHandle = function(mt, Handles, cppRef)
-        local handle = {
-            cppRef = cppRef,
-            isValid = true
-        }
+    local handle = {
+        cppRef = arg[3],
+        isValid = true
+    }
 
-        -- speedy access without __index call
-        handle.getID = getWrappedSafeFunction(Entity.getID)
+    -- speedy access without __index call
+    handle.getID = getWrappedSafeFunction(Entity.getID)
 
-        setmetatable(handle, mt)
-        Handles[cppRef:getID()] = handle
-        return handle
-    end
-    return createHandle
-    )");
-    return createHandleFnc.call(m_magicMetatable, m_handles, e);
+    setmetatable(handle, arg[1])
+    arg[2][arg[3]:getID()] = handle
+    return handle
+    )", m_magicMetatable, m_handles, e);
 }
 
 std::vector<std::reference_wrapper<Entity>> EntityManager::getEntities()
@@ -115,16 +111,13 @@ std::vector<std::reference_wrapper<Entity>> EntityManager::getEntities()
 }
 
 sol::object EntityManager::createComponent(Entity& entity, const std::string& componentName, sol::variadic_args args)
-{
-    static sol::function initializeFunc = Lua::getState().script(R"(
-    local createComponent = function(componentName, ...)
-        local componentClass = dofile('components/' .. componentName .. '.lua')
-        return componentClass:new(...)
-    end
-    return createComponent
-    )");
-
-    m_eventManager.emit("ComponentAdded", Lua::getState().create_table_with("entity", &entity,
-                                                                             "componentName", componentName));
-    return initializeFunc.call(componentName, args);
+{    
+    sol::object component = Lua::scriptArgs(
+    R"(
+    local c = dofile('components/' .. arg[1] .. '.lua'):new(arg[3])
+    c.entity = arg[2]
+    return c
+    )", componentName, createHandle(entity), args);
+    m_eventManager.emit("ComponentAdded", Lua::getState().create_table_with("component", component));
+    return component;
 }

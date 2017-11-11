@@ -1,7 +1,6 @@
 #include <Game.hpp>
 #include <SFML/Window/Event.hpp>
 #include <thread>
-#include <EntityManager.hpp>
 
 extern std::string middleclass;
 
@@ -21,13 +20,11 @@ void Game::run()
     //Expose
     state.set("window", &m_window);
     state.set("stateManager", &m_stateManager);
-
     m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
                     "Zadymka",
                     sf::Style::Default);
     //Register lua classes
     registerClasses();
-
     //Load init script
     state.safe_script_file("init.lua");
 
@@ -73,6 +70,7 @@ void Game::run()
     }
 }
 
+#include <EntityManager.hpp>
 #include <SystemManager.hpp>
 #include <LuaSystem.hpp>
 #include <RenderingSystem.hpp>

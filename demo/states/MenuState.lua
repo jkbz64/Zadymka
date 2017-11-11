@@ -4,6 +4,7 @@ local MenuState = class('MenuState', GameState)
 function MenuState:initialize()
     GameState.initialize(self)
     self.renderingSystem = self.systemManager:addSystem('RenderingSystem')
+    self.testSystem = self.systemManager:addSystem('TestSystem')
     self.entity = self.entityManager:createEntity()
     self.entity:addComponent('Movable')
 end

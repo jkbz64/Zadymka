@@ -16,7 +16,6 @@ private:
      std::unordered_map<std::string, std::vector<std::function<void(sol::table)>>> m_eventCallbacks;
 };
 
-
 template<class T>
 inline void EventManager::subscribe(const std::string& eventName, T& obj, void (T::*functor)(sol::table))
 {

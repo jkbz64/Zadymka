@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.1)
 project(Zadymka)
 
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build(Release or Debug)")
+
+# Enforce C++17 standard
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -pedantic -pedantic-errors -g")
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
@@ -10,11 +16,6 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 
 option(DEMO "Build demo?" ON)
-
-# Enforce C++14 standard
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(SFML COMPONENTS Graphics System Window REQUIRED)
 find_package(Lua53 REQUIRED)

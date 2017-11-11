@@ -23,13 +23,14 @@ public:
         m_requiredComponents(std::move(requiredComponents))
     { }
     virtual ~System() = default;
-    virtual void initialize(EventManager&) = 0;
+    virtual void initialize(EventManager&, EntityManager&) = 0;
     virtual void update(float) {}
     virtual void fixedUpdate(float) {}
     virtual void draw(Window&, float) {}
     const std::string& getName() const;
     sol::object getLuaRef() const;
     void onCreatedEntity(sol::table);
+    void onComponentAdded(sol::table);
 protected:
     std::string m_name;
     sol::object m_luaRef;
@@ -55,6 +56,20 @@ inline void System::onCreatedEntity(sol::table table)
                     std::end(m_entities),
                     [&entity](Entity& e){ return e.getID() == entity.getID(); }) == std::end(m_entities))
         m_entities.emplace_back(entity);
+}
+
+inline void System::onComponentAdded(sol::table table)
+{
+    Lua::scriptArgs(
+    R"(
+    local entity = arg[1].component.entity
+    local found = false
+    for k, v in pairs(arg[2]) do
+        if v:get():getID() == entity:getID() then found = true end
+    end
+    print('lul')
+    if found == false then arg[2]:add(entity) end
+    )", table, &m_entities);
 }
 
 #endif
