@@ -43,11 +43,12 @@ System::System(sol::object system) :
             return nil
         end
     end
+    local nilf = function(...) end
     system.entities = arg[2]
-    return returnWrappedFunction(system.init) or function() end,
-           returnWrappedFunction(system.update) or function() end,
-           returnWrappedFunction(system.fixedUpdate) or function() end,
-           returnWrappedFunction(system.draw) or function() end
+    return returnWrappedFunction(system.init) or nilf,
+           returnWrappedFunction(system.update) or nilf,
+           returnWrappedFunction(system.fixedUpdate) or nilf,
+           returnWrappedFunction(system.draw) or nilf
     )", m_system, &m_entities);
 }
 
