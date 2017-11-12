@@ -5,9 +5,13 @@ void EntityManager::registerClass()
 {
     Lua::getState().new_usertype<EntityManager>("EntityManager",
                                                 sol::constructors<EntityManager(EventManager&)>(),
-                                                "createEntity", [](EntityManager& mgr)
+                                                "createEntity",
+                                                [](EntityManager& mgr, const std::string& entityName = std::string()) -> sol::object
                                                 {
-                                                    return mgr.createHandle(mgr.createEntity());
+                                                    if(entityName.empty())
+                                                        return mgr.createHandle(mgr.createEntity());
+                                                    else
+                                                        return mgr.createHandle(mgr.createEntity(entityName));
                                                 },
                                                 "getEntity", [](EntityManager& mgr, std::size_t id) -> sol::object
                                                 {
@@ -29,8 +33,8 @@ EntityManager::EntityManager(EventManager& manager) :
     local mt = {}
     mt.__index = function(handle, key)
         if not handle.isValid then
-        print(debug.traceback())
-        error("Error: handle is not valid!", 2)
+            print(debug.traceback())
+            error("Error: handle is not valid!", 2)
         end
 
         local f = memoizedFuncs[key]
@@ -42,7 +46,7 @@ EntityManager::EntityManager(EventManager& manager) :
     end
     return mt
     )");
-    m_handles = Lua::getState().script("return {}");
+    m_handles = Lua::getState().create_table();
     m_nullHandle = createHandle(m_nullEntity);
 }
 
@@ -54,6 +58,25 @@ Entity& EntityManager::createEntity()
                                        std::forward_as_tuple(this, id));
     auto it = inserted.first;
     auto& e = it->second;
+    m_eventManager.emit("EntityCreated", Lua::getState().create_table_with("entity", &e));
+    return e;
+}
+
+Entity& EntityManager::createEntity(const std::string& entityName)
+{
+    const auto id = m_poolIndex++;
+    auto inserted = m_entities.emplace(std::piecewise_construct,
+                                       std::forward_as_tuple(id),
+                                       std::forward_as_tuple(this, id));
+    auto it = inserted.first;
+    auto& e = it->second;
+    Lua::scriptArgs(
+    R"(
+    local table = dofile('entities/' .. arg[1] .. '.lua')
+    for k, v in pairs(table) do
+        arg[2]:addComponent(k, v)
+    end
+    )", entityName, createHandle(e));
     m_eventManager.emit("EntityCreated", Lua::getState().create_table_with("entity", &e));
     return e;
 }
@@ -118,6 +141,5 @@ sol::object EntityManager::createComponent(Entity& entity, const std::string& co
     c.entity = arg[2]
     return c
     )", componentName, createHandle(entity), args);
-    m_eventManager.emit("ComponentAdded", Lua::getState().create_table_with("component", component));
     return component;
 }

@@ -22,18 +22,21 @@ StateManager::StateManager()
 
 void StateManager::setState(const std::string& name)
 {
-    sol::object state = Lua::getState().script("return dofile('states/" + name + ".lua')()");
-    bool subclassOfGameState = Lua::getState().script("local state = dofile('states/" + name + ".lua') return state.super.name == 'GameState'");
-    if(subclassOfGameState)
-        m_gameStates.emplace_back(state);
-    else
-        std::cerr << name + " is not subclass of GameState\n";
+    try
+    {
+        sol::object state = Lua::scriptArgs("return dofile('states/' .. arg[1] .. '.lua')", name);
+        m_gameStates.emplace(state);
+    }
+    catch(sol::error& e)
+    {
+        std::cerr << e.what() << "\n";
+    }
 }
 
 void StateManager::popState()
 {
     if(!m_gameStates.empty())
-        m_gameStates.pop_back();
+        m_gameStates.pop();
 }
 
 GameState& StateManager::getCurrentState()
@@ -41,5 +44,5 @@ GameState& StateManager::getCurrentState()
     if(m_gameStates.empty())
         return m_nullState;
     else
-        return m_gameStates.back();
+        return m_gameStates.top();
 }

@@ -1,6 +1,6 @@
 #include <string>
 
-std::string middleclass = ""
+std::string lua_middleclass = ""
                           "local middleclass = {\n"
                           "  _VERSION     = 'middleclass v4.1.0',\n"
                           "  _DESCRIPTION = 'Object Orientation for Lua',\n"

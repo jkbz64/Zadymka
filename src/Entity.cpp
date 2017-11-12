@@ -15,6 +15,7 @@ void Entity::registerClass()
                                             return std::make_tuple(e.m_position.x, e.m_position.y);
                                          },
                                          "addComponent", &Entity::addComponent,
+                                         "get", [](Entity& e, const std::string& name) { return e.m_components[name]; },
                                          "getComponents", [](Entity& e) { return e.m_components; },
                                          "has", sol::overload(&Entity::hasComponent, &Entity::hasComponents),
                                          "components", &Entity::m_components

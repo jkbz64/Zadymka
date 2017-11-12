@@ -3,95 +3,55 @@
 
 #include <Lua.hpp>
 #include <Camera.hpp>
+#include <EventManager.hpp>
+#include <SystemManager.hpp>
 #include <EntityManager.hpp>
 #include <Window.hpp>
 
-//More like proxy, not even real game state
 class GameState
 {
 public:
-    GameState()
-    {
-        m_cleanup = [](){};
-        m_update = [](float){};
-        m_fixedUpdate = [](float){};
-        m_draw = [](Window&, float){};
-    }
+    GameState();
+    GameState(sol::object);
+    GameState(const GameState&) = delete;
+    GameState& operator=(const GameState&) = delete;
+    GameState(GameState&&) = delete;
+    GameState& operator=(GameState&&) = delete;
+    ~GameState();
 
-    ~GameState()
-    {
-        cleanup();
-    }
+    void cleanup();
+    void update(float dt) const;
+    void fixedUpdate(float dt) const;
+    void draw(Window& window, float alpha) const;
 
-    GameState(sol::object gameState)
-    {
-        m_state = gameState;
-        sol::table table = m_state;
-        m_cleanup = [this, table]()
-        {
-            table["cleanup"].call(m_state);
-        };
-
-        m_update = [this, table](float dt)
-        {
-            table["update"].call(m_state, dt);
-        };
-
-        m_fixedUpdate = [this, table](float dt)
-        {
-            table["fixedUpdate"].call(m_state, dt);
-        };
-
-        m_draw = [this, table](Window& window, float alpha)
-        {
-            table["draw"].call(m_state, window, alpha);
-        };
-        m_view = table["camera"];
-        m_entityManager = table["entityManager"];
-    }
-
-    void cleanup()
-    {
-        m_cleanup();
-    }
-
-    void update(float dt) const
-    {
-        m_update(dt);
-    }
-
-    void fixedUpdate(float dt) const
-    {
-        m_fixedUpdate(dt);
-    }
-
-    void draw(Window& window, float alpha) const
-    {
-        m_draw(window, alpha);
-    }
-
-    sf::View getView() const
-    {
-        return m_view.as<Camera>();
-    }
-
-    EntityManager& getEntityManager() const
-    {
-        return m_entityManager.as<EntityManager>();
-    }
-
-    sol::object getState()
-    {
-        return m_state;
-    }
+    const Camera& getCamera() const;
+    const EntityManager& getEntityManager() const;
+    sol::object getState() const;
 protected:
     sol::object m_state;
-    std::function<void()> m_cleanup;
-    std::function<void(float)> m_update;
-    std::function<void(float)> m_fixedUpdate;
-    std::function<void(Window&, float)> m_draw;
-    sol::object m_view;
-    sol::object m_entityManager;
+    Camera m_camera;
+    EventManager m_eventManager;
+    EntityManager m_entityManager;
+    SystemManager m_systemManager;
+    sol::function m_cleanup;
+    sol::function m_update;
+    sol::function m_fixedUpdate;
+    sol::function m_draw;
 };
+
+inline const Camera& GameState::getCamera() const
+{
+    return m_camera;
+}
+
+inline const EntityManager& GameState::getEntityManager() const
+{
+    return m_entityManager;
+}
+
+inline sol::object GameState::getState() const
+{
+    return m_state;
+}
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef STATEMANAGER_HPP
 #define STATEMANAGER_HPP
 #include <GameState.hpp>
+#include <stack>
 
 class StateManager
 {
@@ -11,7 +12,7 @@ public:
     void popState();
     GameState& getCurrentState();
 private:
-    std::vector<GameState> m_gameStates;
+    std::stack<GameState> m_gameStates;
     GameState m_nullState;
 };
 

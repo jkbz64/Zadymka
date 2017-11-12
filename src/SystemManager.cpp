@@ -1,18 +1,13 @@
 #include <SystemManager.hpp>
-#include <LuaSystem.hpp>
 #include <EventManager.hpp>
 #include <EntityManager.hpp>
-
-std::unordered_map<std::string, std::function<std::shared_ptr<System>()>> SystemManager::m_registeredSystems;
+#include <iostream>
 
 void SystemManager::registerClass()
 {
     Lua::getState().new_usertype<SystemManager>("SystemManager",
                                                 sol::constructors<SystemManager(EventManager&, EntityManager&)>(),
-                                                "addSystem", [](SystemManager& mgr, const std::string& systemName) -> sol::object
-                                                {
-                                                    return mgr.addSystem(systemName)->getLuaRef();
-                                                }
+                                                "addSystem", &SystemManager::addSystem
                                                 );
 }
 
@@ -23,25 +18,28 @@ SystemManager::SystemManager(EventManager& mgr, EntityManager& e_mgr) :
 
 }
 
-std::shared_ptr<System> SystemManager::addSystem(const std::string& systemName)
+System& SystemManager::addSystem(const std::string& systemName)
 {
-    if(m_registeredSystems.find(systemName) != std::end(m_registeredSystems))
-        m_systems[systemName] = m_registeredSystems[systemName]();
-    else
+    sol::object system;
+    try
     {
-        sol::object system = Lua::getState().safe_script("return dofile('systems/" + systemName + ".lua')()");
-        m_systems[systemName] = std::make_shared<LuaSystem>(systemName, system);
+        system = Lua::getState().safe_script("return dofile('systems/' .. '" + systemName + "' .. '.lua')()");
     }
-    m_eventManager.subscribe("EntityCreated", *m_systems[systemName].get(), &System::onCreatedEntity);
-    m_eventManager.subscribe("ComponentAdded", *m_systems[systemName].get(), &System::onComponentAdded);
-    m_systems[systemName]->initialize(m_eventManager, m_entityManager);
+    catch(sol::error& e)
+    {
+        std::cerr << "Couldn't find " + systemName + " in systems directory\n";
+        return m_nullSystem;
+    }
+    m_systems.emplace(systemName, system);
+    m_eventManager.subscribe("EntityCreated", m_systems[systemName], &System::onCreatedEntity);
+    m_systems[systemName].init(m_eventManager, m_entityManager);
     return m_systems[systemName];
 }
 
-std::shared_ptr<System> SystemManager::getSystem(const std::string& systemName)
+System& SystemManager::getSystem(const std::string& systemName)
 {
     if(m_systems.find(systemName) != std::end(m_systems))
         return m_systems[systemName];
     else
-        return std::shared_ptr<System>();
+        return m_nullSystem;
 }
