@@ -7,7 +7,8 @@ void SystemManager::registerClass()
 {
     Lua::getState().new_usertype<SystemManager>("SystemManager",
                                                 sol::constructors<SystemManager(EventManager&, EntityManager&)>(),
-                                                "addSystem", &SystemManager::addSystem
+                                                "addSystem", &SystemManager::addSystem,
+                                                "getSystem", &SystemManager::getSystem
                                                 );
 }
 
