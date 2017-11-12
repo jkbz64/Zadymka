@@ -70,13 +70,18 @@ Entity& EntityManager::createEntity(const std::string& entityName)
                                        std::forward_as_tuple(this, id));
     auto it = inserted.first;
     auto& e = it->second;
-    Lua::scriptArgs(
+
+    sol::table componentTable = Lua::scriptArgs(
     R"(
-    local table = dofile('entities/' .. arg[1] .. '.lua')
-    for k, v in pairs(table) do
-        arg[2]:addComponent(k, v)
-    end
-    )", entityName, createHandle(e));
+    return dofile('entities/' .. arg[1] .. '.lua')
+    )", entityName);
+
+    for(std::pair<sol::object, sol::table> pair : componentTable)
+    {
+        std::string componentName = pair.first.as<std::string>();
+        e.addComponent(componentName, pair.second);
+    }
+
     m_eventManager.emit("EntityCreated", Lua::getState().create_table_with("entity", &e));
     return e;
 }
@@ -133,13 +138,13 @@ std::vector<std::reference_wrapper<Entity>> EntityManager::getEntities()
     return entities;
 }
 
-sol::object EntityManager::createComponent(Entity& entity, const std::string& componentName, sol::variadic_args args)
+sol::object EntityManager::createComponent(Entity& entity, const std::string& componentName, sol::table table)
 {    
     sol::object component = Lua::scriptArgs(
     R"(
     local c = dofile('components/' .. arg[1] .. '.lua'):new(arg[3])
     c.entity = arg[2]
     return c
-    )", componentName, createHandle(entity), args);
+    )", componentName, createHandle(entity), table);
     return component;
 }

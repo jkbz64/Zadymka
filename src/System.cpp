@@ -16,8 +16,7 @@ void System::registerClass()
                                          },
                                          "update", &System::update,
                                          "fixedUpdate", &System::fixedUpdate,
-                                         "draw", &System::draw,
-                                         "entities", &System::m_entities);
+                                         "draw", &System::draw);
 }
 
 System::System()
@@ -45,11 +44,17 @@ System::System(sol::object system) :
     end
     local nilf = function(...) end
     system.entities = arg[2]
+    if system.require ~= nil then
+        local requireds = system:require()
+        for _, v in pairs(requireds) do
+            arg[3]:add(v)
+        end
+    end
     return returnWrappedFunction(system.init) or nilf,
            returnWrappedFunction(system.update) or nilf,
            returnWrappedFunction(system.fixedUpdate) or nilf,
            returnWrappedFunction(system.draw) or nilf
-    )", m_system, &m_entities);
+    )", m_system, &m_entities, &m_requiredComponents);
 }
 
 void System::init(EventManager &ev, EntityManager &em)

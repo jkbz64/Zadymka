@@ -29,7 +29,7 @@ private:
     sol::object createHandle(Entity&);
 
     friend class Entity;
-    sol::object createComponent(Entity&, const std::string&, sol::variadic_args);
+    sol::object createComponent(Entity&, const std::string&, sol::table);
 };
 
 #endif
