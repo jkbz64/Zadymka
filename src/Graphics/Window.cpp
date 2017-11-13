@@ -23,7 +23,8 @@ void Window::registerClass()
                              "onResize", &Window::m_onResize,
                              "onClose", &Window::m_onClose,
                              //Draw
-                             "drawText", &Window::drawText
+                             "drawText", &Window::drawText,
+                             "drawSprite", &Window::drawSprite
     );
 }
 
@@ -54,22 +55,42 @@ void Window::onResize()
         m_onResize.call();
 }
 
-void Window::drawText(const std::string& text, int x, int y, const std::string& fontName, unsigned int charSize)
+void Window::drawText(const std::string& text, float x, float y, const std::string& fontName, unsigned int charSize)
 {
     if(m_cachedFonts.find(fontName) == m_cachedFonts.end())
     {
         sf::Font& font = m_cachedFonts[fontName] = sf::Font();
         if(!font.loadFromFile("fonts/" + fontName))
         {
-            std::cerr << "Failed to load font " + fontName + "\n";
+            std::cerr << "Failed to load font " + fontName + '\n';
             m_cachedFonts.erase(fontName);
+            return;
         }
     }
-
+    sf::Font& font = m_cachedFonts[fontName];
     sf::Text drawText;
-    drawText.setFont(m_cachedFonts[fontName]);
+    drawText.setFont(font);
     drawText.setString(text);
     drawText.setCharacterSize(charSize);
     drawText.setPosition(x, y);
-    draw(drawText);
+    sf::RenderWindow::draw(drawText);
+}
+
+void Window::drawSprite(float x, float y, int w, int h, const std::string &textureName)
+{
+    if(m_cachedTextures.find(textureName) == m_cachedTextures.end())
+    {
+        sf::Texture& texture = m_cachedTextures[textureName] = sf::Texture();
+        if(!texture.loadFromFile("textures/" + textureName))
+        {
+            std::cerr << "Failed to load texture " + textureName + '\n';
+            m_cachedTextures.erase(textureName);
+            return;
+        }
+    }
+    sf::Texture& texture = m_cachedTextures[textureName];
+    sf::RectangleShape spriteShape(sf::Vector2f(w, h));
+    spriteShape.setTexture(&texture);
+    spriteShape.setPosition(x, y);
+    sf::RenderWindow::draw(spriteShape);
 }

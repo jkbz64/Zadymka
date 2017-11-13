@@ -4,7 +4,6 @@
 #include <StateManager.hpp>
 #include <InputManager.hpp>
 
-
 class Game
 {
 public:

@@ -1,6 +1,5 @@
-#include <Game.hpp>
-
 #define SOL_USING_LUA_CXX
+#include <Game.hpp>
 
 int main()
 {

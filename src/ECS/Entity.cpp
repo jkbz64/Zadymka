@@ -2,7 +2,6 @@
 #include <Lua.hpp>
 #include <ECS/EntityManager.hpp>
 
-
 void Entity::registerClass()
 {
     Lua::getState().new_usertype<Entity>("Entity",

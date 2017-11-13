@@ -1,6 +1,5 @@
 #ifndef ENTITYMANAGER_HPP
 #define ENTITYMANAGER_HPP
-
 #include <unordered_map>
 #include <Lua.hpp>
 #include <ECS/Entity.hpp>

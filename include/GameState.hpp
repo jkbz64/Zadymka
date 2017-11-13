@@ -1,6 +1,5 @@
 #ifndef GAMESTATE_HPP
 #define GAMESTATE_HPP
-
 #include <Lua.hpp>
 #include <Graphics/Camera.hpp>
 #include <ECS/EntityManager.hpp>

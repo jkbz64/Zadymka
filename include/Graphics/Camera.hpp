@@ -1,6 +1,5 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
-
 #include <SFML/Graphics/View.hpp>
 #include <Lua.hpp>
 
