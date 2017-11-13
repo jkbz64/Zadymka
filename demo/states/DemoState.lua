@@ -2,6 +2,7 @@ local DemoState = class('DemoState')
 
 function DemoState:init()
     self.renderingSystem = self.systemManager:addSystem('RenderingSystem')
+    self.movementSystem = self.systemManager:addSystem('MovementSystem')
     self.entity = self.entityManager:createEntity('Player')
 end
 
@@ -11,7 +12,7 @@ end
 
 function DemoState:fixedUpdate(dt)
     self.renderingSystem:saveCurrentState()
-    self.entity:move(100 * dt, 0)
+    self.movementSystem:fixedUpdate(dt)
 end
 
 function DemoState:draw(window, alpha)
