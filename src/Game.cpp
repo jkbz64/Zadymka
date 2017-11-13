@@ -22,7 +22,7 @@ void Game::run()
     state.safe_script_file("init.lua");
 
     sf::Clock clock;
-    constexpr float dt = 1.f / 20.f;
+    float dt = Lua::getState().get_or("dt", 1.f / 20.f);
 
     float currentTime = clock.getElapsedTime().asSeconds();
     float accumulator = 0.f;

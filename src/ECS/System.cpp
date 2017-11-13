@@ -17,7 +17,8 @@ void System::registerClass()
                                          },
                                          "update", &System::update,
                                          "fixedUpdate", &System::fixedUpdate,
-                                         "draw", &System::draw);
+                                         "draw", &System::draw
+            );
 }
 
 System::System()
