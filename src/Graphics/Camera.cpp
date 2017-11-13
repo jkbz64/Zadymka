@@ -1,4 +1,4 @@
-#include <Camera.hpp>
+#include <Graphics/Camera.hpp>
 
 void Camera::registerClass()
 {

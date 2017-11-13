@@ -1,8 +1,8 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
-#include <Window.hpp>
 #include <ECS/Entity.hpp>
 
+class Window;
 class EventManager;
 
 class System

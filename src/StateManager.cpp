@@ -38,11 +38,3 @@ void StateManager::popState()
     if(!m_gameStates.empty())
         m_gameStates.pop();
 }
-
-GameState& StateManager::getCurrentState()
-{
-    if(m_gameStates.empty())
-        return m_nullState;
-    else
-        return m_gameStates.top();
-}

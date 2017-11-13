@@ -1,8 +1,9 @@
 #ifndef GAME_HPP
 #define GAME_HPP
-#include <Window.hpp>
+#include <Graphics/Window.hpp>
 #include <StateManager.hpp>
 #include <InputManager.hpp>
+
 
 class Game
 {

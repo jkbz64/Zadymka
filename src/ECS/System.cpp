@@ -1,6 +1,7 @@
 #include <ECS/System.hpp>
 #include <ECS/EventManager.hpp>
 #include <ECS/EntityManager.hpp>
+#include <Graphics/Window.hpp>
 
 void System::registerClass()
 {

@@ -2,11 +2,11 @@
 #define GAMESTATE_HPP
 
 #include <Lua.hpp>
-#include <Camera.hpp>
-#include <ECS/EventManager.hpp>
-#include <ECS/SystemManager.hpp>
+#include <Graphics/Camera.hpp>
 #include <ECS/EntityManager.hpp>
-#include <Window.hpp>
+#include <ECS/SystemManager.hpp>
+
+class Window;
 
 class GameState
 {

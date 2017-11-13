@@ -1,4 +1,4 @@
-#include <Window.hpp>
+#include <Graphics/Window.hpp>
 #include <iostream>
 
 void Window::registerClass()
