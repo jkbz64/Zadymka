@@ -23,6 +23,7 @@ public:
     void onCreatedEntity(sol::table);
 protected:
     sol::object m_system;
+    std::string m_systemName;
     sol::function m_init;
     sol::function m_update;
     sol::function m_fixedUpdate;

@@ -7,12 +7,12 @@ void System::registerClass()
 {
     Lua::getState().new_usertype<System>("System",
                                          "new", sol::no_constructor,
-                                         sol::meta_function::index, [](const std::string& name)
+                                         sol::meta_function::index, [](sol::object, const std::string& name)
                                          {
                                              return [name](System& system, sol::variadic_args args)
                                              {
-                                                 sol::table systemMetatable = system.m_system;
-                                                 return systemMetatable[name].call(system.m_system, args);
+                                                 sol::table meta = system.m_system;
+                                                 return meta[name].call(system.m_system, args);
                                              };
                                          },
                                          "update", &System::update,

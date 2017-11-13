@@ -1,4 +1,13 @@
 return {
-    Position = { x = 0, y = 0},
-    Movable = { speed = 250 }
-} 
+    Position = {
+         x = 0,
+         y = 0
+    },
+    Movable = {
+         speed = 250
+    },
+    Renderable = {
+        width = 100,
+        height = 100
+    }
+}

@@ -1,1 +1,1 @@
-stateManager:setState('MenuState')
+stateManager:setState('DemoState')

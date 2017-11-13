@@ -24,6 +24,7 @@ void Window::registerClass()
                              "onClose", &Window::m_onClose,
                              //Draw
                              "drawText", &Window::drawText,
+                             "drawRect", &Window::drawRect,
                              "drawSprite", &Window::drawSprite
     );
 }
@@ -62,7 +63,6 @@ void Window::drawText(const std::string& text, float x, float y, const std::stri
         sf::Font& font = m_cachedFonts[fontName] = sf::Font();
         if(!font.loadFromFile("fonts/" + fontName))
         {
-            std::cerr << "Failed to load font " + fontName + '\n';
             m_cachedFonts.erase(fontName);
             return;
         }
@@ -78,19 +78,27 @@ void Window::drawText(const std::string& text, float x, float y, const std::stri
 
 void Window::drawSprite(float x, float y, int w, int h, const std::string &textureName)
 {
-    if(m_cachedTextures.find(textureName) == m_cachedTextures.end())
+    if(m_cachedTextures.find(textureName) == m_cachedTextures.end() && !textureName.empty())
     {
         sf::Texture& texture = m_cachedTextures[textureName] = sf::Texture();
         if(!texture.loadFromFile("textures/" + textureName))
         {
-            std::cerr << "Failed to load texture " + textureName + '\n';
             m_cachedTextures.erase(textureName);
             return;
         }
     }
-    sf::Texture& texture = m_cachedTextures[textureName];
+
     sf::RectangleShape spriteShape(sf::Vector2f(w, h));
+    sf::Texture& texture = m_cachedTextures[textureName];
     spriteShape.setTexture(&texture);
     spriteShape.setPosition(x, y);
     sf::RenderWindow::draw(spriteShape);
+}
+
+void Window::drawRect(float x, float y, int w, int h, int r = 255, int g = 255, int b = 255)
+{
+    sf::RectangleShape rect(sf::Vector2f(w, h));
+    rect.setPosition(x, y);
+    rect.setFillColor(sf::Color(r, g, b));
+    sf::RenderWindow::draw(rect);
 }

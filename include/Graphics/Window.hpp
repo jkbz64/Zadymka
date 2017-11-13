@@ -13,6 +13,7 @@ public:
     void close();
     void drawText(const std::string&, float, float, const std::string&, unsigned int);
     void drawSprite(float, float, int, int, const std::string&);
+    void drawRect(float, float, int, int, int, int, int);
 protected:
     virtual void onCreate() override;
     virtual void onResize() override;
@@ -23,6 +24,5 @@ protected:
     std::unordered_map<std::string, sf::Font> m_cachedFonts;
     std::unordered_map<std::string, sf::Texture> m_cachedTextures;
 };
-
 
 #endif
