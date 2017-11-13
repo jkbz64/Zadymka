@@ -1,6 +1,6 @@
-#include <System.hpp>
-#include <EventManager.hpp>
-#include <EntityManager.hpp>
+#include <ECS/System.hpp>
+#include <ECS/EventManager.hpp>
+#include <ECS/EntityManager.hpp>
 
 void System::registerClass()
 {

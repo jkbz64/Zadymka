@@ -21,8 +21,8 @@ find_package(SFML COMPONENTS Graphics System Window REQUIRED)
 find_package(Lua53 REQUIRED)
 
 #
-file(GLOB HDRS include/*.hpp)
-file(GLOB SRCS src/*.cpp)
+file(GLOB_RECURSE HDRS include/*.hpp)
+file(GLOB_RECURSE SRCS src/*.cpp)
 
 add_executable(Zadymka ${HDRS} ${SRCS})
 

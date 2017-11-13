@@ -67,6 +67,3 @@ void GameState::draw(Window &window, float alpha) const
 {
     m_draw.call(window, alpha);
 }
-
-
-

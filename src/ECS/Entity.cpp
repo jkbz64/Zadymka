@@ -1,6 +1,6 @@
-#include <Entity.hpp>
+#include <ECS/Entity.hpp>
 #include <Lua.hpp>
-#include <EntityManager.hpp>
+#include <ECS/EntityManager.hpp>
 
 
 void Entity::registerClass()

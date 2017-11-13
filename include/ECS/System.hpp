@@ -1,7 +1,7 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
 #include <Window.hpp>
-#include <Entity.hpp>
+#include <ECS/Entity.hpp>
 
 class EventManager;
 

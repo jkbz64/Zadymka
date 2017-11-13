@@ -12,7 +12,7 @@ void Camera::registerClass()
                                          "getRotation", &Camera::getRotation,
                                          "move", static_cast<void(Camera::*)(float, float)>(&Camera::move),
                                          "zoom", &Camera::zoom
-                                         );
+   );
 }
 
 Camera::Camera() :

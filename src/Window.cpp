@@ -73,5 +73,3 @@ void Window::drawText(const std::string& text, int x, int y, const std::string& 
     drawText.setPosition(x, y);
     draw(drawText);
 }
-
-

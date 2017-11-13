@@ -3,9 +3,9 @@
 
 #include <Lua.hpp>
 #include <Camera.hpp>
-#include <EventManager.hpp>
-#include <SystemManager.hpp>
-#include <EntityManager.hpp>
+#include <ECS/EventManager.hpp>
+#include <ECS/SystemManager.hpp>
+#include <ECS/EntityManager.hpp>
 #include <Window.hpp>
 
 class GameState

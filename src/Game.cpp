@@ -70,8 +70,8 @@ void Game::run()
     }
 }
 
-#include <EntityManager.hpp>
-#include <SystemManager.hpp>
+#include <ECS/EntityManager.hpp>
+#include <ECS/SystemManager.hpp>
 
 extern std::string lua_gameState;
 

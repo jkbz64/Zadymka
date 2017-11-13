@@ -1,6 +1,6 @@
-#include <SystemManager.hpp>
-#include <EventManager.hpp>
-#include <EntityManager.hpp>
+#include <ECS/SystemManager.hpp>
+#include <ECS/EventManager.hpp>
+#include <ECS/EntityManager.hpp>
 #include <iostream>
 
 void SystemManager::registerClass()

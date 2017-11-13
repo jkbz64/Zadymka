@@ -2,7 +2,7 @@
 #define SYSTEMMANAGER_HPP
 #include <unordered_map>
 #include <Lua.hpp>
-#include <System.hpp>
+#include <ECS/System.hpp>
 
 class EventManager;
 

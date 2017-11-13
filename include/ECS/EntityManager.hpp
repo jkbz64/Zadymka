@@ -3,9 +3,9 @@
 
 #include <unordered_map>
 #include <Lua.hpp>
-#include <Entity.hpp>
+#include <ECS/Entity.hpp>
 #include <functional>
-#include <EventManager.hpp>
+#include <ECS/EventManager.hpp>
 
 class EntityManager
 {
