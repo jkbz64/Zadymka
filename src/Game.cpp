@@ -3,14 +3,6 @@
 #include <thread>
 
 extern std::string lua_middleclass;
-
-Game::Game()
-    :
-      m_window()
-{
-
-}
-
 void Game::run()
 {
     auto& state = Lua::getState();

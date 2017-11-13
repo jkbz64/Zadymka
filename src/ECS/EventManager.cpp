@@ -9,12 +9,6 @@ void EventManager::registerClass()
                                                );
 }
 
-
-EventManager::EventManager()
-{
-
-}
-
 void EventManager::subscribe(const std::string& eventName, sol::object obj, sol::function f)
 {
     if(m_eventCallbacks.find(eventName) == std::end(m_eventCallbacks))

@@ -7,7 +7,7 @@ class EventManager
 {
 public:
     static void registerClass();
-    EventManager();
+    EventManager() = default;
     EventManager(const EventManager&) = delete;
     EventManager(EventManager&&) = delete;
     EventManager& operator=(const EventManager&) = delete;

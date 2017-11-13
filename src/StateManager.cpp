@@ -15,22 +15,19 @@ void StateManager::registerClass()
     );
 }
 
-StateManager::StateManager()
-{
-
-}
-
 void StateManager::setState(const std::string& name)
 {
+    sol::object state;
     try
     {
-        sol::object state = Lua::scriptArgs("return dofile('states/' .. arg[1] .. '.lua')", name);
-        m_gameStates.emplace(state);
+        state = Lua::scriptArgs("return dofile('states/' .. arg[1] .. '.lua')", name);
     }
     catch(sol::error& e)
     {
         std::cerr << e.what() << "\n";
+        return;
     }
+    m_gameStates.emplace(state);
 }
 
 void StateManager::popState()
