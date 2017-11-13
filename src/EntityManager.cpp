@@ -13,6 +13,7 @@ void EntityManager::registerClass()
                                                     else
                                                         return mgr.createHandle(mgr.createEntity(entityName));
                                                 },
+                                                "destroyEntity", &EntityManager::destroyEntity,
                                                 "getEntity", [](EntityManager& mgr, std::size_t id) -> sol::object
                                                 {
                                                     if(mgr.m_entities.find(id) != mgr.m_entities.end())
@@ -48,6 +49,16 @@ EntityManager::EntityManager(EventManager& manager) :
     )");
     m_handles = Lua::getState().create_table();
     m_nullHandle = createHandle(m_nullEntity);
+}
+
+EntityManager::~EntityManager()
+{
+    Lua::scriptArgs(
+    R"(
+    for _, v in pairs(arg[1]) do
+        v.isValid = false
+    end
+    )", m_handles);
 }
 
 Entity& EntityManager::createEntity()

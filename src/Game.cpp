@@ -24,7 +24,6 @@ void Game::run()
                     "Zadymka",
                     sf::Style::Default);
     m_window.setFramerateLimit(0);
-
     //Register lua classes
     registerClasses();
     //Load init script

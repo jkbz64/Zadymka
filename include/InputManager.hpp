@@ -8,6 +8,7 @@ class InputManager
 public:
     static void registerClass();
     InputManager() = default;
+    ~InputManager() = default;
     void update(const sf::Event&);
 private:
     struct Mouse

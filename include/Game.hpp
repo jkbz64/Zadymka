@@ -8,6 +8,11 @@ class Game
 {
 public:
     Game();
+    Game(const Game&) = delete;
+    Game(Game&&) = delete;
+    Game& operator=(const Game&) = delete;
+    Game& operator=(Game&&) = delete;
+    ~Game() = default;
     void run();
 protected:
     Window m_window;

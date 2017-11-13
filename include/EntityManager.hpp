@@ -12,6 +12,11 @@ class EntityManager
 public:
     static void registerClass();
     EntityManager(EventManager&);
+    EntityManager(const EntityManager&) = delete;
+    EntityManager(EntityManager&&) = delete;
+    EntityManager& operator=(const EntityManager&) = delete;
+    EntityManager& operator=(EntityManager&&) = delete;
+    ~EntityManager();
     Entity& createEntity();
     Entity& createEntity(const std::string&);
     void destroyEntity(std::size_t);
@@ -28,6 +33,7 @@ private:
     sol::table m_magicMetatable;
     sol::object createHandle(Entity&);
 
+protected:
     friend class Entity;
     sol::object createComponent(Entity&, const std::string&, sol::table);
 };

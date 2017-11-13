@@ -8,6 +8,7 @@ class StateManager
 public:
     static void registerClass();
     StateManager();
+    ~StateManager() = default;
     void setState(const std::string&);
     void popState();
     GameState& getCurrentState();

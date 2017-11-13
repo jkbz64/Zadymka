@@ -8,6 +8,11 @@ class EventManager
 public:
     static void registerClass();
     EventManager();
+    EventManager(const EventManager&) = delete;
+    EventManager(EventManager&&) = delete;
+    EventManager& operator=(const EventManager&) = delete;
+    EventManager& operator=(EventManager&&) = delete;
+    ~EventManager() = default;
     template<class T>
     void subscribe(const std::string&, T&, void (T::*)(sol::table));
     void subscribe(const std::string&, sol::object, sol::function);

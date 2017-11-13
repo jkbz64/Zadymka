@@ -1,8 +1,8 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 #include <string>
-#include <sol/state.hpp>
-#include <SFML/System.hpp>
+#include <sol/table.hpp>
+#include <sol/object.hpp>
 
 class EntityManager;
 
