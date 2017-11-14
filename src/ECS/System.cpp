@@ -78,17 +78,17 @@ void System::init(EventManager &ev, EntityManager &em)
     m_init.call(ev, em);
 }
 
-void System::update(float dt)
+void System::update(double dt)
 {
     m_update.call(dt);
 }
 
-void System::fixedUpdate(float dt)
+void System::fixedUpdate(double dt)
 {
     m_fixedUpdate.call(dt);
 }
 
-void System::draw(Window &w, float alpha)
+void System::draw(Window &w, double alpha)
 {
     m_draw.call(w, alpha);
 }

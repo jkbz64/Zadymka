@@ -154,15 +154,17 @@ void InputManager::registerClass()
 
 bool InputManager::Mouse::isButtonPressed(sf::Mouse::Button button)
 {
-    return sf::Mouse::isButtonPressed(button);
+    return false;
+    //return sf::Mouse::isButtonPressed(button);
 }
 
 bool InputManager::Keyboard::isKeyPressed(sf::Keyboard::Key key)
 {
-    return sf::Keyboard::isKeyPressed(key);
+    return false;
+    //return sf::Keyboard::isKeyPressed(key);
 }
 
-void InputManager::update(const sf::Event &event)
+/*void InputManager::update(const sf::Event &event)
 {
     switch(event.type)
     {
@@ -184,4 +186,4 @@ void InputManager::update(const sf::Event &event)
     default:
         break;
     }
-}
+}*/

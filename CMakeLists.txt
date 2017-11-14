@@ -17,26 +17,40 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 
 option(DEMO "Build demo?" ON)
 
-find_package(SFML COMPONENTS Graphics System Window REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(GLFW3 REQUIRED)
 find_package(Lua53 REQUIRED)
 
 #
 file(GLOB_RECURSE HDRS include/*.hpp)
 file(GLOB_RECURSE SRCS src/*.cpp)
 
-add_executable(Zadymka ${HDRS} ${SRCS})
+set(STB_IMAGE_CPP ${CMAKE_SOURCE_DIR}/lib/stb_image/stb_image.cpp)
+set(GLAD_C ${CMAKE_SOURCE_DIR}/lib/glad/glad.c)
+
+add_executable(Zadymka
+	${HDRS}
+	${SRCS}
+	${STB_IMAGE_CPP}
+	${GLAD_C}
+)
 
 
 target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/include/
 						${LUA53_INCLUDE_DIR}
-						${CMAKE_SOURCE_DIR}/lib/sol2
-						${SFML_INCLUDE_DIR}
+						${CMAKE_SOURCE_DIR}/lib/sol2/
+						${CMAKE_SOURCE_DIR}/lib/glm/
+						${CMAKE_SOURCE_DIR}/lib/glad/
+						${CMAKE_SOURCE_DIR}/lib/stb/
+						${OPENGL_INCLUDE_DIR}
+						${GLFW_INCLUDE_DIR}
 )
 
 target_link_libraries(Zadymka
 					${LUA53_LIBRARIES}
-					${SFML_LIBRARIES}
+					${OPENGL_LIBRARIES}
+					${GLFW_LIBRARIES}
 )
 
 if(DEMO)

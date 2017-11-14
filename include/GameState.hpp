@@ -19,9 +19,9 @@ public:
     ~GameState();
 
     void cleanup();
-    void update(float dt) const;
-    void fixedUpdate(float dt) const;
-    void draw(Window& window, float alpha) const;
+    void update(double dt) const;
+    void fixedUpdate(double dt) const;
+    void draw(Window& window, double alpha) const;
 
     const Camera& getCamera() const;
     const EntityManager& getEntityManager() const;

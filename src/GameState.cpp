@@ -57,17 +57,17 @@ void GameState::cleanup()
     m_cleanup.call();
 }
 
-void GameState::update(float dt) const
+void GameState::update(double dt) const
 {
     m_update.call(dt);
 }
 
-void GameState::fixedUpdate(float dt) const
+void GameState::fixedUpdate(double dt) const
 {
     m_fixedUpdate.call(dt);
 }
 
-void GameState::draw(Window &window, float alpha) const
+void GameState::draw(Window &window, double alpha) const
 {
     m_draw.call(window, alpha);
 }

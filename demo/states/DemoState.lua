@@ -4,6 +4,7 @@ function DemoState:init()
     self.renderingSystem = self.systemManager:addSystem('RenderingSystem')
     self.movementSystem = self.systemManager:addSystem('MovementSystem')
     self.entity = self.entityManager:createEntity('Player')
+    self.camera:setCenter(400, 0)
 end
 
 function DemoState:update(dt)

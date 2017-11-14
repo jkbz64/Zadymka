@@ -1,104 +1,165 @@
 #include <Graphics/Window.hpp>
+#include <Graphics/Drawable.hpp>
 #include <iostream>
+#include <Graphics/Rectangle.hpp>
+
+namespace
+{
+    template <typename T>
+    constexpr float normalize(T value)
+    {
+      return value < 0 ? 0 : static_cast<float>(value) / 255;
+    }
+}
 
 void Window::registerClass()
 {
     Lua::getState().new_usertype<Window>("Window",
                              "new", sol::no_constructor,
-                             "setTitle", [](Window& window, const std::string& title)
-                             {
-                                window.setTitle(sf::String(title));
-                             },
-                             "getSize", [](Window& window)
-                             {
-                                return std::make_tuple(window.getSize().x, window.getSize().y);
-                             },
-                             "setSize", [](Window& window, unsigned int w, unsigned int h)
-                             {
-                                window.setSize(sf::Vector2u(w, h));
-                             },
-                             "setFramerateLimit", &Window::setFramerateLimit,
-                             "setVSync", &Window::setVerticalSyncEnabled,
+                             "setTitle", &Window::setTitle,
+                             "getSize", [](Window& window) { return std::make_tuple(window.m_width, window.m_height); },
+                             "setSize", &Window::setSize,
                              "onOpen", &Window::m_onOpen,
                              "onResize", &Window::m_onResize,
                              "onClose", &Window::m_onClose,
                              //Draw
-                             "drawText", &Window::drawText,
+                             "draw", sol::resolve(&Window::draw<Rectangle>),
+                             "drawRect", &Window::drawRect
+                             /*"drawText", &Window::drawText,
                              "drawRect", &Window::drawRect,
-                             "drawSprite", &Window::drawSprite
+                             "drawSprite", &Window::drawSprite*/
     );
 }
 
-Window::Window()  :
-      sf::RenderWindow()
+Window::Window() :
+    m_isOpen(false),
+    m_style(Window::Style::Windowed),
+    m_renderCache()
 {
-
+    m_renderCache.m_viewChanged = false;
+    sol::tie(m_onOpen, m_onClose, m_onResize) = Lua::getState().script(R"(return function() end,
+                                                                                 function() end,
+                                                                                 function() end)");
 }
+
+GLFWwindow* Window::getNativeWindow()
+{
+    return m_window.get();
+}
+
+void Window::create(unsigned int w, unsigned int h, const std::string& title, const Style& style = Window::Style::Windowed)
+{
+    if(w == 0 || h == 0)
+    {
+        m_isOpen = false;
+        throw std::logic_error("Window width nor height cannot be 0");
+    }
+
+    m_width = w;
+    m_height = h;
+    m_title = title;
+    m_style = style;
+
+    switch(m_style)
+    {
+    case Style::Windowed:
+        m_window.reset(glfwCreateWindow(m_width, m_height, title.c_str(), NULL, NULL));
+        break;
+    case Style::Fullscreen:
+        m_window.reset(glfwCreateWindow(m_width, m_height, title.c_str(), glfwGetPrimaryMonitor(), NULL));
+        break;
+    case Style::FullscreenWindowed:
+        auto monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+        m_window.reset(glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, NULL));
+        break;
+    }
+
+    m_isOpen = true;
+    glfwMakeContextCurrent(getNativeWindow());
+    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+    glfwSetWindowUserPointer(getNativeWindow(), this);
+    glfwSetFramebufferSizeCallback(getNativeWindow(), [](GLFWwindow* window, int width, int height)
+    {
+        glViewport(0, 0, width, height);
+        Window* w = (Window*)glfwGetWindowUserPointer(window);
+        w->m_onResize.call(width, height);
+    });
+    m_onOpen.call();
+}
+
+bool Window::isOpen()
+{
+    if(m_window)
+        return !glfwWindowShouldClose(m_window.get()) && m_isOpen;
+    else
+        return false;
+}
+
+
+void Window::clear(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable( GL_BLEND );
+
+    glClearColor(normalize(r), normalize(g), normalize(b), normalize(a));
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Window::display()
+{
+    glfwSwapBuffers(getNativeWindow());
+    glfwPollEvents();
+}
+
 
 void Window::close()
 {
-    if(m_onClose.valid())
-        m_onClose.call();
-    sf::RenderWindow::close();
-}
-
-void Window::onCreate()
-{
-    sf::RenderWindow::onCreate();
-    if(m_onOpen.valid())
-        m_onOpen.call();
-}
-
-void Window::onResize()
-{
-    sf::RenderWindow::onResize();
-    if(m_onResize.valid())
-        m_onResize.call();
-}
-
-void Window::drawText(const std::string& text, float x, float y, const std::string& fontName, unsigned int charSize)
-{
-    if(m_cachedFonts.find(fontName) == m_cachedFonts.end())
+    if(m_isOpen)
     {
-        sf::Font& font = m_cachedFonts[fontName] = sf::Font();
-        if(!font.loadFromFile("fonts/" + fontName))
-        {
-            m_cachedFonts.erase(fontName);
-            return;
-        }
+        if(m_onClose.valid())
+            m_onClose.call();
+        m_isOpen = false;
     }
-    sf::Font& font = m_cachedFonts[fontName];
-    sf::Text drawText;
-    drawText.setFont(font);
-    drawText.setString(text);
-    drawText.setCharacterSize(charSize);
-    drawText.setPosition(x, y);
-    sf::RenderWindow::draw(drawText);
 }
 
-void Window::drawSprite(float x, float y, int w, int h, const std::string &textureName)
+void Window::setTitle(const std::string& title)
 {
-    if(m_cachedTextures.find(textureName) == m_cachedTextures.end() && !textureName.empty())
-    {
-        sf::Texture& texture = m_cachedTextures[textureName] = sf::Texture();
-        if(!texture.loadFromFile("textures/" + textureName))
-        {
-            m_cachedTextures.erase(textureName);
-            return;
-        }
-    }
+    m_title = title;
+    if(m_isOpen)
+        glfwSetWindowTitle(getNativeWindow(), m_title.c_str());
+}
 
-    sf::RectangleShape spriteShape(sf::Vector2f(w, h));
-    sf::Texture& texture = m_cachedTextures[textureName];
-    spriteShape.setTexture(&texture);
-    spriteShape.setPosition(x, y);
-    sf::RenderWindow::draw(spriteShape);
+
+void Window::setSize(unsigned int width, unsigned int height)
+{
+    if(width == 0 || height == 0)
+        return;
+
+    m_width = width;
+    m_height = height;
+    if(m_isOpen)
+        glfwSetWindowSize(getNativeWindow(), m_width, m_height);
+}
+
+void Window::setCamera(const Camera& camera)
+{
+    m_camera = camera;
+    m_renderCache.m_viewChanged = true;
+}
+
+const Camera& Window::getCamera()
+{
+    return m_camera;
 }
 
 void Window::drawRect(float x, float y, int w, int h, int r = 255, int g = 255, int b = 255)
 {
-    sf::RectangleShape rect(sf::Vector2f(w, h));
+    Rectangle rect(w, h);
     rect.setPosition(x, y);
-    rect.setFillColor(sf::Color(r, g, b));
-    sf::RenderWindow::draw(rect);
+    static_cast<Drawable<Rectangle>&>(rect).draw(*this);
 }

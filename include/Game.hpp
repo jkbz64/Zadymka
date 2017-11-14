@@ -7,7 +7,7 @@
 class Game
 {
 public:
-    Game() = default;
+    Game();
     Game(const Game&) = delete;
     Game(Game&&) = delete;
     Game& operator=(const Game&) = delete;

@@ -17,9 +17,9 @@ public:
     System& operator=(System&&) = delete;
     ~System() = default;
     void init(EventManager&, EntityManager&);
-    void update(float);
-    void fixedUpdate(float);
-    void draw(Window&, float);
+    void update(double);
+    void fixedUpdate(double);
+    void draw(Window&, double);
     void onCreatedEntity(sol::table);
     void onDestroyedEntity(sol::table);
 protected:

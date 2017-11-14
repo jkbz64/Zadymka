@@ -1,8 +1,22 @@
 #include <Game.hpp>
 #include <SFML/Window/Event.hpp>
 #include <thread>
+#include <iostream>
+#include <Graphics/Rectangle.hpp>
 
 extern std::string lua_middleclass;
+Game::Game()
+{
+    if(!glfwInit())
+    {
+        std::cerr << "Failed to load glfw. Aborting\n";
+        return;
+    }
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
+
 void Game::run()
 {
     auto& state = Lua::getState();
@@ -12,50 +26,44 @@ void Game::run()
     //Expose
     state.set("window", &m_window);
     state.set("stateManager", &m_stateManager);
-    m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
-                    "Zadymka",
-                    sf::Style::Default);
-    m_window.setVerticalSyncEnabled(true);
+
+    if(!glfwInit())
+    {
+        std::cerr << "Failed to load glfw. Aborting\n";
+        return;
+    }
+
+    m_window.create(1920, 1080, "Zadymka", Window::Style::FullscreenWindowed);
+
     //Register lua classes
     registerClasses();
     //Load init script
     state.safe_script_file("init.lua");
 
-    sf::Clock clock;
-    float dt = Lua::getState().get_or("dt", 1.f / 20.f);
-
-    float currentTime = clock.getElapsedTime().asSeconds();
-    float accumulator = 0.f;
+    double dt = Lua::getState().get_or("dt", 1.0 / 20.0);
+    double currentTime = glfwGetTime();
+    double accumulator = 0.0;
 
     while(m_window.isOpen())
     {
-        const float newTime = clock.getElapsedTime().asSeconds();
-        float frameTime = newTime - currentTime;
-        if (frameTime > 0.25f)
-            frameTime = 0.25f;
+        const double newTime = glfwGetTime();
+        double frameTime = newTime - currentTime;
+        if (frameTime > 0.25)
+            frameTime = 0.25;
         currentTime = newTime;
         accumulator += frameTime;
-        sf::Event event;
-        while (m_window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                m_window.close();
-            m_inputManager.update(event);
-        }
         const auto& currentState = m_stateManager.getCurrentState();
-        //Update logic
+        if(glfwGetKey(m_window.getNativeWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            m_window.close();
         currentState.update(dt);
-        //Fixed update
         while(accumulator >= dt)
         {
             currentState.fixedUpdate(dt);
             accumulator -= dt;
         }
-        const float alpha = accumulator / dt;
-        m_window.setView(currentState.getCamera());
-        //Clear screen
-        m_window.clear(sf::Color(0, 125, 125));
-        //Render
+        const double alpha = accumulator / dt;
+        m_window.setCamera(currentState.getCamera());
+        m_window.clear(0, 125, 125);
         currentState.draw(m_window, alpha);
         m_window.display();
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -64,6 +72,9 @@ void Game::run()
 
 #include <ECS/EntityManager.hpp>
 #include <ECS/SystemManager.hpp>
+#include <Graphics/Texture.hpp>
+#include <Graphics/Shader.hpp>
+#include <Graphics/Rectangle.hpp>
 
 extern std::string lua_gameState;
 
@@ -73,6 +84,10 @@ void Game::registerClasses()
     StateManager::registerClass();
     InputManager::registerClass();
     Window::registerClass();
+    Texture::registerClass();
+    Shader::registerClass();
+    Rectangle::registerClass();
+
     Entity::registerClass();
     EventManager::registerClass();
     EntityManager::registerClass();
