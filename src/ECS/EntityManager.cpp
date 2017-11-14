@@ -93,14 +93,14 @@ Entity& EntityManager::createEntity(const std::string& entityName)
         e.addComponent(componentName, pair.second);
     }
 
-    m_eventManager.emit("EntityCreated", Lua::getState().create_table_with("entity", &e));
+    m_eventManager.emit("EntityCreated", Lua::getState().create_table_with("entity", createHandle(e)));
     return e;
 }
 
 void EntityManager::destroyEntity(std::size_t id)
 {
     auto& entity = m_entities.at(id);
-    m_eventManager.emit("EntityDestroyed", Lua::getState().create_table_with("entity", &entity));
+    m_eventManager.emit("EntityDestroyed", Lua::getState().create_table_with("entity", createHandle(entity)));
     m_entities.erase(id);
 }
 

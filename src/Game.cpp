@@ -15,7 +15,7 @@ void Game::run()
     m_window.create(sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
                     "Zadymka",
                     sf::Style::Default);
-    m_window.setFramerateLimit(0);
+    m_window.setVerticalSyncEnabled(true);
     //Register lua classes
     registerClasses();
     //Load init script

@@ -12,7 +12,7 @@ InputManager::Keyboard::Keyboard()
     m_onKeyPress = Lua::getState().script("return function() end");
     m_onKeyRelease = Lua::getState().script("return function() end");
 
-    //xD
+    //Temporary solution
     Lua::getState().script(R"(
         Keys = {
             Unknown = -1,

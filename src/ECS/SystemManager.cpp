@@ -33,6 +33,7 @@ System& SystemManager::addSystem(const std::string& systemName)
     }
     m_systems.emplace(systemName, system);
     m_eventManager.subscribe("EntityCreated", m_systems[systemName], &System::onCreatedEntity);
+    m_eventManager.subscribe("EntityDestroyed", m_systems[systemName], &System::onDestroyedEntity);
     m_systems[systemName].init(m_eventManager, m_entityManager);
     return m_systems[systemName];
 }

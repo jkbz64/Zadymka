@@ -21,6 +21,7 @@ public:
     void fixedUpdate(float);
     void draw(Window&, float);
     void onCreatedEntity(sol::table);
+    void onDestroyedEntity(sol::table);
 protected:
     sol::object m_system;
     std::string m_systemName;
@@ -29,18 +30,7 @@ protected:
     sol::function m_fixedUpdate;
     sol::function m_draw;
     std::vector<std::string> m_requiredComponents;
-    std::vector<std::reference_wrapper<Entity>> m_entities;
+    std::unordered_map<int, sol::object> m_entities;
 };
-
-inline void System::onCreatedEntity(sol::table table)
-{
-    Entity &entity = table.get<Entity>("entity");
-    if(entity.hasComponents(m_requiredComponents) &&
-       std::find_if(std::begin(m_entities),
-                    std::end(m_entities),
-                    [&entity](Entity& e){ return e.getID() == entity.getID(); }) == std::end(m_entities)
-    )
-        m_entities.emplace_back(entity);
-}
 
 #endif

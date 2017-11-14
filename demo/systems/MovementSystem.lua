@@ -1,26 +1,33 @@
 local MovementSystem = class('MovementSystem')
 
 function MovementSystem:init(ev, em)
-
+    self.entityManager = em
+    ev:subscribe('EntityCreated', self, MovementSystem.onEntityCreated)
+    self.player = nil
 end
 
 function MovementSystem:fixedUpdate(dt)
-    if Keyboard:isKeyPressed(Keys.A) then
-        self.entities[1]:move(-100 * dt, 0)
-    elseif Keyboard:isKeyPressed(Keys.D) then
-        self.entities[1]:move(100 * dt, 0)
-    end
+    if self.player ~= nil then
+        local speed = self.player:get('Movable').speed * dt
+        if Keyboard:isKeyPressed(Keys.A) then
+            self.player:move(-speed, 0)
+        elseif Keyboard:isKeyPressed(Keys.D) then
+            self.player:move(speed, 0)
+        end
 
-    if Keyboard:isKeyPressed(Keys.W) then
-        self.entities[1]:move(0, -100 * dt)
-    elseif Keyboard:isKeyPressed(Keys.S) then
-        self.entities[1]:move(0, 100 * dt)
+        if Keyboard:isKeyPressed(Keys.W) then
+            self.player:move(0, -speed)
+        elseif Keyboard:isKeyPressed(Keys.S) then
+            self.player:move(0, speed)
+        end
     end
 end
 
-function MovementSystem:require()
-    return {"Movable"}
+function MovementSystem:onEntityCreated(e)
+    local entity = e.entity
+    if(entity:has('Identity') and entity:get('Identity').isPlayer == true) then
+        self.player = entity
+    end
 end
-
 
 return MovementSystem

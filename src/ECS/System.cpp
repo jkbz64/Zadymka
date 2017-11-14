@@ -59,6 +59,20 @@ System::System(sol::object system) :
     )", m_system, &m_entities, &m_requiredComponents);
 }
 
+void System::onCreatedEntity(sol::table table)
+{
+    Entity &entity = table["entity"]["cppRef"];
+    if(entity.hasComponents(m_requiredComponents))
+        m_entities[entity.getID()] = table["entity"];
+}
+
+void System::onDestroyedEntity(sol::table table)
+{
+   Entity& entity = table["entity"]["cppRef"];
+   if(m_entities.find(entity.getID()) != std::end(m_entities))
+       m_entities.erase(entity.getID());
+}
+
 void System::init(EventManager &ev, EntityManager &em)
 {
     m_init.call(ev, em);
