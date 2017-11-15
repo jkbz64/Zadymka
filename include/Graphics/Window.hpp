@@ -68,6 +68,9 @@ protected:
 template<class T>
 inline void Window::draw(Drawable<T>& drawable)
 {
+    Shader& shader = drawable.m_renderDetails.m_shader.use();
+    shader.setMatrix4("view", m_camera.getView());
+    shader.setMatrix4("projection", m_camera.getProjection());
     drawable.draw(*this);
 }
 

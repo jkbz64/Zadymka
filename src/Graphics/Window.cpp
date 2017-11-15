@@ -160,6 +160,6 @@ const Camera& Window::getCamera()
 void Window::drawRect(float x, float y, int w, int h, int r = 255, int g = 255, int b = 255)
 {
     Rectangle rect(w, h);
-    rect.setPosition(x, y);
-    static_cast<Drawable<Rectangle>&>(rect).draw(*this);
+    rect.setPosition(glm::vec2(x, y));
+    draw(rect);
 }

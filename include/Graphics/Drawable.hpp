@@ -1,6 +1,7 @@
 #ifndef DRAWABLE_HPP
 #define DRAWABLE_HPP
 #include <Graphics/Shader.hpp>
+#include <Graphics/Transformable.hpp>
 
 class Window;
 
@@ -12,9 +13,10 @@ struct RenderDetails
 };
 
 template<class T>
-class Drawable
+class Drawable : protected Transformable
 {
 public:
+    static Shader& getShader();
     Drawable() = default;
     virtual ~Drawable() = default;
 protected:
@@ -25,5 +27,11 @@ protected:
 
 template<class T>
 RenderDetails Drawable<T>::m_renderDetails;
+
+template<class T>
+Shader& Drawable<T>::getShader()
+{
+    return Drawable<T>::m_renderDetails.m_shader;
+}
 
 #endif

@@ -10,9 +10,14 @@ class Texture
 public:
     static void registerClass();
     Texture();
+    Texture(const Texture&) = default;
+    Texture& operator=(const Texture&) = default;
+    Texture(Texture&&) = delete;
+    Texture& operator=(Texture&&) = delete;
+    ~Texture() = default;
     void bind() const;
     bool loadFromFile(const std::string&);
-    const glm::vec2& getSize();
+    const glm::vec2& getSize() const;
 private:
     GLuint m_ID;
     //Texture dimensions
@@ -26,5 +31,10 @@ private:
     GLuint m_filterMin;
     GLuint m_filterMax;
 };
+
+inline void Texture::bind() const
+{
+    glBindTexture(GL_TEXTURE_2D, m_ID);
+}
 
 #endif

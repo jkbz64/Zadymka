@@ -2,60 +2,83 @@
 #include <Lua.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-void Transformable::registerClass()
-{
-    Lua::getState().new_usertype<Transformable>("Transformable",
-                                                sol::constructors<Transformable()>(),
-                                                "setPosition", &Transformable::setPosition,
-                                                "getPosition", &Transformable::getPosition,
-                                                "setRotation", &Transformable::setRotation,
-                                                "getRotation", &Transformable::getRotation
-    );
-}
-
 Transformable::Transformable() :
     m_modified(true),
-    m_position(0.f, 0.f),
+    m_translation(0.f, 0.f),
     m_rotation(0.f),
     m_model(1.f)
 {
 
 }
 
-void Transformable::setPosition(float x, float y)
+Transformable::Transformable(const Transformable &other)
 {
-    if(x != m_position.x || y != m_position.y)
+    m_modified = true;
+    m_model = glm::mat4(1.f);
+    m_translation = other.m_translation;
+    m_rotation = other.m_rotation;
+}
+
+Transformable::Transformable(Transformable &&other)
+{
+    m_modified = true;
+    m_model = glm::mat4(1.f);
+    m_translation = std::move(other.m_translation);
+    m_rotation = std::move(other.m_rotation);
+}
+
+Transformable& Transformable::operator =(const Transformable& other)
+{
+    if(this != &other)
+    {
         m_modified = true;
-    m_position = glm::vec2(x, y);
+        m_model = glm::mat4(1.f);
+        m_translation = other.m_translation;
+        m_rotation = other.m_rotation;
+    }
+    return *this;
 }
 
-const glm::vec2& Transformable::getPosition()
+Transformable& Transformable::operator =(Transformable&& other)
 {
-    return m_position;
-}
-
-void Transformable::setSize(unsigned int w, unsigned int h)
-{
-    if(w != m_size.x || h != m_size.y)
+    if(this != &other)
+    {
         m_modified = true;
-    m_size = glm::vec2(w, h);
+        m_model = glm::mat4(1.f);
+        m_translation = std::move(other.m_translation);
+        m_rotation = std::move(other.m_rotation);
+    }
+    return *this;
 }
 
-const glm::vec2& Transformable::getSize()
+void Transformable::translateBy(float dx, float dy)
 {
-    return m_size;
+    if(dx == 0.f || dx == 0.f)
+       return;
+    m_modified = true;
+    m_translation.x += dx;
+    m_translation.y += dy;
 }
 
-void Transformable::setRotation(float r)
+void Transformable::translate(const glm::vec2& translation)
 {
-    if(r != m_rotation)
+    if(translation != m_translation)
         m_modified = true;
-    m_rotation = r;
+    m_translation = translation;
 }
 
-float Transformable::getRotation()
+void Transformable::scale(float fx, float fy)
 {
-    return m_rotation;
+    if(fx != m_scale.x || fy != m_scale.y)
+        m_modified = true;
+    m_scale = glm::vec2(fx, fy);
+}
+
+void Transformable::rotate(float deg)
+{
+    if(deg != m_rotation)
+        m_modified = true;
+    m_rotation = deg;
 }
 
 const glm::mat4& Transformable::getModel()
@@ -63,10 +86,10 @@ const glm::mat4& Transformable::getModel()
     if(m_modified)
     {
         m_model = glm::mat4(1.f);
-        m_model = glm::translate(m_model, glm::vec3(m_position, 0.f));
+        m_model = glm::translate(m_model, glm::vec3(m_translation, 0.f));
         if(m_rotation != 0)
             m_model = glm::rotate(m_model, glm::degrees(m_rotation), glm::vec3(1.0f, 0.0f, 0.0f));
-        m_model = glm::scale(m_model, glm::vec3(m_size.x, m_size.y, 0.f));
+        m_model = glm::scale(m_model, glm::vec3(m_scale, 0.f));
         m_modified = false;
     }
     return m_model;

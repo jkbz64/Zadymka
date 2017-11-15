@@ -33,7 +33,7 @@ void Game::run()
         return;
     }
 
-    m_window.create(1920, 1080, "Zadymka", Window::Style::FullscreenWindowed);
+    m_window.create(800, 600, "Zadymka", Window::Style::Windowed);
 
     //Register lua classes
     registerClasses();
@@ -43,7 +43,6 @@ void Game::run()
     double dt = Lua::getState().get_or("dt", 1.0 / 20.0);
     double currentTime = glfwGetTime();
     double accumulator = 0.0;
-
     while(m_window.isOpen())
     {
         const double newTime = glfwGetTime();
@@ -68,6 +67,7 @@ void Game::run()
         m_window.display();
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+    glfwTerminate();
 }
 
 #include <ECS/EntityManager.hpp>
@@ -75,19 +75,23 @@ void Game::run()
 #include <Graphics/Texture.hpp>
 #include <Graphics/Shader.hpp>
 #include <Graphics/Rectangle.hpp>
+#include <Graphics/Sprite.hpp>
 
 extern std::string lua_gameState;
 
 void Game::registerClasses()
 {
+    //Core
     Camera::registerClass();
     StateManager::registerClass();
     InputManager::registerClass();
+    //Graphics
     Window::registerClass();
     Texture::registerClass();
     Shader::registerClass();
     Rectangle::registerClass();
-
+    Sprite::registerClass();
+    //ECS
     Entity::registerClass();
     EventManager::registerClass();
     EntityManager::registerClass();

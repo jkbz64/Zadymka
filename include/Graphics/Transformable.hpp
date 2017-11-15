@@ -6,20 +6,21 @@
 class Transformable
 {
 public:
-    static void registerClass();
     Transformable();
+    Transformable(const Transformable&);
+    Transformable& operator=(const Transformable&);
+    Transformable(Transformable&&);
+    Transformable& operator=(Transformable&&);
     virtual ~Transformable() = default;
-    void setPosition(float, float);
-    const glm::vec2& getPosition();
-    void setSize(unsigned int, unsigned int);
-    const glm::vec2& getSize();
-    void setRotation(float);
-    float getRotation();
+    void translate(const glm::vec2&);
+    void translateBy(float, float);
+    void scale(float, float);
+    void rotate(float);
     const glm::mat4& getModel();
-private:
+protected:
     bool m_modified;
-    glm::vec2 m_position;
-    glm::vec2 m_size;
+    glm::vec2 m_translation;
+    glm::vec2 m_scale;
     float m_rotation;
     glm::mat4 m_model;
 };
