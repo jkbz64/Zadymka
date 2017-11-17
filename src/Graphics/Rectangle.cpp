@@ -53,9 +53,11 @@ Rectangle::Rectangle() :
         #version 330 core
         layout (location = 0) in vec2 vertex;
         layout (location = 1) in vec4 vcolor;
+        layout (std140) uniform Camera {
+            mat4 view;
+            mat4 projection;
+        };
         uniform mat4 model;
-        uniform mat4 view;
-        uniform mat4 projection;
         out vec4 oColor;
         void main()
         {
@@ -152,6 +154,7 @@ void Rectangle::draw(Window &window)
     glBindBuffer(GL_ARRAY_BUFFER, m_renderDetails.m_colorVBO);
     glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), NULL, GL_STREAM_DRAW);
     glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), &m_colorArray.front(), GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(m_renderDetails.m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);

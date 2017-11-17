@@ -15,6 +15,7 @@ public:
     Shader();
     Shader(const std::string&, const std::string&, const std::string& = std::string(""));
     Shader& use();
+    GLuint getID() const;
     bool loadFromFile(std::string, std::string, std::string = "");
     bool loadFromMemory(std::string, std::string, std::string = "");
     void setFloat(const GLchar*, GLfloat, GLboolean = false);
@@ -29,6 +30,11 @@ private:
     GLuint m_ID;
     void checkCompileErrors(GLuint, const std::string&);
 };
+
+inline GLuint Shader::getID() const
+{
+    return m_ID;
+}
 
 inline bool Shader::isLoaded() const
 {

@@ -8,6 +8,7 @@ class Window;
 struct RenderDetails
 {
     bool m_initialized{false};
+    bool m_cameraSet{false};
     Shader m_shader;
     GLuint m_vao;
     GLuint m_verticesVBO{0};

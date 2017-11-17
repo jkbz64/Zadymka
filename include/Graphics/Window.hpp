@@ -5,7 +5,7 @@
 #include <glad.h>
 #include <GLFW/glfw3.h>
 #include <Graphics/Drawable.hpp>
-
+#include <glm/gtc/type_ptr.hpp>
 
 class Window
 {
@@ -61,6 +61,7 @@ protected:
     Camera m_camera;
     struct RenderCache
     {
+        GLuint m_cameraUBO{0};
         bool m_viewChanged;
     } m_renderCache;
 };
@@ -69,8 +70,20 @@ template<class T>
 inline void Window::draw(Drawable<T>& drawable)
 {
     Shader& shader = drawable.m_renderDetails.m_shader.use();
-    shader.setMatrix4("view", m_camera.getView());
-    shader.setMatrix4("projection", m_camera.getProjection());
+    if(!drawable.m_renderDetails.m_cameraSet)
+    {
+        GLuint blockIndex = glGetUniformBlockIndex(shader.getID(), "Camera");
+        glUniformBlockBinding(shader.getID(), blockIndex, 1);
+        drawable.m_renderDetails.m_cameraSet = true;
+    }
+    if(m_renderCache.m_viewChanged)
+    {
+        glBindBuffer(GL_UNIFORM_BUFFER, m_renderCache.m_cameraUBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(m_camera.getView()));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(m_camera.getProjection()));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        m_renderCache.m_viewChanged = false;
+    }
     drawable.draw(*this);
 }
 

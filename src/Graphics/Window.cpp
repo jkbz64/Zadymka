@@ -91,6 +91,19 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
         Window* w = (Window*)glfwGetWindowUserPointer(window);
         w->m_onResize.call(width, height);
     });
+
+    if(m_renderCache.m_cameraUBO == 0)
+    {
+        //Init camera UBO
+        GLuint bindingPoint = 1;
+        glGenBuffers(1, &m_renderCache.m_cameraUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, m_renderCache.m_cameraUBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_DYNAMIC_DRAW);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(m_camera.getView()));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(m_camera.getProjection()));
+        glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_renderCache.m_cameraUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
     m_onOpen.call();
 }
 
