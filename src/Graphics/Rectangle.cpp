@@ -15,9 +15,7 @@ void Rectangle::registerClass()
 }
 
 Rectangle::Rectangle() :
-    Drawable<Rectangle>(),
-    m_colorChanged(true),
-    m_color(Color::Black)
+    Drawable<Rectangle>()
 {
     if(!m_renderDetails.m_initialized)
     {
@@ -37,19 +35,7 @@ Rectangle::Rectangle() :
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
         GLuint& cVBO = m_renderDetails.m_colorVBO;
-        GLfloat color[] =
-        {
-            1.f, 0.f, 0.f, 1.f,
-            1.f, 0.f, 0.f, 1.f,
-            1.f, 0.f, 0.f, 1.f,
-            1.f, 0.f, 0.f, 1.f,
-            1.f, 0.f, 0.f, 1.f,
-            1.f, 0.f, 0.f, 1.f,
-        };
-
         glGenBuffers(1, &cVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, cVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STREAM_DRAW);
 
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
@@ -144,6 +130,15 @@ const glm::vec2& Rectangle::getSize()
 void Rectangle::setColor(const Color &color)
 {
     m_color = color;
+    const auto normalized = m_color.normalized();
+    m_colorArray = {
+        normalized[0], normalized[1], normalized[2], normalized[3],
+        normalized[0], normalized[1], normalized[2], normalized[3],
+        normalized[0], normalized[1], normalized[2], normalized[3],
+        normalized[0], normalized[1], normalized[2], normalized[3],
+        normalized[0], normalized[1], normalized[2], normalized[3],
+        normalized[0], normalized[1], normalized[2], normalized[3],
+    };
 }
 
 const Color& Rectangle::getColor()
@@ -155,17 +150,8 @@ void Rectangle::draw(Window &window)
 {
     getShader().setMatrix4("model", getModel());
     glBindBuffer(GL_ARRAY_BUFFER, m_renderDetails.m_colorVBO);
-    std::array<float, 4> c = m_color.normalized();
-    GLfloat color[] = {
-        c[0], c[1], c[2], c[3],
-        c[0], c[1], c[2], c[3],
-        c[0], c[1], c[2], c[3],
-        c[0], c[1], c[2], c[3],
-        c[0], c[1], c[2], c[3],
-        c[0], c[1], c[2], c[3],
-    };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(color), NULL, GL_STREAM_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), NULL, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), &m_colorArray.front(), GL_STREAM_DRAW);
     glBindVertexArray(m_renderDetails.m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);

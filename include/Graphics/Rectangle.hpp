@@ -24,8 +24,8 @@ public:
 
 protected:
     virtual void draw(Window&);
-    bool m_colorChanged;
     Color m_color;
+    std::array<float, 24> m_colorArray;
 };
 
 #endif
