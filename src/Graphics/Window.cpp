@@ -2,6 +2,7 @@
 #include <Graphics/Drawable.hpp>
 #include <iostream>
 #include <Graphics/Rectangle.hpp>
+#include <Graphics/Sprite.hpp>
 
 namespace
 {
@@ -23,7 +24,8 @@ void Window::registerClass()
                              "onResize", &Window::m_onResize,
                              "onClose", &Window::m_onClose,
                              //Draw
-                             "draw", sol::resolve(&Window::draw<Rectangle>),
+                             "draw", sol::overload(&Window::draw<Rectangle>,
+                                                  &Window::draw<Sprite>),
                              "drawRect", &Window::drawRect
                              /*"drawText", &Window::drawText,
                              "drawRect", &Window::drawRect,
@@ -157,9 +159,10 @@ const Camera& Window::getCamera()
     return m_camera;
 }
 
-void Window::drawRect(float x, float y, int w, int h, int r = 255, int g = 255, int b = 255)
+void Window::drawRect(float x, float y, int w, int h, int r = 0, int g = 0, int b = 0, int a = 255)
 {
     Rectangle rect(w, h);
     rect.setPosition(glm::vec2(x, y));
+    rect.setColor({r, g, b, a});
     draw(rect);
 }

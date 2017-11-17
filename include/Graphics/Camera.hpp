@@ -13,7 +13,6 @@ public:
     Camera& operator=(const Camera&);
     Camera& operator=(Camera&&);
     ~Camera() = default;
-
     const glm::vec2& getSize();
     void setSize(const glm::vec2&);
     const glm::vec2& getCenter();

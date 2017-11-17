@@ -5,7 +5,8 @@
 #include <Graphics/Rectangle.hpp>
 
 extern std::string lua_middleclass;
-Game::Game()
+Game::Game() :
+    m_inputManager(m_window)
 {
     if(!glfwInit())
     {
@@ -16,6 +17,9 @@ Game::Game()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
+
+#include <Graphics/Sprite.hpp>
+
 
 void Game::run()
 {
@@ -82,11 +86,10 @@ extern std::string lua_gameState;
 void Game::registerClasses()
 {
     //Core
-    Camera::registerClass();
     StateManager::registerClass();
-    InputManager::registerClass();
-    //Graphics
     Window::registerClass();
+    //Graphics
+    Camera::registerClass();
     Texture::registerClass();
     Shader::registerClass();
     Rectangle::registerClass();

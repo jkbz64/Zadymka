@@ -10,6 +10,8 @@ struct RenderDetails
     bool m_initialized{false};
     Shader m_shader;
     GLuint m_vao;
+    GLuint m_verticesVBO{0};
+    GLuint m_colorVBO{0};
 };
 
 template<class T>

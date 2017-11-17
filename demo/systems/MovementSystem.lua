@@ -9,7 +9,8 @@ end
 function MovementSystem:fixedUpdate(dt)
     if self.player ~= nil then
         local speed = self.player:get('Movable').speed * dt
- 	self.player:move(speed, 0)
+    end
+ 	--[[self.player:move(speed, 0)
         if Keyboard:isKeyPressed(Keys.A) then
             self.player:move(-speed, 0)
         elseif Keyboard:isKeyPressed(Keys.D) then
@@ -21,7 +22,7 @@ function MovementSystem:fixedUpdate(dt)
         elseif Keyboard:isKeyPressed(Keys.S) then
             self.player:move(0, speed)
         end
-    end
+    end]]--
 end
 
 function MovementSystem:onEntityCreated(e)

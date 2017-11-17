@@ -24,8 +24,7 @@ function RenderingSystem:draw(window, alpha)
         local px, py = entity:getPreviousPosition()
         local lx, ly = lerp(px, x, alpha), lerp(py, y, alpha)
         local w, h = entity:get('Renderable').width, entity:get('Renderable').height
-        window:drawRect(lx, ly, w, h, 255, 0, 0)
-        window:drawRect(lx, ly - 150, w, h, 255, 0, 0)
+        window:drawRect(lx, ly, w, h, 0, 0, 0, 255)
     end
 end
 

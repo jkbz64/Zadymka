@@ -55,9 +55,7 @@ Sprite::Sprite() :
         uniform mat4 model;
         uniform mat4 view;
         uniform mat4 projection;
-
         out vec2 oTexCoord;
-
         void main()
         {
             gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
@@ -67,11 +65,8 @@ Sprite::Sprite() :
         R"(
         #version 330 core
         out vec4 FragColor;
-
         in vec2 oTexCoord;
-
         uniform sampler2D texture1;
-
         void main()
         {
             FragColor = texture(texture1, oTexCoord);
@@ -79,6 +74,7 @@ Sprite::Sprite() :
         )");
         m_renderDetails.m_shader.setInteger("texture1", 0);
         m_renderDetails.m_initialized = true;
+
     }
 }
 
@@ -153,5 +149,3 @@ void Sprite::draw(Window &)
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
-
-
