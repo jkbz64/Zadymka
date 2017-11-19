@@ -20,7 +20,6 @@ Game::Game() :
 
 #include <Graphics/Sprite.hpp>
 
-
 void Game::run()
 {
     auto& state = Lua::getState();

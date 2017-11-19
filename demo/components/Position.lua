@@ -1,4 +1,4 @@
-local PositionComponent = class('PositionComponent')
+local PositionComponent = class('Position')
 
 function PositionComponent:initialize(t)
     self.x = t.x or 0

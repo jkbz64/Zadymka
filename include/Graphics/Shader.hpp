@@ -5,7 +5,7 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 #include <string>
-#include <glad.h>
+#include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
 
 class Shader

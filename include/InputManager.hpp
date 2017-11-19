@@ -19,9 +19,4 @@ private:
     Window& m_window;
 };
 
-
-
-
-
-
 #endif

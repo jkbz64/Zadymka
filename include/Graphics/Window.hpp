@@ -2,7 +2,7 @@
 #define WINDOW_HPP
 #include <Lua.hpp>
 #include <Graphics/Camera.hpp>
-#include <glad.h>
+#include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Graphics/Drawable.hpp>
 #include <glm/gtc/type_ptr.hpp>

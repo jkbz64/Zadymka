@@ -1,6 +1,6 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
-#include <glad.h>
+#include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 #include <string>

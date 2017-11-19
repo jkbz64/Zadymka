@@ -13,5 +13,10 @@ return {
     Renderable = {
         width = 100,
         height = 100
+    },
+    Physics = {
+        bodyType = 0,
+        width = 32,
+        height = 32
     }
 }

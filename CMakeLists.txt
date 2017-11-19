@@ -20,12 +20,13 @@ option(DEMO "Build demo?" ON)
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(Lua53 REQUIRED)
+find_package(Box2D REQUIRED)
 
 file(GLOB_RECURSE HDRS include/*.hpp)
 file(GLOB_RECURSE SRCS src/*.cpp)
 
-set(STB_IMAGE_CPP ${CMAKE_SOURCE_DIR}/lib/stb_image/stb_image.cpp)
-set(GLAD_C ${CMAKE_SOURCE_DIR}/lib/glad/glad.c)
+set(STB_IMAGE_CPP ${CMAKE_SOURCE_DIR}/src/Graphics/stb_image/stb_image.cpp)
+set(GLAD_C ${CMAKE_SOURCE_DIR}/src/Graphics/glad/glad.c)
 
 add_executable(Zadymka
 	${HDRS}
@@ -34,7 +35,6 @@ add_executable(Zadymka
 	${GLAD_C}
 )
 
-
 target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/include/
 						${LUA53_INCLUDE_DIR}
@@ -42,14 +42,17 @@ target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/lib/glm/
 						${CMAKE_SOURCE_DIR}/lib/glad/
 						${CMAKE_SOURCE_DIR}/lib/stb/
+						${CMAKE_SOURCE_DIR}/lib/tinyheaders/
 						${OPENGL_INCLUDE_DIR}
 						${GLFW_INCLUDE_DIR}
+						${BOX2D_INCLUDE_DIR}
 )
 
 target_link_libraries(Zadymka
 					${LUA53_LIBRARIES}
 					${OPENGL_LIBRARIES}
 					${GLFW_LIBRARIES}
+					${BOX2D_LIBRARY}
 )
 
 if(DEMO)
