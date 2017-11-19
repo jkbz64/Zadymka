@@ -19,7 +19,7 @@ World::World() :
 }
 
 World::World(float x, float y) :
-    b2::World(b2::Vec2(x, y))
+    b2::World(b2::Vec2(floatToBoxFloat(x), floatToBoxFloat(y)))
 {
 
 }
@@ -29,7 +29,7 @@ void World::addBody(Body& body)
     if(body.m_body == nullptr && body.m_world == nullptr)
     {
         auto& def = body.m_bodyDef;
-        def.type = body.m_type;
+        def.type = b2::BodyType::dynamicBody;
         const auto center = vecToBoxVec(glm::vec2(body.getPosition().x + body.getSize().x / 2.f, body.getPosition().y + body.getSize().y / 2.f));
         def.position.Set(center.x, center.y);
         body.m_body = CreateBody(&def);
@@ -40,6 +40,7 @@ void World::addBody(Body& body)
         fixture.shape = &shape;
         fixture.density = 1;
         body.m_body->CreateFixture(&fixture);
+        m_bodies.emplace_back(body);
     }
 }
 

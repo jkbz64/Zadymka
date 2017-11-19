@@ -15,7 +15,7 @@ return {
         height = 100
     },
     Physics = {
-        bodyType = 0,
+        bodyType = 1,
         width = 32,
         height = 32
     }

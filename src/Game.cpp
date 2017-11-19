@@ -36,7 +36,7 @@ void Game::run()
         return;
     }
 
-    m_window.create(800, 600, "Zadymka", Window::Style::Windowed);
+    m_window.create(800, 600, "Zadymka", Window::Style::FullscreenWindowed);
 
     //Register lua classes
     registerClasses();
@@ -79,6 +79,7 @@ void Game::run()
 #include <Graphics/Shader.hpp>
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Sprite.hpp>
+#include <Physics/World.hpp>
 
 extern std::string lua_gameState;
 
@@ -99,4 +100,7 @@ void Game::registerClasses()
     EntityManager::registerClass();
     SystemManager::registerClass();
     System::registerClass();
+    //Physics
+    World::registerClass();
+    Body::registerClass();
 }
