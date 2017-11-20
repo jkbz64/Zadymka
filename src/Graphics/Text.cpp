@@ -1,6 +1,7 @@
 #include <Graphics/Text.hpp>
 #include <Graphics/Glyph.hpp>
 #include <Graphics/Font.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 void Text::registerClass()
 {
