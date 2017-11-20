@@ -18,14 +18,8 @@ public:
     const glm::vec2& getPosition();
     void setSize(const glm::vec2&);
     const glm::vec2& getSize();
-
-    void setColor(const Color&);
-    const Color& getColor();
-
 protected:
     virtual void draw(Window&);
-    Color m_color;
-    std::array<float, 24> m_colorArray;
 };
 
 #endif

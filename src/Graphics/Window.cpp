@@ -3,6 +3,8 @@
 #include <iostream>
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Sprite.hpp>
+#include <Graphics/Text.hpp>
+#include <Graphics/Font.hpp>
 
 namespace
 {
@@ -25,9 +27,10 @@ void Window::registerClass()
                              "onClose", &Window::m_onClose,
                              //Draw
                              "draw", sol::overload(&Window::draw<Rectangle>,
-                                                  &Window::draw<Sprite>),
-                             "drawRect", &Window::drawRect
-                             /*"drawText", &Window::drawText,
+                                                  &Window::draw<Sprite>
+                                                   ),
+                             "drawRect", &Window::drawRect,
+                             "drawText", &Window::drawText/*
                              "drawRect", &Window::drawRect,
                              "drawSprite", &Window::drawSprite*/
     );
@@ -38,6 +41,15 @@ Window::Window() :
     m_style(Window::Style::Windowed),
     m_renderCache()
 {
+    if(!glfwInit())
+    {
+        std::cerr << "Failed to load glfw. Aborting\n";
+        return;
+    }
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     m_renderCache.m_viewChanged = false;
     sol::tie(m_onOpen, m_onClose, m_onResize) = Lua::getState().script(R"(return function() end,
                                                                                  function() end,
@@ -118,8 +130,9 @@ bool Window::isOpen()
 
 void Window::clear(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
 {
+    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable( GL_BLEND );
+    //glEnable(GL_CULL_FACE);
 
     glClearColor(normalize(r), normalize(g), normalize(b), normalize(a));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -178,4 +191,28 @@ void Window::drawRect(float x, float y, int w, int h, int r = 0, int g = 0, int 
     rect.setPosition(glm::vec2(x, y));
     rect.setColor({r, g, b, a});
     draw(rect);
+}
+
+void Window::drawSprite(const std::string& textureName, float x, float y, int w, int h)
+{
+    Sprite sprite;
+    Texture texture;
+    if(texture.loadFromFile(textureName))
+    {
+        sprite.setTexture(texture);
+        sprite.setPosition(glm::vec2(x, y));
+        sprite.setSize(glm::vec2(w, h));
+        draw(sprite);
+    }
+}
+
+void Window::drawText(const std::string& str, float x, float y, const std::string&, unsigned int charSize)
+{
+    Font font;
+    font.loadFromFile("fonts/artyard.ttf");
+    Text text;
+    text.setFont(&font);
+    text.setPosition(glm::vec2(x, y));
+    text.setString(str);
+    draw(text);
 }

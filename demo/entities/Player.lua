@@ -11,6 +11,7 @@ return {
          speed = 300
     },
     Renderable = {
+        texture = 'textures/test.png',
         width = 100,
         height = 100
     },

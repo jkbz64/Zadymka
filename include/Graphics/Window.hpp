@@ -35,8 +35,8 @@ public:
     template<class T>
     void draw(Drawable<T>&);
     void drawText(const std::string&, float, float, const std::string&, unsigned int);
-    void drawSprite(float, float, int, int, const std::string&);
     void drawRect(float, float, int, int, int, int, int, int);
+    void drawSprite(const std::string&, float, float, int, int);
 protected:
     struct DestroyGLFWWindow
     {

@@ -19,6 +19,7 @@ option(DEMO "Build demo?" ON)
 
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
+find_package(Freetype2 REQUIRED)
 find_package(Lua53 REQUIRED)
 find_package(Box2D REQUIRED)
 
@@ -45,13 +46,15 @@ target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/lib/tinyheaders/
 						${OPENGL_INCLUDE_DIR}
 						${GLFW_INCLUDE_DIR}
+						${FREETYPE2_ROOT_INCLUDE_DIR}
 						${BOX2D_INCLUDE_DIR}
 )
 
 target_link_libraries(Zadymka
-					${LUA53_LIBRARIES}
 					${OPENGL_LIBRARIES}
 					${GLFW_LIBRARIES}
+					${FREETYPE2_LIBRARIES}
+					${LUA53_LIBRARIES}
 					${BOX2D_LIBRARY}
 )
 

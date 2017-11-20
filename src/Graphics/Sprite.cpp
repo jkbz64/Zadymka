@@ -52,9 +52,11 @@ Sprite::Sprite() :
         #version 330 core
         layout (location = 0) in vec2 vertex;
         layout (location = 1) in vec2 texCoord;
+        layout (std140) uniform Camera {
+            mat4 view;
+            mat4 projection;
+        };
         uniform mat4 model;
-        uniform mat4 view;
-        uniform mat4 projection;
         out vec2 oTexCoord;
         void main()
         {

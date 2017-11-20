@@ -8,14 +8,7 @@ extern std::string lua_middleclass;
 Game::Game() :
     m_inputManager(m_window)
 {
-    if(!glfwInit())
-    {
-        std::cerr << "Failed to load glfw. Aborting\n";
-        return;
-    }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 }
 
 #include <Graphics/Sprite.hpp>

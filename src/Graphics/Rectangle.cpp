@@ -75,7 +75,6 @@ Rectangle::Rectangle() :
         }
         )");
         m_renderDetails.m_initialized = true;
-
     }
 }
 
@@ -127,25 +126,6 @@ void Rectangle::setSize(const glm::vec2 &size)
 const glm::vec2& Rectangle::getSize()
 {
     return m_scale;
-}
-
-void Rectangle::setColor(const Color &color)
-{
-    m_color = color;
-    const auto normalized = m_color.normalized();
-    m_colorArray = {
-        normalized[0], normalized[1], normalized[2], normalized[3],
-        normalized[0], normalized[1], normalized[2], normalized[3],
-        normalized[0], normalized[1], normalized[2], normalized[3],
-        normalized[0], normalized[1], normalized[2], normalized[3],
-        normalized[0], normalized[1], normalized[2], normalized[3],
-        normalized[0], normalized[1], normalized[2], normalized[3],
-    };
-}
-
-const Color& Rectangle::getColor()
-{
-    return m_color;
 }
 
 void Rectangle::draw(Window &window)
