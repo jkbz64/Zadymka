@@ -5,7 +5,7 @@ function DemoState:init()
     self.movementSystem = self.systemManager:addSystem('MovementSystem')
     self.physicsSystem = self.systemManager:addSystem('PhysicsSystem')
     self.entity = self.entityManager:createEntity('Player')
-    self.camera:setCenter(400, 200)
+    self.camera:setCenter(400, 300)
 end
 
 function DemoState:update(dt)
@@ -20,7 +20,7 @@ end
 
 function DemoState:draw(window, alpha)
     self.renderingSystem:draw(window, alpha)
-    window:drawText('testTTTTTTTTTTTTTTTTTTTT', 0.0, 0.0, 'artyard.ttf', 40)
+    window:drawText('test', 0.0, 0.0, 'artyard.ttf', 48)
 end
 
 return DemoState

@@ -9,7 +9,12 @@ void Text::registerClass()
     Lua::getState().new_usertype<Text>("Text",
                                        sol::constructors<Text(), Text(Font&)>(),
                                        "setString", &Text::setString,
-                                       "setFont", &Text::setFont
+                                       "getString", &Text::getString,
+                                       "setFont", &Text::setFont,
+                                       "setCharacterSize", &Text::setCharacterSize,
+                                       "getCharacterSize", &Text::getCharacterSize,
+                                       "setColor", &Text::setColor,
+                                       "getColor", &Text::getColor
                                        );
 }
 
@@ -47,7 +52,7 @@ Text::Text() :
         out vec4 oTextColor;
         void main()
         {
-            gl_Position = projection * flip * vec4(vertex.xy, 0.0, 1.0);
+            gl_Position = projection * view * flip * vec4(vertex.xy, 0.0, 1.0);
             TexCoords = vertex.zw;
             oTextColor = textColor;
         }
@@ -68,12 +73,14 @@ Text::Text() :
 
         m_renderDetails.m_initialized = true;
     }
-    setColor(Color::Red);
+    setColor(Color::Black);
+    setCharacterSize(48);
 }
 
-Text::Text(Font &)
+Text::Text(Font &font) :
+    Text()
 {
-
+    m_font = &font;
 }
 
 void Text::setFont(Font *font)
@@ -86,9 +93,30 @@ void Text::setString(const std::string& str)
     m_text = str;
 }
 
+const std::string& Text::getString()
+{
+    return m_text;
+}
+
 void Text::setPosition(const glm::vec2& pos)
 {
     translate(glm::vec2(pos.x, -pos.y));
+}
+
+const glm::vec2& Text::getPosition()
+{
+    return m_translation;
+}
+
+void Text::setCharacterSize(unsigned int charSize)
+{
+    m_characterSize = charSize;
+    scale(1.f, static_cast<float>(m_characterSize) / 120.f);
+}
+
+unsigned int Text::getCharacterSize()
+{
+    return m_characterSize;
 }
 
 void Text::draw(Window &w)
@@ -100,11 +128,11 @@ void Text::draw(Window &w)
         glm::mat4 flip(1.f);
         flip = glm::scale(flip, glm::vec3(1.f, -1.f, 1.f));
         m_renderDetails.m_shader.setMatrix4("flip", flip);
-        m_renderDetails.m_shader.setVector4f("textColor", glm::vec4(1.f, 0.f, 0.f, 1.f));
+        m_renderDetails.m_shader.setVector4f("textColor", glm::vec4(m_colorArray[0], m_colorArray[1], m_colorArray[2], m_colorArray[3]));
 
         glm::vec2 m_pos = m_translation;
-        m_pos.y -= 48;
-        float scale = 1.f;
+        m_pos.y -= 120.f;
+        float scale = m_scale.y;
         std::string::const_iterator c;
         for (c = m_text.begin(); c != m_text.end(); c++)
         {

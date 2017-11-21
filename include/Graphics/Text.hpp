@@ -11,12 +11,22 @@ public:
     static void registerClass();
     Text();
     Text(Font&);
+    Text(const Text&) = default;
+    Text(Text&&) = default;
+    Text& operator=(const Text&) = default;
+    Text& operator=(Text&&) = default;
+    ~Text() = default;
     void setFont(Font*);
     void setString(const std::string&);
     void setPosition(const glm::vec2&);
+    void setCharacterSize(unsigned int);
+    const std::string& getString();
+    const glm::vec2& getPosition();
+    unsigned int getCharacterSize();
 protected:
     virtual void draw(Window &) override;
     Font* m_font;
+    unsigned int m_characterSize;
     std::string m_text;
 };
 

@@ -1,9 +1,13 @@
 #include <Graphics/Font.hpp>
 #include <iostream>
+#include <Lua.hpp>
 
 void Font::registerClass()
 {
-
+    Lua::getState().new_usertype<Font>("Font",
+                                       sol::constructors<Font(), Font(const std::string&)>(),
+                                       "loadFromFile", &Font::loadFromFile
+                                       );
 }
 
 Font::Font()
@@ -11,9 +15,9 @@ Font::Font()
 
 }
 
-Font::Font(const std::string &)
+Font::Font(const std::string &fontName)
 {
-
+    loadFromFile("fonts/" + fontName);
 }
 
 bool Font::loadFromFile(const std::string &file)
@@ -30,7 +34,7 @@ bool Font::loadFromFile(const std::string &file)
     FT_Face face;
     if (FT_New_Face(ft, file.c_str(), 0, &face))
         return false;
-    FT_Set_Pixel_Sizes(face, 0, 48);
+    FT_Set_Pixel_Sizes(face, 0, 120);
     if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
         return false;
 

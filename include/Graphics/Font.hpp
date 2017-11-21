@@ -13,6 +13,10 @@ public:
     static void registerClass();
     Font();
     Font(const std::string&);
+    Font(const Font&) = default;
+    Font(Font&&) = default;
+    Font& operator=(const Font&) = default;
+    Font& operator=(Font&&) = default;
     ~Font() = default;
     bool loadFromFile(const std::string&);
     const Glyph& getGlyph(GLchar);

@@ -231,5 +231,6 @@ void Window::drawText(const std::string& str, float x, float y, const std::strin
     text.setFont(&font);
     text.setPosition(glm::vec2(x, y));
     text.setString(str);
+    text.setCharacterSize(charSize);
     draw(text);
 }
