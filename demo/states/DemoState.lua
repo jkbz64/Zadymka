@@ -3,7 +3,6 @@ local DemoState = class('DemoState')
 function DemoState:init()
     self.renderingSystem = self.systemManager:addSystem('RenderingSystem')
     self.movementSystem = self.systemManager:addSystem('MovementSystem')
-    self.physicsSystem = self.systemManager:addSystem('PhysicsSystem')
     self.entity = self.entityManager:createEntity('Player')
     self.camera:setCenter(400, 300)
 end
@@ -15,7 +14,6 @@ end
 function DemoState:fixedUpdate(dt)
     self.renderingSystem:saveCurrentState()
     self.movementSystem:fixedUpdate(dt)
-    self.physicsSystem:fixedUpdate(dt)
 end
 
 function DemoState:draw(window, alpha)

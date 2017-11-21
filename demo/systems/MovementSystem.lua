@@ -7,21 +7,17 @@ function MovementSystem:init(ev, em)
 end
 
 function MovementSystem:fixedUpdate(dt)
-    if self.player ~= nil then
-        --self.player:get('Physics').body:setVelocity(100, 0)
+    self.player:move(300 * dt, 0)
+    --[[if Keyboard:isKeyPressed(Keys.A) then
+        self.player:move(-speed, 0)
+    elseif Keyboard:isKeyPressed(Keys.D) then
+        self.player:move(speed, 0)
     end
- 	--[[self.player:move(speed, 0)
-        if Keyboard:isKeyPressed(Keys.A) then
-            self.player:move(-speed, 0)
-        elseif Keyboard:isKeyPressed(Keys.D) then
-            self.player:move(speed, 0)
-        end
 
-        if Keyboard:isKeyPressed(Keys.W) then
-            self.player:move(0, -speed)
-        elseif Keyboard:isKeyPressed(Keys.S) then
-            self.player:move(0, speed)
-        end
+    if Keyboard:isKeyPressed(Keys.W) then
+        self.player:move(0, -speed)
+    elseif Keyboard:isKeyPressed(Keys.S) then
+        self.player:move(0, speed)
     end]]--
 end
 

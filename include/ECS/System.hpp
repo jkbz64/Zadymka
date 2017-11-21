@@ -25,10 +25,10 @@ public:
 protected:
     sol::object m_system;
     std::string m_systemName;
-    sol::function m_init;
-    sol::function m_update;
-    sol::function m_fixedUpdate;
-    sol::function m_draw;
+    std::function<void(EventManager&, EntityManager&)> m_init;
+    std::function<void(double)> m_update;
+    std::function<void(double)> m_fixedUpdate;
+    std::function<void(Window&, double)> m_draw;
     std::vector<std::string> m_requiredComponents;
     std::unordered_map<int, sol::object> m_entities;
 };

@@ -18,6 +18,7 @@ SystemManager::SystemManager(EventManager& mgr, EntityManager& e_mgr) :
 {
 
 }
+#include <iostream>
 
 System& SystemManager::addSystem(const std::string& systemName)
 {

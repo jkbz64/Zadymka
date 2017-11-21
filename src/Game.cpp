@@ -74,7 +74,6 @@ void Game::run()
 #include <Graphics/Sprite.hpp>
 #include <Graphics/Font.hpp>
 #include <Graphics/Text.hpp>
-#include <Physics/World.hpp>
 
 extern std::string lua_gameState;
 
@@ -97,7 +96,4 @@ void Game::registerClasses()
     EntityManager::registerClass();
     SystemManager::registerClass();
     System::registerClass();
-    //Physics
-    World::registerClass();
-    Body::registerClass();
 }

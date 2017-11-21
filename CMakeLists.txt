@@ -21,7 +21,6 @@ find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(Freetype2 REQUIRED)
 find_package(Lua53 REQUIRED)
-find_package(Box2D REQUIRED)
 
 file(GLOB_RECURSE HDRS include/*.hpp)
 file(GLOB_RECURSE SRCS src/*.cpp)
@@ -47,7 +46,6 @@ target_include_directories(Zadymka PUBLIC
 						${OPENGL_INCLUDE_DIR}
 						${GLFW_INCLUDE_DIR}
 						${FREETYPE2_ROOT_INCLUDE_DIR}
-						${BOX2D_INCLUDE_DIR}
 )
 
 target_link_libraries(Zadymka
@@ -55,7 +53,6 @@ target_link_libraries(Zadymka
 					${GLFW_LIBRARIES}
 					${FREETYPE2_LIBRARIES}
 					${LUA53_LIBRARIES}
-					${BOX2D_LIBRARY}
 )
 
 if(DEMO)

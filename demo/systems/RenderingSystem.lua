@@ -1,7 +1,7 @@
 local RenderingSystem = class('RenderingSystem')
 
 function RenderingSystem:init(ev, em)
-
+    
 end
 
 function RenderingSystem:require()

@@ -10,7 +10,9 @@ void Rectangle::registerClass()
                                             "getPosition", &Rectangle::getPosition,
                                             "setPosition", &Rectangle::setPosition,
                                             "getSize", &Rectangle::getSize,
-                                            "setSize", &Rectangle::setSize
+                                            "setSize", &Rectangle::setSize,
+                                            "getColor", &Rectangle::getColor,
+                                            "setColor", &Rectangle::setColor
     );
 }
 
