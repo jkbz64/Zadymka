@@ -132,7 +132,6 @@ void Window::clear(unsigned int r, unsigned int g, unsigned int b, unsigned int 
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glEnable(GL_CULL_FACE);
 
     glClearColor(normalize(r), normalize(g), normalize(b), normalize(a));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -195,21 +194,39 @@ void Window::drawRect(float x, float y, int w, int h, int r = 0, int g = 0, int 
 
 void Window::drawSprite(const std::string& textureName, float x, float y, int w, int h)
 {
-    Sprite sprite;
-    Texture texture;
-    if(texture.loadFromFile(textureName))
+    static std::unordered_map<std::string, Texture> cachedTextures;
+    if(cachedTextures.find(textureName) == std::end(cachedTextures))
     {
-        sprite.setTexture(texture);
-        sprite.setPosition(glm::vec2(x, y));
-        sprite.setSize(glm::vec2(w, h));
-        draw(sprite);
+        auto& texture = cachedTextures[textureName];
+        if(!texture.loadFromFile("textures/" + textureName))
+        {
+            cachedTextures.erase(cachedTextures.find(textureName));
+            std::cerr << "Failed to load texture " << textureName << '\n';
+            return;
+        }
     }
+    Texture texture = cachedTextures[textureName];
+    Sprite sprite;
+    sprite.setTexture(texture);
+    sprite.setPosition(glm::vec2(x, y));
+    sprite.setSize(glm::vec2(w, h));
+    draw(sprite);
 }
 
-void Window::drawText(const std::string& str, float x, float y, const std::string&, unsigned int charSize)
+void Window::drawText(const std::string& str, float x, float y, const std::string& fontName, unsigned int charSize)
 {
-    Font font;
-    font.loadFromFile("fonts/artyard.ttf");
+    static std::unordered_map<std::string, Font> cachedFonts;
+    if(cachedFonts.find(fontName) == std::end(cachedFonts))
+    {
+        auto& font = cachedFonts[fontName];
+        if(!font.loadFromFile("fonts/" + fontName))
+        {
+            cachedFonts.erase(cachedFonts.find(fontName));
+            std::cerr << "Failed to load font " + fontName << '\n';
+            return;
+        }
+    }
+    Font& font = cachedFonts[fontName];
     Text text;
     text.setFont(&font);
     text.setPosition(glm::vec2(x, y));

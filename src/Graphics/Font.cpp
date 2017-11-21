@@ -29,17 +29,17 @@ bool Font::loadFromFile(const std::string &file)
 
     FT_Face face;
     if (FT_New_Face(ft, file.c_str(), 0, &face))
-        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+        return false;
     FT_Set_Pixel_Sizes(face, 0, 48);
     if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
-        std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+        return false;
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     for (GLubyte c = 0; c < 128; c++)
     {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER))
         {
-            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+            return false;
             continue;
         }
         GLuint texture;
@@ -69,6 +69,7 @@ bool Font::loadFromFile(const std::string &file)
         m_glyphs.emplace(c, glyph);
     }
     FT_Done_Face(face);
+    return true;
 }
 
 const Glyph& Font::getGlyph(GLchar c)

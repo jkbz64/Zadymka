@@ -2,10 +2,15 @@
 #include <Graphics/Glyph.hpp>
 #include <Graphics/Font.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <Lua.hpp>
 
 void Text::registerClass()
 {
-
+    Lua::getState().new_usertype<Text>("Text",
+                                       sol::constructors<Text(), Text(Font&)>(),
+                                       "setString", &Text::setString,
+                                       "setFont", &Text::setFont
+                                       );
 }
 
 Text::Text() :
@@ -30,31 +35,34 @@ Text::Text() :
         R"(
         #version 330 core
         layout (location = 0) in vec4 vertex;
-        out vec2 TexCoords;
         layout (std140) uniform Camera {
             mat4 view;
             mat4 projection;
         };
 
         uniform mat4 flip;
+        uniform vec4 textColor;
+
+        out vec2 TexCoords;
+        out vec4 oTextColor;
         void main()
         {
             gl_Position = projection * flip * vec4(vertex.xy, 0.0, 1.0);
             TexCoords = vertex.zw;
+            oTextColor = textColor;
         }
         )", // FRAGMENT SHADER
         R"(
         #version 330 core
         in vec2 TexCoords;
-        out vec4 color;
+        in vec4 oTextColor;
+        out vec4 FragColor;
 
         uniform sampler2D texture1;
-        uniform vec3 textColor;
-
         void main()
         {
             vec4 sampled = vec4(1.0, 1.0, 1.0, texture(texture1, TexCoords).r);
-            color = vec4(textColor, 1.0) * sampled;
+            FragColor = oTextColor * sampled;
         }
         )");
 
@@ -95,6 +103,7 @@ void Text::draw(Window &w)
         m_renderDetails.m_shader.setVector4f("textColor", glm::vec4(1.f, 0.f, 0.f, 1.f));
 
         glm::vec2 m_pos = m_translation;
+        m_pos.y -= 48;
         float scale = 1.f;
         std::string::const_iterator c;
         for (c = m_text.begin(); c != m_text.end(); c++)

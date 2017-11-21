@@ -20,7 +20,7 @@ end
 
 function DemoState:draw(window, alpha)
     self.renderingSystem:draw(window, alpha)
-    window:drawText('testTTTTTTTTTTTTTTTTTTTT', 0.0, 100.0, 'hehe', 40)
+    window:drawText('testTTTTTTTTTTTTTTTTTTTT', 0.0, 0.0, 'artyard.ttf', 40)
 end
 
 return DemoState

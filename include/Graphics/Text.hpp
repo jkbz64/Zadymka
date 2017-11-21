@@ -20,16 +20,4 @@ protected:
     std::string m_text;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
 #endif
