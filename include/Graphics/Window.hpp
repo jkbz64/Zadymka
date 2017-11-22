@@ -84,7 +84,7 @@ inline void Window::draw(Drawable<T>& drawable)
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         m_renderCache.m_viewChanged = false;
     }
-    drawable.draw(*this);
+    drawable.draw();
 }
 
 #endif

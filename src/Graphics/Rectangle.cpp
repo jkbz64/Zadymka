@@ -38,6 +38,8 @@ Rectangle::Rectangle() :
 
         GLuint& cVBO = m_renderDetails.m_colorVBO;
         glGenBuffers(1, &cVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, cVBO);
+        glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
@@ -130,12 +132,12 @@ const glm::vec2& Rectangle::getSize()
     return m_scale;
 }
 
-void Rectangle::draw(Window &window)
+void Rectangle::draw()
 {
     getShader().setMatrix4("model", getModel());
     glBindBuffer(GL_ARRAY_BUFFER, m_renderDetails.m_colorVBO);
-    glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), NULL, GL_STREAM_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), &m_colorArray.front(), GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), &m_colorArray.front(), GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(m_renderDetails.m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);

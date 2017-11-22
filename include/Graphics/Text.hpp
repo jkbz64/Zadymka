@@ -24,7 +24,7 @@ public:
     const glm::vec2& getPosition();
     unsigned int getCharacterSize();
 protected:
-    virtual void draw(Window &) override;
+    virtual void draw() override;
     Font* m_font;
     unsigned int m_characterSize;
     std::string m_text;

@@ -20,7 +20,7 @@ public:
     void setSize(const glm::vec2&);
     const glm::vec2& getSize();
 protected:
-    virtual void draw(Window&) override;
+    virtual void draw() override;
     Texture m_texture;
 };
 

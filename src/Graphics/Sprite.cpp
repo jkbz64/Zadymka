@@ -142,7 +142,7 @@ const glm::vec2& Sprite::getSize()
     return m_scale;
 }
 
-void Sprite::draw(Window &)
+void Sprite::draw()
 {
     getShader().setMatrix4("model", getModel());
     glActiveTexture(GL_TEXTURE0);

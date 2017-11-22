@@ -116,7 +116,7 @@ unsigned int Text::getCharacterSize()
     return m_characterSize;
 }
 
-void Text::draw(Window &w)
+void Text::draw()
 {
     if(m_font)
     {
@@ -126,15 +126,14 @@ void Text::draw(Window &w)
 
         glm::vec2 m_pos = m_translation;
         m_pos.y -= 48.f;
-        float scale = m_scale.y;
         std::string::const_iterator c;
         for (c = m_text.begin(); c != m_text.end(); c++)
         {
             Glyph ch = m_font->getGlyph(*c);
-            GLfloat xpos = m_pos.x + ch.m_bearing.x * scale;
-            GLfloat ypos = m_pos.y - (ch.m_size.y - ch.m_bearing.y) * scale;
-            GLfloat w = ch.m_size.x * scale;
-            GLfloat h = ch.m_size.y * scale;
+            GLfloat xpos = m_pos.x + ch.m_bearing.x * m_scale.y;
+            GLfloat ypos = m_pos.y - (ch.m_size.y - ch.m_bearing.y) * m_scale.y;
+            GLfloat w = ch.m_size.x * m_scale.y;
+            GLfloat h = ch.m_size.y * m_scale.y;
             GLfloat vertices[6][4] = {
                 { xpos,     ypos + h,   0.0, 0.0 },
                 { xpos,     ypos,       0.0, 1.0 },
@@ -146,10 +145,11 @@ void Text::draw(Window &w)
             };
             glBindTexture(GL_TEXTURE_2D, ch.m_textureID);
             glBindBuffer(GL_ARRAY_BUFFER, m_renderDetails.m_verticesVBO);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, vertices, GL_DYNAMIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glDrawArrays(GL_TRIANGLES, 0, 6);
-            m_pos.x += (ch.m_advance >> 6) * scale;
+            m_pos.x += (ch.m_advance >> 6) * m_scale.y;
         }
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
