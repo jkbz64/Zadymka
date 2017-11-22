@@ -15,6 +15,14 @@ Font::Font()
 
 }
 
+Font::~Font()
+{
+    if(m_face)
+        FT_Done_Face(static_cast<FT_Face>(m_face));
+    if(m_ft)
+        FT_Done_FreeType(static_cast<FT_Library>(m_ft));
+}
+
 Font::Font(const std::string &fontName)
 {
     loadFromFile("fonts/" + fontName);
@@ -22,28 +30,26 @@ Font::Font(const std::string &fontName)
 
 bool Font::loadFromFile(const std::string &file)
 {
-    static bool m_ft_initialized = false;
-    static FT_Library ft;
-    if(!m_ft_initialized)
-    {
-        if (FT_Init_FreeType(&ft))
-            std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-        m_ft_initialized = true;
-    }
-
+    //Load library
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft))
+        std::puts("Could not init FreeType Library");
+    m_ft = ft;
+    //Load font face
     FT_Face face;
-    if (FT_New_Face(ft, file.c_str(), 0, &face))
+    if (FT_New_Face(static_cast<FT_Library>(m_ft), file.c_str(), 0, &face))
+    {
+        std::cerr << "Failed to load font face " + file + '\n';
         return false;
-    FT_Set_Pixel_Sizes(face, 0, 120);
-    if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
-        return false;
-
+    }
+    m_face = face;
+    FT_Set_Pixel_Sizes(face, 0, 48);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     for (GLubyte c = 0; c < 128; c++)
     {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER))
         {
-            return false;
+            std::puts("Failed to load character " + c);
             continue;
         }
         GLuint texture;
@@ -72,7 +78,6 @@ bool Font::loadFromFile(const std::string &file)
         };
         m_glyphs.emplace(c, glyph);
     }
-    FT_Done_Face(face);
     return true;
 }
 

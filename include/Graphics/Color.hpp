@@ -6,14 +6,6 @@
 class Color
 {
 public:
-    //Static basic colors
-    static const Color Black;
-    static const Color White;
-    static const Color Red;
-    static const Color Green;
-    static const Color Blue;
-    static const Color Transparent;
-
     Color();
     Color(int, int, int, int);
     Color(const Color&) = default;
@@ -27,6 +19,14 @@ public:
     int g() const;
     int b() const;
     int a() const;
+
+    //Static basic colors
+    static const Color Black;
+    static const Color White;
+    static const Color Red;
+    static const Color Green;
+    static const Color Blue;
+    static const Color Transparent;
 private:
     int m_r;
     int m_g;

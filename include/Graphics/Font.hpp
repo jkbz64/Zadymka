@@ -17,10 +17,12 @@ public:
     Font(Font&&) = default;
     Font& operator=(const Font&) = default;
     Font& operator=(Font&&) = default;
-    ~Font() = default;
+    ~Font();
     bool loadFromFile(const std::string&);
     const Glyph& getGlyph(GLchar);
 private:
+    void* m_ft;
+    void* m_face;
     GLuint m_id;
     std::map<GLchar, Glyph> m_glyphs;
 };

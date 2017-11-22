@@ -111,7 +111,7 @@ const glm::vec2& Text::getPosition()
 void Text::setCharacterSize(unsigned int charSize)
 {
     m_characterSize = charSize;
-    scale(1.f, static_cast<float>(m_characterSize) / 120.f);
+    scale(1.f, static_cast<float>(m_characterSize) / 48.f);
 }
 
 unsigned int Text::getCharacterSize()
@@ -131,7 +131,7 @@ void Text::draw(Window &w)
         m_renderDetails.m_shader.setVector4f("textColor", glm::vec4(m_colorArray[0], m_colorArray[1], m_colorArray[2], m_colorArray[3]));
 
         glm::vec2 m_pos = m_translation;
-        m_pos.y -= 120.f;
+        m_pos.y -= 48.f;
         float scale = m_scale.y;
         std::string::const_iterator c;
         for (c = m_text.begin(); c != m_text.end(); c++)
