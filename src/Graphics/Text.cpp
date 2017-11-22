@@ -44,15 +44,12 @@ Text::Text() :
             mat4 view;
             mat4 projection;
         };
-
-        uniform mat4 flip;
         uniform vec4 textColor;
-
         out vec2 TexCoords;
         out vec4 oTextColor;
         void main()
         {
-            gl_Position = projection * view * flip * vec4(vertex.xy, 0.0, 1.0);
+            gl_Position = projection * view * vec4(vertex.x, vertex.y * -1, 0.0, 1.0);
             TexCoords = vertex.zw;
             oTextColor = textColor;
         }
@@ -125,9 +122,6 @@ void Text::draw(Window &w)
     {
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(m_renderDetails.m_vao);
-        glm::mat4 flip(1.f);
-        flip = glm::scale(flip, glm::vec3(1.f, -1.f, 1.f));
-        m_renderDetails.m_shader.setMatrix4("flip", flip);
         m_renderDetails.m_shader.setVector4f("textColor", glm::vec4(m_colorArray[0], m_colorArray[1], m_colorArray[2], m_colorArray[3]));
 
         glm::vec2 m_pos = m_translation;
