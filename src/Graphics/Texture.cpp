@@ -56,7 +56,16 @@ bool Texture::loadFromFile(const std::string &filename)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_filterMin);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_filterMax);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)m_size.x, (int)m_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        //Choose appropriate format
+        GLenum format;
+        if (nrChannels == 1)
+            format = GL_RED;
+        else if (nrChannels == 3)
+            format = GL_RGB;
+        else if (nrChannels == 4)
+            format = GL_RGBA;
+
+        glTexImage2D(GL_TEXTURE_2D, 0, format, (int)m_size.x, (int)m_size.y, 0, format, GL_UNSIGNED_BYTE, data);
         glad_glGenerateMipmap(GL_TEXTURE_2D);
         stbi_image_free(data);
         return true;

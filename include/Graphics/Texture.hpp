@@ -19,6 +19,7 @@ public:
     bool loadFromFile(const std::string&);
     const glm::vec2& getSize() const;
 private:
+    friend class RenderTexture;
     GLuint m_ID;
     //Texture dimensions
     glm::vec2 m_size;

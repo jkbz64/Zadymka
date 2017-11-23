@@ -8,7 +8,10 @@
 void Shader::registerClass()
 {
     Lua::getState().new_usertype<Shader>("Shader",
-                                         sol::constructors<Shader(), Shader(const std::string&, const std::string&)>()
+                                         sol::constructors<Shader(), Shader(const std::string&, const std::string&)>(),
+                                         "loadFromFile", &Shader::loadFromFile,
+                                         "loadFromMemory", &Shader::loadFromMemory
+                                         //Setters TODO
     );
 }
 
@@ -80,9 +83,12 @@ bool Shader::loadFromMemory(std::string vSource, std::string sSource, std::strin
     //Geo
     if(gSource != "")
     {
-        //TODO
+        source = gSource.c_str();
+        gShader = glCreateShader(GL_GEOMETRY_SHADER);
+        glShaderSource(gShader, 1, &source, NULL);
+        glCompileShader(gShader);
+        checkCompileErrors(gShader, "GEOMETRY");
     }
-
     m_ID = glCreateProgram();
     glAttachShader(m_ID, sVertex);
     glAttachShader(m_ID, sFragment);
@@ -110,8 +116,7 @@ void Shader::checkCompileErrors(GLuint object, const std::string& type)
         {
             glGetShaderInfoLog(object, 1024, NULL, infoLog);
             std::cout << "| ERROR::SHADER: Compile-time error: Type: " << type << "\n"
-                << infoLog << "\n -- --------------------------------------------------- -- "
-                << std::endl;
+                << infoLog << "\n -- --------------------------------------------------- -- \n";
         }
     }
     else
@@ -121,8 +126,7 @@ void Shader::checkCompileErrors(GLuint object, const std::string& type)
         {
             glGetProgramInfoLog(object, 1024, NULL, infoLog);
             std::cout << "| ERROR::Shader: Link-time error: Type: " << type << "\n"
-                << infoLog << "\n -- --------------------------------------------------- -- "
-                << std::endl;
+                << infoLog << "\n -- --------------------------------------------------- -- \n";
         }
     }
 }

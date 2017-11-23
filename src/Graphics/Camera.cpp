@@ -18,8 +18,6 @@ Camera::Camera() :
     m_size(800.f, 600.f),
     m_center(0.f, 0.f)
 {
-    m_projection = glm::mat4(1.f);
-    m_view = glm::mat4(1.f);
     update();
 }
 
@@ -27,8 +25,6 @@ Camera::Camera(const Camera &other) :
     m_size(other.m_size),
     m_center(other.m_center)
 {
-    m_projection = glm::mat4(1.f);
-    m_view = glm::mat4(1.f);
     update();
 }
 
@@ -36,8 +32,6 @@ Camera::Camera(Camera&& other) :
     m_size(std::move(other.m_size)),
     m_center(std::move(other.m_center))
 {
-    m_projection = glm::mat4(1.f);
-    m_view = glm::mat4(1.f);
     update();
 }
 
@@ -47,8 +41,6 @@ Camera& Camera::operator=(const Camera& other)
     {
         m_size = other.m_size;
         m_center = other.m_center;
-        m_projection = glm::mat4(1.f);
-        m_view = glm::mat4(1.f);
         update();
     }
     return *this;
@@ -60,8 +52,6 @@ Camera& Camera::operator=(Camera&& other)
     {
         m_size = std::move(other.m_size);
         m_center = std::move(other.m_center);
-        m_projection = glm::mat4(1.f);
-        m_view = glm::mat4(1.f);
         update();
     }
     return *this;

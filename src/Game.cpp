@@ -12,6 +12,7 @@ Game::Game() :
 }
 
 #include <Graphics/Sprite.hpp>
+#include <Graphics/RenderTexture.hpp>
 
 void Game::run()
 {
@@ -29,6 +30,10 @@ void Game::run()
         return;
     }
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     m_window.create(800, 600, "Zadymka", Window::Style::Windowed);
 
     //Register lua classes
@@ -36,20 +41,21 @@ void Game::run()
     //Load init script
     state.safe_script_file("init.lua");
 
-    //Fps counter
+    //Frame time counter
     double lastTime = glfwGetTime();
     int framesCount = 0;
 
     double dt = Lua::getState().get_or("dt", 1.0 / 20.0);
     double currentTime = glfwGetTime();
     double accumulator = 0.0;
+
     while(m_window.isOpen())
     {
         const double newTime = glfwGetTime();
         ++framesCount;
         if(newTime - lastTime >= 1.0)
         {
-            std::cerr << 1000.0/double(framesCount) << " ms/frame\n";
+            std::cerr << 1000.0/double(framesCount) << " ms/frame - " << framesCount << '\n';
             framesCount = 0;
             lastTime += 1.0;
         }
@@ -75,6 +81,7 @@ void Game::run()
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     glfwTerminate();
+
 }
 
 #include <ECS/EntityManager.hpp>

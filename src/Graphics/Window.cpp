@@ -27,30 +27,19 @@ void Window::registerClass()
                              "onClose", &Window::m_onClose,
                              //Draw
                              "draw", sol::overload(&Window::draw<Rectangle>,
-                                                  &Window::draw<Sprite>
+                                                   &Window::draw<Sprite>
                                                    ),
                              "drawRect", &Window::drawRect,
-                             "drawText", &Window::drawText/*
-                             "drawRect", &Window::drawRect,
-                             "drawSprite", &Window::drawSprite*/
+                             "drawText", &Window::drawText,
+                             "drawSprite", &Window::drawSprite
     );
 }
 
 Window::Window() :
+    RenderTarget<Window>(),
     m_isOpen(false),
-    m_style(Window::Style::Windowed),
-    m_renderCache()
+    m_style(Window::Style::Windowed)
 {
-    if(!glfwInit())
-    {
-        std::cerr << "Failed to load glfw. Aborting\n";
-        return;
-    }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    m_renderCache.m_viewChanged = false;
     sol::tie(m_onOpen, m_onClose, m_onResize) = Lua::getState().script(R"(return function() end,
                                                                                  function() end,
                                                                                  function() end)");
@@ -108,6 +97,7 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
     {
         //Init camera UBO
         GLuint bindingPoint = 1;
+        std::cerr << m_renderCache.m_cameraUBO;
         glGenBuffers(1, &m_renderCache.m_cameraUBO);
         glBindBuffer(GL_UNIFORM_BUFFER, m_renderCache.m_cameraUBO);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_DYNAMIC_DRAW);
@@ -117,6 +107,7 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
     m_onOpen.call();
+
 }
 
 bool Window::isOpen()
@@ -142,7 +133,6 @@ void Window::display()
     glfwSwapBuffers(getNativeWindow());
     glfwPollEvents();
 }
-
 
 void Window::close()
 {
@@ -182,55 +172,4 @@ void Window::setCamera(const Camera& camera)
 const Camera& Window::getCamera()
 {
     return m_camera;
-}
-
-void Window::drawRect(float x, float y, int w, int h, int r = 0, int g = 0, int b = 0, int a = 255)
-{
-    Rectangle rect(w, h);
-    rect.setPosition(glm::vec2(x, y));
-    rect.setColor({r, g, b, a});
-    draw(rect);
-}
-
-void Window::drawSprite(const std::string& textureName, float x, float y, int w, int h)
-{
-    static std::unordered_map<std::string, Texture> cachedTextures;
-    if(cachedTextures.find(textureName) == std::end(cachedTextures))
-    {
-        auto& texture = cachedTextures[textureName];
-        if(!texture.loadFromFile("textures/" + textureName))
-        {
-            cachedTextures.erase(cachedTextures.find(textureName));
-            std::cerr << "Failed to load texture " << textureName << '\n';
-            return;
-        }
-    }
-    Texture texture = cachedTextures[textureName];
-    Sprite sprite;
-    sprite.setTexture(texture);
-    sprite.setPosition(glm::vec2(x, y));
-    sprite.setSize(glm::vec2(w, h));
-    draw(sprite);
-}
-
-void Window::drawText(const std::string& str, float x, float y, const std::string& fontName, unsigned int charSize)
-{
-    static std::unordered_map<std::string, Font> cachedFonts;
-    if(cachedFonts.find(fontName) == std::end(cachedFonts))
-    {
-        auto& font = cachedFonts[fontName];
-        if(!font.loadFromFile("fonts/" + fontName))
-        {
-            cachedFonts.erase(cachedFonts.find(fontName));
-            std::cerr << "Failed to load font " + fontName << '\n';
-            return;
-        }
-    }
-    Font& font = cachedFonts[fontName];
-    Text text;
-    text.setFont(&font);
-    text.setPosition(glm::vec2(x, y));
-    text.setString(str);
-    text.setCharacterSize(charSize);
-    draw(text);
 }

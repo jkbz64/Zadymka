@@ -23,6 +23,7 @@ Rectangle::Rectangle() :
     {
         GLuint& vao = m_renderDetails.m_vao;
         GLuint& vVBO = m_renderDetails.m_verticesVBO;
+        GLuint& cVBO = m_renderDetails.m_colorVBO;
         GLfloat vertices[] =
         {   // Vertex
             0.0f, 1.0f,
@@ -36,7 +37,6 @@ Rectangle::Rectangle() :
         glBindBuffer(GL_ARRAY_BUFFER, vVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-        GLuint& cVBO = m_renderDetails.m_colorVBO;
         glGenBuffers(1, &cVBO);
         glBindBuffer(GL_ARRAY_BUFFER, cVBO);
         glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), NULL, GL_DYNAMIC_DRAW);

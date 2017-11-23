@@ -1,13 +1,11 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 #include <Lua.hpp>
-#include <Graphics/Camera.hpp>
 #include <Graphics/glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <Graphics/Drawable.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <Graphics/RenderTarget.hpp>
 
-class Window
+class Window : public RenderTarget<Window>
 {
 public:
     static void registerClass();
@@ -30,13 +28,10 @@ public:
     void setCamera(const Camera&);
 
     void clear(unsigned int, unsigned int, unsigned int, unsigned int = 255u);
-    void display();
+    virtual void display() override;
 
     template<class T>
-    void draw(Drawable<T>&);
-    void drawText(const std::string&, float, float, const std::string&, unsigned int);
-    void drawRect(float, float, int, int, int, int, int, int);
-    void drawSprite(const std::string&, float, float, int, int);
+    void draw(T&);
 protected:
     struct DestroyGLFWWindow
     {
@@ -57,17 +52,10 @@ protected:
     sol::function m_onOpen;
     sol::function m_onResize;
     sol::function m_onClose;
-    //Draw stuff
-    Camera m_camera;
-    struct RenderCache
-    {
-        GLuint m_cameraUBO{0};
-        bool m_viewChanged;
-    } m_renderCache;
 };
 
 template<class T>
-inline void Window::draw(Drawable<T>& drawable)
+void Window::draw(T& drawable)
 {
     Shader& shader = drawable.m_renderDetails.m_shader.use();
     if(!drawable.m_renderDetails.m_cameraSet)
@@ -84,7 +72,7 @@ inline void Window::draw(Drawable<T>& drawable)
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         m_renderCache.m_viewChanged = false;
     }
-    drawable.draw();
+    static_cast<Drawable<T>&>(drawable).draw();
 }
 
 #endif

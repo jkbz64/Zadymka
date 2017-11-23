@@ -27,6 +27,7 @@ public:
     const Color& getColor();
 protected:
     friend class Window;
+    friend class RenderTexture;
     virtual void draw() = 0;
     Color m_color;
     std::array<float, 24> m_colorArray;
