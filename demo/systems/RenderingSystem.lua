@@ -26,6 +26,8 @@ function RenderingSystem:draw(window, alpha)
         local w, h = entity:get('Renderable').width, entity:get('Renderable').height
         window:drawRect(lx, ly, w, h, 0, 0, 0, 255)
     end
+	window:drawText('test', 0.0, 200.0, 'artyard.ttf', 48)
+	window:drawText('test', 0.0, 100.0, 'artyard.ttf', 48)
 end
 
 return RenderingSystem

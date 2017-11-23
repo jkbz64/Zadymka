@@ -49,7 +49,7 @@ Text::Text() :
         out vec4 oTextColor;
         void main()
         {
-            gl_Position = projection * view * vec4(vertex.x, vertex.y * -1, 0.0, 1.0);
+            gl_Position = projection * view * vec4(vertex.x, vertex.y, 0.0, 1.0);
             TexCoords = vertex.zw;
             oTextColor = textColor;
         }
@@ -97,7 +97,7 @@ const std::string& Text::getString()
 
 void Text::setPosition(const glm::vec2& pos)
 {
-    translate(glm::vec2(pos.x, -pos.y));
+    translate(glm::vec2(pos.x, pos.y));
 }
 
 const glm::vec2& Text::getPosition()
@@ -135,13 +135,13 @@ void Text::draw()
             GLfloat w = ch.m_size.x * m_scale.y;
             GLfloat h = ch.m_size.y * m_scale.y;
             GLfloat vertices[6][4] = {
-                { xpos,     ypos + h,   0.0, 0.0 },
-                { xpos,     ypos,       0.0, 1.0 },
-                { xpos + w, ypos,       1.0, 1.0 },
+                { xpos,     ypos,           0.0, 0.0 },
+                { xpos,     ypos + h,       0.0, 1.0 },
+                { xpos + w, ypos + h,       1.0, 1.0 },
 
-                { xpos,     ypos + h,   0.0, 0.0 },
-                { xpos + w, ypos,       1.0, 1.0 },
-                { xpos + w, ypos + h,   1.0, 0.0 }
+                { xpos,     ypos,           0.0, 0.0 },
+                { xpos + w, ypos + h,       1.0, 1.0 },
+                { xpos + w, ypos,           1.0, 0.0 }
             };
             glBindTexture(GL_TEXTURE_2D, ch.m_textureID);
             glBindBuffer(GL_ARRAY_BUFFER, m_renderDetails.m_verticesVBO);
