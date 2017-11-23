@@ -97,7 +97,6 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
     {
         //Init camera UBO
         GLuint bindingPoint = 1;
-        std::cerr << m_renderCache.m_cameraUBO;
         glGenBuffers(1, &m_renderCache.m_cameraUBO);
         glBindBuffer(GL_UNIFORM_BUFFER, m_renderCache.m_cameraUBO);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_DYNAMIC_DRAW);
@@ -107,7 +106,6 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
     m_onOpen.call();
-
 }
 
 bool Window::isOpen()

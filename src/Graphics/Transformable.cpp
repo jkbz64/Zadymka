@@ -87,9 +87,9 @@ const glm::mat4& Transformable::getModel()
     {
         m_model = glm::mat4(1.f);
         m_model = glm::translate(m_model, glm::vec3(m_translation, 0.f));
+        m_model = glm::scale(m_model, glm::vec3(m_scale, 1.f));
         if(m_rotation != 0)
             m_model = glm::rotate(m_model, glm::degrees(m_rotation), glm::vec3(1.0f, 0.0f, 0.0f));
-        m_model = glm::scale(m_model, glm::vec3(m_scale, 0.f));
         m_modified = false;
     }
     return m_model;

@@ -7,9 +7,10 @@ class RenderTexture : public RenderTarget<RenderTexture>
 {
 public:
     static void registerClass();
-    RenderTexture() = default;
+    RenderTexture();
     virtual ~RenderTexture() = default;
     void create(unsigned int w, unsigned int h);
+    void clear(float, float, float);
 
     template<class T>
     void draw(T&);

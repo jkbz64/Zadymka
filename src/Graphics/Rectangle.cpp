@@ -26,12 +26,12 @@ Rectangle::Rectangle() :
         GLuint& cVBO = m_renderDetails.m_colorVBO;
         GLfloat vertices[] =
         {   // Vertex
-            0.0f, 1.0f,
-            1.0f, 0.0f,
             0.0f, 0.0f,
             0.0f, 1.0f,
-            1.0f, 0.0f,
             1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
         };
         glGenBuffers(1, &vVBO);
         glBindBuffer(GL_ARRAY_BUFFER, vVBO);
@@ -114,7 +114,7 @@ Rectangle& Rectangle::operator =(Rectangle&& other)
 
 void Rectangle::setPosition(const glm::vec2 &position)
 {
-    translate(position);
+    translate(glm::vec2(position.x, -position.y));
 }
 
 const glm::vec2& Rectangle::getPosition()
