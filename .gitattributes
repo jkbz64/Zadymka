@@ -1,2 +1,3 @@
 include/Graphics/glad/glad.h linguist-vendored
 src/Graphics/glad/glad.c linguist-vendored
+cmake_modules/*.cmake linguist-vendored
