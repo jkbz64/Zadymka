@@ -31,6 +31,7 @@ set(GLAD_C ${CMAKE_SOURCE_DIR}/src/Graphics/glad/glad.c)
 add_executable(Zadymka
 	${HDRS}
 	${SRCS}
+	include/Graphics/RenderTarget.inl
 	${STB_IMAGE_CPP}
 	${GLAD_C}
 )

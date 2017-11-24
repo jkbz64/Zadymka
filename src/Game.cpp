@@ -34,7 +34,7 @@ void Game::run()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    m_window.create(800, 600, "Zadymka", Window::Style::Windowed);
+    m_window.create(800, 600, "Zadymka", Window::Style::FullscreenWindowed);
 
     //Register lua classes
     registerClasses();

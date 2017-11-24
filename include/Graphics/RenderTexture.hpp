@@ -7,15 +7,17 @@ class RenderTexture : public RenderTarget<RenderTexture>
 {
 public:
     static void registerClass();
-    RenderTexture();
+    RenderTexture() = default;
     virtual ~RenderTexture() = default;
     void create(unsigned int w, unsigned int h);
-    void clear(float, float, float);
+    virtual void display() override;
+    virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int) override;
+
+    Texture& getTexture();
 
     template<class T>
     void draw(T&);
-
-    virtual void display() override;
+private:
     Texture m_texture;
     GLuint m_framebuffer;
 };

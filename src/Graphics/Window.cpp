@@ -11,7 +11,7 @@ namespace
     template <typename T>
     constexpr float normalize(T value)
     {
-      return value < 0 ? 0 : static_cast<float>(value) / 255;
+      return value < 0 ? 0 : static_cast<float>(value) / 255.f;
     }
 }
 

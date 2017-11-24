@@ -2,27 +2,34 @@
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Sprite.hpp>
 #include <Graphics/Text.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
+namespace
+{
+    template <typename T>
+    constexpr float normalize(T value)
+    {
+      return value < 0 ? 0 : static_cast<float>(value) / 255.f;
+    }
+}
 
 void RenderTexture::registerClass()
 {
     Lua::getState().new_usertype<RenderTexture>("RenderTexture",
                                                 sol::constructors<RenderTexture()>(),
+                                                "getTexture", &RenderTexture::getTexture,
                                                 "draw", sol::overload(&RenderTexture::draw<Rectangle>,
                                                                       &RenderTexture::draw<Sprite>,
                                                                       &RenderTexture::draw<Text>),
                                                 "drawRect", &RenderTexture::drawRect,
                                                 "drawSprite", &RenderTexture::drawSprite,
-                                                "drawText", &RenderTexture::drawText
+                                                "drawText", &RenderTexture::drawText,
+                                                "clear", &RenderTexture::clear,
+                                                "display", &RenderTexture::display
     );
 }
-
-RenderTexture::RenderTexture() :
-    RenderTarget<RenderTexture>()
-{
-
-}
-#include <glm/gtc/matrix_transform.hpp>
 
 void RenderTexture::create(unsigned int w, unsigned int h)
 {
@@ -57,14 +64,19 @@ void RenderTexture::create(unsigned int w, unsigned int h)
     }
 }
 
-void RenderTexture::clear(float r, float g, float b)
+void RenderTexture::clear(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-    glClearColor(r, g, b, 1.0f);
+    glClearColor(normalize(r), normalize(g), normalize(b), normalize(a));
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void RenderTexture::display()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+Texture& RenderTexture::getTexture()
+{
+    return m_texture;
 }

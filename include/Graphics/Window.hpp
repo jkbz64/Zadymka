@@ -21,14 +21,13 @@ public:
     void create(unsigned int, unsigned int, const std::string&, const Style&);
     bool isOpen();
     void close();
+    virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int = 255u) override;
+    virtual void display() override;
 
     void setTitle(const std::string&);
     void setSize(unsigned int, unsigned int);
     const Camera& getCamera();
     void setCamera(const Camera&);
-
-    void clear(unsigned int, unsigned int, unsigned int, unsigned int = 255u);
-    virtual void display() override;
 
     template<class T>
     void draw(T&);
@@ -53,6 +52,9 @@ protected:
     sol::function m_onResize;
     sol::function m_onClose;
 };
+
+
+#include <glm/gtc/type_ptr.hpp>
 
 template<class T>
 void Window::draw(T& drawable)
