@@ -32,6 +32,12 @@ Texture::Texture() :
 
 }
 
+Texture::~Texture()
+{
+    if(m_ID != 0)
+        glDeleteTextures(1, &m_ID);
+}
+
 const glm::vec2& Texture::getSize() const
 {
     return m_size;

@@ -19,6 +19,7 @@ void RenderTexture::registerClass()
 {
     Lua::getState().new_usertype<RenderTexture>("RenderTexture",
                                                 sol::constructors<RenderTexture()>(),
+                                                "create", &RenderTexture::create,
                                                 "getTexture", &RenderTexture::getTexture,
                                                 "draw", sol::overload(&RenderTexture::draw<Rectangle>,
                                                                       &RenderTexture::draw<Sprite>,

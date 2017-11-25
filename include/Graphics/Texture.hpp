@@ -14,7 +14,7 @@ public:
     Texture& operator=(const Texture&) = default;
     Texture(Texture&&) = delete;
     Texture& operator=(Texture&&) = delete;
-    ~Texture() = default;
+    ~Texture();
     void bind() const;
     bool loadFromFile(const std::string&);
     const glm::vec2& getSize() const;

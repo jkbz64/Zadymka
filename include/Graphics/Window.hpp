@@ -53,7 +53,6 @@ protected:
     sol::function m_onClose;
 };
 
-
 #include <glm/gtc/type_ptr.hpp>
 
 template<class T>

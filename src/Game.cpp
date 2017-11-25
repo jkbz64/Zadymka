@@ -11,9 +11,6 @@ Game::Game() :
 
 }
 
-#include <Graphics/Sprite.hpp>
-#include <Graphics/RenderTexture.hpp>
-
 void Game::run()
 {
     auto& state = Lua::getState();
@@ -34,7 +31,7 @@ void Game::run()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    m_window.create(800, 600, "Zadymka", Window::Style::FullscreenWindowed);
+    m_window.create(800, 600, "Zadymka", Window::Style::Windowed);
 
     //Register lua classes
     registerClasses();
@@ -52,6 +49,7 @@ void Game::run()
     while(m_window.isOpen())
     {
         const double newTime = glfwGetTime();
+
         ++framesCount;
         if(newTime - lastTime >= 1.0)
         {
@@ -59,25 +57,36 @@ void Game::run()
             framesCount = 0;
             lastTime += 1.0;
         }
+
         double frameTime = newTime - currentTime;
         if (frameTime > 0.25)
             frameTime = 0.25;
+
         currentTime = newTime;
         accumulator += frameTime;
+
+        //Get current state
         const auto& currentState = m_stateManager.getCurrentState();
+
         if(glfwGetKey(m_window.getNativeWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
             m_window.close();
+
+        //Update
         currentState.update(dt);
+        //Fixed update
         while(accumulator >= dt)
         {
             currentState.fixedUpdate(dt);
             accumulator -= dt;
         }
+
         const double alpha = accumulator / dt;
         m_window.setCamera(currentState.getCamera());
         m_window.clear(0, 125, 125);
         currentState.draw(m_window, alpha);
+        //Swap buffers
         m_window.display();
+        //Limit fps to 1000 so we can save some CPU cycles for other processes
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     glfwTerminate();
@@ -91,6 +100,8 @@ void Game::run()
 #include <Graphics/Sprite.hpp>
 #include <Graphics/Font.hpp>
 #include <Graphics/Text.hpp>
+#include <Graphics/RenderTexture.hpp>
+#include <Graphics/VertexArray.hpp>
 
 extern std::string lua_gameState;
 
@@ -107,6 +118,8 @@ void Game::registerClasses()
     Sprite::registerClass();
     Font::registerClass();
     Text::registerClass();
+    RenderTexture::registerClass();
+    VertexArray::registerClass();
     //ECS
     Entity::registerClass();
     EventManager::registerClass();

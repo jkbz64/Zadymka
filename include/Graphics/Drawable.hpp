@@ -14,6 +14,7 @@ struct RenderDetails
     GLuint m_vao;
     GLuint m_verticesVBO{0};
     GLuint m_colorVBO{0};
+    GLuint m_texCoordsVBO{0};
 };
 
 template<class T>
