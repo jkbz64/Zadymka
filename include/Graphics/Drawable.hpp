@@ -12,8 +12,7 @@ public:
     Drawable() = default;
     virtual ~Drawable() = default;
 protected:
-    friend class Window;
-    friend class RenderTexture;
+    friend class RenderTarget;
     virtual void draw(const Shader&) = 0;
     virtual GLuint update();
     virtual Shader& getDefaultShader();

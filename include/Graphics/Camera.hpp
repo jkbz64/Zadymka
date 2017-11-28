@@ -21,6 +21,7 @@ public:
     const glm::mat4& getProjection();
     const glm::mat4& getView();
 private:
+    friend class RenderTarget;
     void update();
     glm::vec2 m_size;
     glm::vec2 m_center;

@@ -10,12 +10,17 @@ public:
     RenderTarget() = default;
     virtual ~RenderTarget() = default;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int = 255u) = 0;
-    virtual void draw(Drawable&, const Shader& = Shader()) = 0;
     virtual void display() = 0;
 
     void drawRect(float, float, int, int, int, int, int, int);
     void drawText(const std::string&, float, float, const std::string&, unsigned int);
     void drawSprite(const std::string&, float, float, int, int);
+    void draw(Drawable &, const Shader & = Shader());
+
+    const Camera& getCamera();
+    void setCamera(const Camera&);
+protected:
+    Camera m_camera;
 };
 
 #endif

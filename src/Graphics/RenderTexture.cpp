@@ -54,23 +54,6 @@ void RenderTexture::clear(unsigned int r, unsigned int g, unsigned int b, unsign
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void RenderTexture::draw(Drawable &drawable, const Shader &shader)
-{
-    std::reference_wrapper<const Shader> currentShader(shader);
-    if(!shader.isLoaded())
-        currentShader = drawable.getDefaultShader();
-
-    currentShader.get().use();
-    glm::vec2 m_size = m_texture.getSize();
-    Camera camera;
-    camera.setSize(m_size);
-    camera.setCenter(glm::vec2(m_size.x / 2.f, m_size.y / 2.f));
-    currentShader.get().setMatrix4("projection", camera.getProjection());
-    currentShader.get().setMatrix4("view", camera.getView());
-    //TODO expose camera stuff
-    drawable.draw(currentShader.get());
-}
-
 void RenderTexture::display()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

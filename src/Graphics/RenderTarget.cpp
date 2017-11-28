@@ -7,11 +7,23 @@
 #include <unordered_map>
 #include <iostream>
 
+void RenderTarget::draw(Drawable &drawable, const Shader &shader)
+{
+    std::reference_wrapper<const Shader> currentShader(shader);
+    //Bind default shader in case shader was not given
+    if(!currentShader.get().isLoaded())
+        currentShader = drawable.getDefaultShader();
+    currentShader.get().use();
+    currentShader.get().setMatrix4("projection", m_camera.getProjection());
+    currentShader.get().setMatrix4("view", m_camera.getView());
+    drawable.draw(currentShader.get());
+}
+
 void RenderTarget::drawRect(float x, float y, int w, int h, int r, int g, int b, int a)
 {
     Rectangle rect(w, h);
     rect.setPosition(glm::vec2(x, y));
-    //rect.setColor({r, g, b, a});
+    rect.setColor({r, g, b, a});
     draw(rect);
 }
 
@@ -56,4 +68,14 @@ void RenderTarget::drawText(const std::string& str, float x, float y, const std:
     text.setString(str);
     text.setCharacterSize(charSize);
     draw(text);
+}
+
+void RenderTarget::setCamera(const Camera& camera)
+{
+    m_camera = camera;
+}
+
+const Camera& RenderTarget::getCamera()
+{
+    return m_camera;
 }

@@ -25,12 +25,7 @@ protected:
     virtual void draw(const Shader&) override;
     PrimitiveType m_primitiveType;
     bool m_needUpdate;
-
     Texture m_texture;
-    GLuint m_vao;
-    GLuint m_vVBO;
-    GLuint m_txVBO;
-    GLuint m_cVBO;
     virtual GLuint update();
 };
 

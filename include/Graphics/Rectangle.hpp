@@ -19,7 +19,7 @@ public:
     void setSize(const glm::vec2&);
     const glm::vec2& getSize();
     const Color& getColor();
-    void setColor(unsigned int, unsigned int, unsigned int, unsigned int = 255);
+    void setColor(const Color&);
 protected:
     virtual void draw(const Shader&) override;
     virtual GLuint update() override;

@@ -3,12 +3,13 @@
 #include <thread>
 #include <iostream>
 
-extern std::string lua_middleclass;
 Game::Game() :
     m_inputManager(m_window)
 {
 
 }
+
+extern std::string lua_middleclass;
 
 void Game::run()
 {
@@ -99,8 +100,6 @@ void Game::run()
 #include <Graphics/Text.hpp>
 #include <Graphics/RenderTexture.hpp>
 #include <Graphics/VertexArray.hpp>
-
-extern std::string lua_gameState;
 
 void Game::registerClasses()
 {

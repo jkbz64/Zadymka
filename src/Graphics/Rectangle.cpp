@@ -102,9 +102,9 @@ const Color& Rectangle::getColor()
     return m_color;
 }
 
-void Rectangle::setColor(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+void Rectangle::setColor(const Color& color)
 {
-    m_color = Color(r, g, b, a);
+    m_color = color;
 }
 
 GLuint Rectangle::update()

@@ -11,7 +11,6 @@ public:
     virtual ~RenderTexture() = default;
     void create(unsigned int w, unsigned int h);
     virtual void display() override;
-    virtual void draw(Drawable&, const Shader& = Shader()) override;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int) override;
 
     Texture& getTexture();

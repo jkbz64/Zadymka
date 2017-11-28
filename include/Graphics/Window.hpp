@@ -23,13 +23,10 @@ public:
     bool isOpen();
     void close();
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int = 255u) override;
-    virtual void draw(Drawable&, const Shader& = Shader()) override;
     virtual void display() override;
 
     void setTitle(const std::string&);
     void setSize(unsigned int, unsigned int);
-    const Camera& getCamera();
-    void setCamera(const Camera&);
 protected:
     //Window
     struct DestroyGLFWWindow
@@ -46,9 +43,6 @@ protected:
     unsigned int m_height;
     std::string m_title;
     Style m_style;
-    //Camera
-    Camera m_camera;
-    bool m_viewChanged;
     //Callbacks
     void onCreate();
     void onResize();

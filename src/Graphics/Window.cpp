@@ -150,26 +150,3 @@ void Window::setSize(unsigned int width, unsigned int height)
     if(m_isOpen)
         glfwSetWindowSize(getNativeWindow(), m_width, m_height);
 }
-
-void Window::setCamera(const Camera& camera)
-{
-    m_camera = camera;
-    m_viewChanged = true;
-}
-
-const Camera& Window::getCamera()
-{
-    return m_camera;
-}
-
-void Window::draw(Drawable &drawable, const Shader& shader)
-{
-    std::reference_wrapper<const Shader> currentShader(shader);
-    //Bind default shader in case shader was not given
-    if(!currentShader.get().isLoaded())
-        currentShader = drawable.getDefaultShader();
-    currentShader.get().use();
-    currentShader.get().setMatrix4("projection", m_camera.getProjection());
-    currentShader.get().setMatrix4("view", m_camera.getView());
-    drawable.draw(currentShader.get());
-}
