@@ -16,70 +16,35 @@ void Rectangle::registerClass()
     );
 }
 
-Rectangle::Rectangle() :
-    Drawable<Rectangle>()
+Shader& Rectangle::getDefaultShader()
 {
-    if(!m_renderDetails.m_initialized)
+    static Shader shader = Shader(
+    R"(
+    #version 330 core
+    layout (location = 0) in vec2 vertex;
+    uniform mat4 projection;
+    uniform mat4 view;
+    uniform mat4 model;
+    void main()
     {
-        GLuint& vao = m_renderDetails.m_vao;
-        GLuint& vVBO = m_renderDetails.m_verticesVBO;
-        GLuint& cVBO = m_renderDetails.m_colorVBO;
-        GLfloat vertices[] =
-        {   // Vertex
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            0.0f, 0.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-        };
-        glGenBuffers(1, &vVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, vVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        glGenBuffers(1, &cVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, cVBO);
-        glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), NULL, GL_DYNAMIC_DRAW);
-
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vVBO);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, cVBO);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-        m_renderDetails.m_shader.loadFromMemory( // VERTEX SHADER
-        R"(
-        #version 330 core
-        layout (location = 0) in vec2 vertex;
-        layout (location = 1) in vec4 vcolor;
-        layout (std140) uniform Camera {
-            mat4 view;
-            mat4 projection;
-        };
-        uniform mat4 model;
-        out vec4 oColor;
-        void main()
-        {
-            gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
-            oColor = vcolor;
-        }
-        )", // FRAGMENT SHADER
-        R"(
-        #version 330 core
-        out vec4 FragColor;
-        in vec4 oColor;
-        void main()
-        {
-            FragColor = oColor;
-        }
-        )");
-        m_renderDetails.m_initialized = true;
+        gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
     }
+    )",
+    R"(
+    #version 330 core
+    out vec4 FragColor;
+    uniform vec4 color;
+    void main()
+    {
+        FragColor = color;
+    }
+    )");
+    return shader;
+}
+
+Rectangle::Rectangle()
+{
+
 }
 
 Rectangle::Rectangle(unsigned int width, unsigned int height) :
@@ -114,7 +79,7 @@ Rectangle& Rectangle::operator =(Rectangle&& other)
 
 void Rectangle::setPosition(const glm::vec2 &position)
 {
-    translate(glm::vec2(position.x, -position.y));
+    translate(glm::vec2(position.x, position.y));
 }
 
 const glm::vec2& Rectangle::getPosition()
@@ -132,14 +97,51 @@ const glm::vec2& Rectangle::getSize()
     return m_scale;
 }
 
-void Rectangle::draw()
+const Color& Rectangle::getColor()
 {
-    getShader().setMatrix4("model", getModel());
-    glBindBuffer(GL_ARRAY_BUFFER, m_renderDetails.m_colorVBO);
-    glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), NULL, GL_DYNAMIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, m_colorArray.size() * sizeof(float), &m_colorArray.front(), GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(m_renderDetails.m_vao);
+    return m_color;
+}
+
+void Rectangle::setColor(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+{
+    m_color = Color(r, g, b, a);
+}
+
+GLuint Rectangle::update()
+{
+    static GLuint vao = 0;
+    if(vao == 0)
+    {
+        GLfloat vertices[] =
+        {   // Vertex  // Texcoord
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+        };
+        GLuint vbo = 0;
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+    return vao;
+}
+
+void Rectangle::draw(const Shader& shader)
+{
+    shader.setMatrix4("model", getModel());
+    shader.setVector4f("color", m_color.normalized());
+    glBindVertexArray(update());
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }

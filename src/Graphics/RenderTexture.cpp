@@ -21,9 +21,6 @@ void RenderTexture::registerClass()
                                                 sol::constructors<RenderTexture()>(),
                                                 "create", &RenderTexture::create,
                                                 "getTexture", &RenderTexture::getTexture,
-                                                "draw", sol::overload(&RenderTexture::draw<Rectangle>,
-                                                                      &RenderTexture::draw<Sprite>,
-                                                                      &RenderTexture::draw<Text>),
                                                 "drawRect", &RenderTexture::drawRect,
                                                 "drawSprite", &RenderTexture::drawSprite,
                                                 "drawText", &RenderTexture::drawText,
@@ -37,6 +34,7 @@ void RenderTexture::create(unsigned int w, unsigned int h)
     glGenFramebuffers(1, &m_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     glGenTextures(1, &m_texture.m_ID);
+    m_texture.m_fboAttachment = true;
     glBindTexture(GL_TEXTURE_2D, m_texture.m_ID);
     m_texture.m_size = glm::vec2(w, h);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -47,22 +45,6 @@ void RenderTexture::create(unsigned int w, unsigned int h)
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    glm::mat4 projection = glm::ortho(0.f, static_cast<float>(w), 0.f, static_cast<float>(h));
-    glm::mat4 view = glm::mat4(1.f);
-
-    if(m_renderCache.m_cameraUBO == 0)
-    {
-        //Init camera UBO
-        GLuint bindingPoint = 2;
-        glGenBuffers(1, &m_renderCache.m_cameraUBO);
-        glBindBuffer(GL_UNIFORM_BUFFER, m_renderCache.m_cameraUBO);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_STATIC_DRAW);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
-        glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_renderCache.m_cameraUBO);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    }
 }
 
 void RenderTexture::clear(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
@@ -70,6 +52,23 @@ void RenderTexture::clear(unsigned int r, unsigned int g, unsigned int b, unsign
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     glClearColor(normalize(r), normalize(g), normalize(b), normalize(a));
     glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void RenderTexture::draw(Drawable &drawable, const Shader &shader)
+{
+    std::reference_wrapper<const Shader> currentShader(shader);
+    if(!shader.isLoaded())
+        currentShader = drawable.getDefaultShader();
+
+    currentShader.get().use();
+    glm::vec2 m_size = m_texture.getSize();
+    Camera camera;
+    camera.setSize(m_size);
+    camera.setCenter(glm::vec2(m_size.x / 2.f, m_size.y / 2.f));
+    currentShader.get().setMatrix4("projection", camera.getProjection());
+    currentShader.get().setMatrix4("view", camera.getView());
+    //TODO expose camera stuff
+    drawable.draw(currentShader.get());
 }
 
 void RenderTexture::display()

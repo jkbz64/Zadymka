@@ -1,10 +1,12 @@
 #include <Graphics/Window.hpp>
 #include <Graphics/Drawable.hpp>
-#include <iostream>
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Sprite.hpp>
 #include <Graphics/Text.hpp>
 #include <Graphics/Font.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <Graphics/RenderTexture.hpp>
 
 namespace
 {
@@ -26,9 +28,10 @@ void Window::registerClass()
                              "onResize", &Window::m_onResize,
                              "onClose", &Window::m_onClose,
                              //Draw
-                             "draw", sol::overload(&Window::draw<Rectangle>,
-                                                   &Window::draw<Sprite>
-                                                   ),
+                             "draw", [](Window& window, sol::object drawable)
+                             {
+                                window.draw(drawable.as<Drawable&>());
+                             },
                              "drawRect", &Window::drawRect,
                              "drawText", &Window::drawText,
                              "drawSprite", &Window::drawSprite
@@ -36,7 +39,7 @@ void Window::registerClass()
 }
 
 Window::Window() :
-    RenderTarget<Window>(),
+    RenderTarget(),
     m_isOpen(false),
     m_style(Window::Style::Windowed)
 {
@@ -92,19 +95,6 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
         Window* w = (Window*)glfwGetWindowUserPointer(window);
         w->m_onResize.call(width, height);
     });
-
-    if(m_renderCache.m_cameraUBO == 0)
-    {
-        //Init camera UBO
-        GLuint bindingPoint = 1;
-        glGenBuffers(1, &m_renderCache.m_cameraUBO);
-        glBindBuffer(GL_UNIFORM_BUFFER, m_renderCache.m_cameraUBO);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_DYNAMIC_DRAW);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(m_camera.getView()));
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(m_camera.getProjection()));
-        glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_renderCache.m_cameraUBO);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    }
     m_onOpen.call();
 }
 
@@ -164,10 +154,22 @@ void Window::setSize(unsigned int width, unsigned int height)
 void Window::setCamera(const Camera& camera)
 {
     m_camera = camera;
-    m_renderCache.m_viewChanged = true;
+    m_viewChanged = true;
 }
 
 const Camera& Window::getCamera()
 {
     return m_camera;
+}
+
+void Window::draw(Drawable &drawable, const Shader& shader)
+{
+    std::reference_wrapper<const Shader> currentShader(shader);
+    //Bind default shader in case shader was not given
+    if(!currentShader.get().isLoaded())
+        currentShader = drawable.getDefaultShader();
+    currentShader.get().use();
+    currentShader.get().setMatrix4("projection", m_camera.getProjection());
+    currentShader.get().setMatrix4("view", m_camera.getView());
+    drawable.draw(currentShader.get());
 }

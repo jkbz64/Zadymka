@@ -10,7 +10,8 @@ void Font::registerClass()
                                        );
 }
 
-Font::Font()
+Font::Font() :
+    m_id(0)
 {
 
 }
@@ -21,6 +22,8 @@ Font::~Font()
         FT_Done_Face(static_cast<FT_Face>(m_face));
     if(m_ft)
         FT_Done_FreeType(static_cast<FT_Library>(m_ft));
+    if(m_id != 0)
+        glDeleteTextures(1, &m_id);
 }
 
 Font::Font(const std::string &fontName)
@@ -52,9 +55,8 @@ bool Font::loadFromFile(const std::string &file)
             std::puts("Failed to load character " + c);
             continue;
         }
-        GLuint texture;
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glGenTextures(1, &m_id);
+        glBindTexture(GL_TEXTURE_2D, m_id);
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
@@ -71,7 +73,7 @@ bool Font::loadFromFile(const std::string &file)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         Glyph glyph = {
-            texture,
+            m_id,
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
             static_cast<GLuint>(face->glyph->advance.x)

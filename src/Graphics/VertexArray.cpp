@@ -19,7 +19,7 @@ void VertexArray::registerClass()
 }
 
 VertexArray::VertexArray(const PrimitiveType &type) :
-    Drawable<VertexArray>(),
+    Drawable(),
     std::vector<Vertex>(),
     m_primitiveType(type),
     m_needUpdate(false),
@@ -28,38 +28,7 @@ VertexArray::VertexArray(const PrimitiveType &type) :
     m_txVBO(0),
     m_cVBO(0)
 {
-    if(!m_renderDetails.m_initialized)
-    {
-        m_renderDetails.m_shader.loadFromMemory(
-        R"(
-        #version 330 core
-        layout (location = 0) in vec2 vertex;
-        layout (location = 1) in vec2 texCoord;
-        layout (std140) uniform Camera {
-            mat4 view;
-            mat4 projection;
-        };
-        uniform mat4 model;
-        out vec2 oTexCoord;
-        void main()
-        {
-            gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
-            oTexCoord = vec2(texCoord.x, texCoord.y);
-        }
-        )", // FRAGMENT SHADER
-        R"(
-        #version 330 core
-        out vec4 FragColor;
-        in vec2 oTexCoord;
-        uniform sampler2D texture1;
-        void main()
-        {
-            FragColor = texture(texture1, oTexCoord);
-        }
-        )");
-        m_renderDetails.m_shader.setInteger("texture1", 0);
-        m_renderDetails.m_initialized = true;
-    }
+
 }
 
 std::vector<Vertex>& VertexArray::getVertexes()
@@ -79,7 +48,7 @@ void VertexArray::resize(std::size_t newSize)
     m_needUpdate = true;
 }
 
-void VertexArray::draw()
+void VertexArray::draw(const Shader& shader)
 {
     if(m_needUpdate)
     {
@@ -91,7 +60,7 @@ void VertexArray::draw()
     {
         glActiveTexture(GL_TEXTURE0);
         m_texture.bind();
-        m_renderDetails.m_shader.setMatrix4("model", getModel());
+        shader.setMatrix4("model", getModel());
         static const GLenum modes[] = {GL_POINTS, GL_TRIANGLES, GL_TRIANGLES};
         GLenum mode = modes[static_cast<int>(m_primitiveType)];
         glBindVertexArray(m_vao);
@@ -100,7 +69,7 @@ void VertexArray::draw()
     }
 }
 
-void VertexArray::update()
+GLuint VertexArray::update()
 {
     if(m_vao != 0)
     {

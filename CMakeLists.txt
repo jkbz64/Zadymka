@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -pedantic -pedantic-errors -g")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -Wall -Wextra -Wpedantic -pedantic -pedantic-errors -g")
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
@@ -31,7 +31,6 @@ set(GLAD_C ${CMAKE_SOURCE_DIR}/src/Graphics/glad/glad.c)
 add_executable(Zadymka
 	${HDRS}
 	${SRCS}
-	include/Graphics/RenderTarget.inl
 	${STB_IMAGE_CPP}
 	${GLAD_C}
 )

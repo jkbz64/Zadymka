@@ -1,5 +1,6 @@
 #include <Graphics/Sprite.hpp>
 #include <Lua.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 void Sprite::registerClass()
 {
@@ -14,70 +15,41 @@ void Sprite::registerClass()
     );
 }
 
-Sprite::Sprite() :
-    Drawable<Sprite>()
+Shader& Sprite::getDefaultShader()
 {
-    if(!m_renderDetails.m_initialized)
+    static Shader shader = Shader(
+    R"(
+    #version 330 core
+    layout (location = 0) in vec2 vertex;
+    layout (location = 1) in vec2 tCoord;
+    out vec2 texCoord;
+    uniform mat4 projection;
+    uniform mat4 view;
+    uniform mat4 model;
+    void main()
     {
-        GLuint& vao = m_renderDetails.m_vao;
-        GLuint vbo;
-        GLfloat vertices[] =
-        {   // Vertex  // Texcoord
-            0.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 0.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-        };
-
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        glBindVertexArray(vao);
-        //Position
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-        glEnableVertexAttribArray(0);
-        //Texcoord
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-        m_renderDetails.m_shader.loadFromMemory( // VERTEX SHADER
-        R"(
-        #version 330 core
-        layout (location = 0) in vec2 vertex;
-        layout (location = 1) in vec2 texCoord;
-        layout (std140) uniform Camera {
-            mat4 view;
-            mat4 projection;
-        };
-        uniform mat4 model;
-        out vec2 oTexCoord;
-        void main()
-        {
-            gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
-            oTexCoord = vec2(texCoord.x, texCoord.y);
-        }
-        )", // FRAGMENT SHADER
-        R"(
-        #version 330 core
-        out vec4 FragColor;
-        in vec2 oTexCoord;
-        uniform sampler2D texture1;
-        void main()
-        {
-            FragColor = texture(texture1, oTexCoord);
-        }
-        )");
-        m_renderDetails.m_shader.setInteger("texture1", 0);
-        m_renderDetails.m_initialized = true;
-
+        gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
+        texCoord = vec2(tCoord.xy);
     }
+    )",
+    R"(
+    #version 330 core
+    out vec4 FragColor;
+    in vec2 texCoord;
+    uniform sampler2D texture1;
+    uniform vec4 color;
+    void main()
+    {
+        FragColor = texture(texture1, texCoord);
+    }
+    )");
+    shader.setInteger("texture1", 0);
+    return shader;
+}
+
+Sprite::Sprite()
+{
+    m_color = Color(255, 255, 255, 255);
 }
 
 Sprite::Sprite(const Sprite& other)
@@ -142,12 +114,46 @@ const glm::vec2& Sprite::getSize()
     return m_scale;
 }
 
-void Sprite::draw()
+GLuint Sprite::update()
 {
-    getShader().setMatrix4("model", getModel());
+    static GLuint vao = 0;
+    if(vao == 0)
+    {
+        GLfloat vertices[] =
+        {   // Vertex  // Texcoord
+            0.0f, 1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 0.0f,
+        };
+        GLuint vbo = 0;
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+    return vao;
+}
+
+void Sprite::draw(const Shader& shader)
+{
+    shader.setMatrix4("model", getModel());
+    shader.setVector4f("color", m_color.normalized());
     glActiveTexture(GL_TEXTURE0);
     m_texture.bind();
-    glBindVertexArray(m_renderDetails.m_vao);
+    glBindVertexArray(update());
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }

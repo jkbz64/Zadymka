@@ -3,7 +3,7 @@
 #include <Graphics/RenderTarget.hpp>
 #include <Graphics/Texture.hpp>
 
-class RenderTexture : public RenderTarget<RenderTexture>
+class RenderTexture : public RenderTarget
 {
 public:
     static void registerClass();
@@ -11,25 +11,13 @@ public:
     virtual ~RenderTexture() = default;
     void create(unsigned int w, unsigned int h);
     virtual void display() override;
+    virtual void draw(Drawable&, const Shader& = Shader()) override;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int) override;
 
     Texture& getTexture();
-
-    template<class T>
-    void draw(T&);
 private:
     Texture m_texture;
     GLuint m_framebuffer;
 };
-
-template<class T>
-inline void RenderTexture::draw(T& drawable)
-{
-    Shader& shader = drawable.m_renderDetails.m_shader.use();
-    GLuint blockIndex = glGetUniformBlockIndex(shader.getID(), "Camera");
-    glUniformBlockBinding(shader.getID(), blockIndex, 2);
-    drawable.m_renderDetails.m_cameraSet = false;
-    static_cast<Drawable<T>&>(drawable).draw();
-}
 
 #endif

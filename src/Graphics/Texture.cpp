@@ -27,7 +27,8 @@ Texture::Texture() :
     m_wrapS(GL_REPEAT),
     m_wrapT(GL_REPEAT),
     m_filterMin(GL_LINEAR),
-    m_filterMax(GL_LINEAR)
+    m_filterMax(GL_LINEAR),
+    m_fboAttachment(false)
 {
 
 }
@@ -43,8 +44,14 @@ const glm::vec2& Texture::getSize() const
     return m_size;
 }
 
+bool Texture::isAttachment()
+{
+    return m_fboAttachment;
+}
+
 bool Texture::loadFromFile(const std::string &filename)
 {
+    stbi_set_flip_vertically_on_load(true);
     int width, height, nrChannels;
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
     if(data)
@@ -72,7 +79,7 @@ bool Texture::loadFromFile(const std::string &filename)
             format = GL_RGBA;
 
         glTexImage2D(GL_TEXTURE_2D, 0, format, (int)m_size.x, (int)m_size.y, 0, format, GL_UNSIGNED_BYTE, data);
-        glad_glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D);
         stbi_image_free(data);
         return true;
     }

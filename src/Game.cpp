@@ -2,7 +2,6 @@
 #include <SFML/Window/Event.hpp>
 #include <thread>
 #include <iostream>
-#include <Graphics/Rectangle.hpp>
 
 extern std::string lua_middleclass;
 Game::Game() :
@@ -79,12 +78,10 @@ void Game::run()
             currentState.fixedUpdate(dt);
             accumulator -= dt;
         }
-
         const double alpha = accumulator / dt;
         m_window.setCamera(currentState.getCamera());
         m_window.clear(0, 125, 125);
         currentState.draw(m_window, alpha);
-        //Swap buffers
         m_window.display();
         //Limit fps to 1000 so we can save some CPU cycles for other processes
         std::this_thread::sleep_for(std::chrono::milliseconds(1));

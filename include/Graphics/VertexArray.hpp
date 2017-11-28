@@ -12,7 +12,7 @@ enum class PrimitiveType
     Quad = 2
 };
 
-class VertexArray : public Drawable<VertexArray>, private std::vector<Vertex>
+class VertexArray : public Drawable, private std::vector<Vertex>, public Transformable
 {
 public:
     static void registerClass();
@@ -22,7 +22,7 @@ public:
     std::vector<Vertex>& getVertexes();
     void setTexture(const Texture&);
 protected:
-    virtual void draw() override;
+    virtual void draw(const Shader&) override;
     PrimitiveType m_primitiveType;
     bool m_needUpdate;
 
@@ -31,7 +31,7 @@ protected:
     GLuint m_vVBO;
     GLuint m_txVBO;
     GLuint m_cVBO;
-    void update();
+    virtual GLuint update();
 };
 
 #endif

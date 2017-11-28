@@ -23,7 +23,7 @@ Shader::Shader() :
 
 Shader::Shader(const std::string& sV, const std::string& sF, const std::string& sG)
 {
-    m_isLoaded = loadFromFile(sV, sF, sG);
+    m_isLoaded = loadFromMemory(sV, sF, sG);
 }
 
 bool Shader::loadFromFile(std::string vertexPath, std::string fragmentPath, std::string geometryPath)
@@ -133,38 +133,38 @@ void Shader::checkCompileErrors(GLuint object, const std::string& type)
 
 //SETTERS
 
-void Shader::setFloat(const GLchar* name, GLfloat value, GLboolean useShader)
+void Shader::setFloat(const GLchar* name, GLfloat value, GLboolean useShader) const
 {
     if(useShader)
         use();
     glUniform1f(glGetUniformLocation(m_ID, name), value);
 }
 
-void Shader::setInteger(const GLchar *name, GLint value, GLboolean useShader)
+void Shader::setInteger(const GLchar *name, GLint value, GLboolean useShader) const
 {
     if (useShader)
         use();
     glUniform1i(glGetUniformLocation(m_ID, name), value);
 }
-void Shader::setVector2f(const GLchar *name, const glm::vec2 &value, GLboolean useShader)
+void Shader::setVector2f(const GLchar *name, const glm::vec2 &value, GLboolean useShader) const
 {
     if (useShader)
         use();
     glUniform2f(glGetUniformLocation(m_ID, name), value.x, value.y);
 }
-void Shader::setVector3f(const GLchar *name, const glm::vec3 &value, GLboolean useShader)
+void Shader::setVector3f(const GLchar *name, const glm::vec3 &value, GLboolean useShader) const
 {
     if (useShader)
         use();
     glUniform3f(glGetUniformLocation(m_ID, name), value.x, value.y, value.z);
 }
-void Shader::setVector4f(const GLchar *name, const glm::vec4 &value, GLboolean useShader)
+void Shader::setVector4f(const GLchar *name, const glm::vec4 &value, GLboolean useShader) const
 {
     if (useShader)
         use();
     glUniform4f(glGetUniformLocation(m_ID, name), value.x, value.y, value.z, value.w);
 }
-void Shader::setMatrix4(const GLchar *name, const glm::mat4 &matrix, GLboolean useShader)
+void Shader::setMatrix4(const GLchar *name, const glm::mat4 &matrix, GLboolean useShader) const
 {
     if (useShader)
         use();

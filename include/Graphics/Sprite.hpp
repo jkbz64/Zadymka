@@ -1,9 +1,9 @@
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
-#include <Graphics/Drawable.hpp>
+#include <Graphics/Rectangle.hpp>
 #include <Graphics/Texture.hpp>
 
-class Sprite : public Drawable<Sprite>
+class Sprite : public Rectangle
 {
 public:
     static void registerClass();
@@ -20,7 +20,9 @@ public:
     void setSize(const glm::vec2&);
     const glm::vec2& getSize();
 protected:
-    virtual void draw() override;
+    virtual void draw(const Shader&) override;
+    virtual GLuint update() override;
+    virtual Shader& getDefaultShader() override;
     Texture m_texture;
 };
 

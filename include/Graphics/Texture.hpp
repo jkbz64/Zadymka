@@ -18,7 +18,9 @@ public:
     void bind() const;
     bool loadFromFile(const std::string&);
     const glm::vec2& getSize() const;
+    bool isAttachment();
 private:
+    friend class Window;
     friend class RenderTexture;
     GLuint m_ID;
     //Texture dimensions
@@ -31,6 +33,8 @@ private:
     GLuint m_wrapT;
     GLuint m_filterMin;
     GLuint m_filterMax;
+    //
+    bool m_fboAttachment;
 };
 
 inline void Texture::bind() const

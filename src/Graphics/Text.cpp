@@ -12,65 +12,51 @@ void Text::registerClass()
                                        "getString", &Text::getString,
                                        "setFont", &Text::setFont,
                                        "setCharacterSize", &Text::setCharacterSize,
-                                       "getCharacterSize", &Text::getCharacterSize,
-                                       "setColor", &Text::setColor,
-                                       "getColor", &Text::getColor
+                                       "getCharacterSize", &Text::getCharacterSize
+                                       //"setColor", &Text::setColor,
+                                      // "getColor", &Text::getColor
                                        );
 }
 
-Text::Text() :
-    Drawable<Text>()
+Shader& Text::getDefaultShader()
 {
-    if(!m_renderDetails.m_initialized)
+    static Shader shader(
+    R"(
+    #version 330 core
+    layout (location = 0) in vec4 vertex;
+    uniform mat4 projection;
+    uniform mat4 view;
+    uniform vec4 textColor;
+    out vec2 TexCoords;
+    out vec4 oTextColor;
+    void main()
     {
-        GLuint& vao = m_renderDetails.m_vao;
-        GLuint& vVBO = m_renderDetails.m_verticesVBO;
-        glGenBuffers(1, &vVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, vVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-        m_renderDetails.m_shader.loadFromMemory( // VERTEX SHADER
-        R"(
-        #version 330 core
-        layout (location = 0) in vec4 vertex;
-        layout (std140) uniform Camera {
-            mat4 view;
-            mat4 projection;
-        };
-        uniform vec4 textColor;
-        out vec2 TexCoords;
-        out vec4 oTextColor;
-        void main()
-        {
-            gl_Position = projection * view * vec4(vertex.x, vertex.y, 0.0, 1.0);
-            TexCoords = vertex.zw;
-            oTextColor = textColor;
-        }
-        )", // FRAGMENT SHADER
-        R"(
-        #version 330 core
-        in vec2 TexCoords;
-        in vec4 oTextColor;
-        out vec4 FragColor;
-
-        uniform sampler2D texture1;
-        void main()
-        {
-            vec4 sampled = vec4(1.0, 1.0, 1.0, texture(texture1, TexCoords).r);
-            FragColor = oTextColor * sampled;
-        }
-        )");
-
-        m_renderDetails.m_initialized = true;
+        gl_Position = projection * view * vec4(vertex.x, vertex.y, 0.0, 1.0);
+        TexCoords = vertex.zw;
+        oTextColor = textColor;
     }
-    setColor(Color::Black);
+    )", // FRAGMENT SHADER
+    R"(
+    #version 330 core
+    in vec2 TexCoords;
+    in vec4 oTextColor;
+    out vec4 FragColor;
+
+    uniform sampler2D texture1;
+    void main()
+    {
+        vec4 sampled = vec4(1.0, 1.0, 1.0, texture(texture1, TexCoords).r);
+        FragColor = oTextColor * sampled;
+    }
+    )");
+    shader.setInteger("texture1", 0);
+    return shader;
+}
+
+Text::Text() :
+    Drawable()
+{
+    //setColor(Color::Black);*/
     setCharacterSize(48);
 }
 
@@ -116,18 +102,33 @@ unsigned int Text::getCharacterSize()
     return m_characterSize;
 }
 
-void Text::draw()
+void Text::draw(const Shader& shader)
 {
+    static GLuint vao = 0;
+    static GLuint vbo = 0;
+    if(vao == 0)
+    {
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+
     if(m_font)
     {
         glActiveTexture(GL_TEXTURE0);
-        glBindVertexArray(m_renderDetails.m_vao);
-        m_renderDetails.m_shader.setVector4f("textColor", glm::vec4(m_colorArray[0], m_colorArray[1], m_colorArray[2], m_colorArray[3]));
+        glBindVertexArray(vao);
+        shader.setVector4f("textColor", glm::vec4(1.f, 0.f, 0.f, 1.f));
 
         glm::vec2 m_pos = m_translation;
-        m_pos.y -= 48.f;
         std::string::const_iterator c;
-        for (c = m_text.begin(); c != m_text.end(); c++)
+        for (c = m_text.begin(); c != m_text.end(); ++c)
         {
             Glyph ch = m_font->getGlyph(*c);
             GLfloat xpos = m_pos.x + ch.m_bearing.x * m_scale.y;
@@ -144,7 +145,7 @@ void Text::draw()
                 { xpos + w, ypos,           1.0, 0.0 }
             };
             glBindTexture(GL_TEXTURE_2D, ch.m_textureID);
-            glBindBuffer(GL_ARRAY_BUFFER, m_renderDetails.m_verticesVBO);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
             glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, vertices, GL_DYNAMIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);

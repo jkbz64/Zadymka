@@ -98,8 +98,8 @@ const glm::mat4& Camera::getProjection()
 
 void Camera::update()
 {
-    m_projection = glm::ortho(0.f, m_size.x, m_size.y, 0.f, -1.f, 100.f);
+    m_projection = glm::ortho(0.f, m_size.x, m_size.y, 0.f, 0.1f, 100.f);
     m_view = glm::lookAt(glm::vec3(m_center.x - m_size.x / 2.f, m_center.y - m_size.y / 2.f, 1.f),
-                         glm::vec3(m_center.x - m_size.x / 2.f, m_center.y - m_size.y / 2.f, -1.f),
+                         glm::vec3(m_center.x - m_size.x / 2.f, m_center.y - m_size.y / 2.f, 0.f),
                          glm::vec3(0.f, 1.f, 0.f));
 }

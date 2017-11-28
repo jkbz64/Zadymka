@@ -14,7 +14,7 @@ public:
     Color& operator=(Color&&) = default;
     ~Color() = default;
 
-    std::array<float, 4> normalized();
+    glm::vec4 normalized();
     int r() const;
     int g() const;
     int b() const;

@@ -5,7 +5,7 @@
 
 class Font;
 
-class Text : public Drawable<Text>
+class Text : public Drawable, public Transformable
 {
 public:
     static void registerClass();
@@ -24,7 +24,8 @@ public:
     const glm::vec2& getPosition();
     unsigned int getCharacterSize();
 protected:
-    virtual void draw() override;
+    virtual void draw(const Shader&) override;
+    virtual Shader& getDefaultShader() override;
     Font* m_font;
     unsigned int m_characterSize;
     std::string m_text;

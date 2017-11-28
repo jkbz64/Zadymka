@@ -24,9 +24,9 @@ Color::Color(int cr, int cg, int cb, int ca) :
 
 }
 
-std::array<float, 4> Color::normalized()
+glm::vec4 Color::normalized()
 {
-    return {    normalize(r()), normalize(g()), normalize(b()), normalize(a())  };
+    return glm::vec4(normalize(r()), normalize(g()), normalize(b()), normalize(a()));
 }
 
 //Define basic colors
