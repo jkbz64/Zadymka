@@ -87,6 +87,8 @@ Sprite& Sprite::operator =(Sprite&& other)
 void Sprite::setTexture(const Texture &texture)
 {
     m_texture = texture;
+    if(getSize() == glm::vec2(0, 0))
+        setSize(m_texture.getSize());
 }
 
 const Texture& Sprite::getTexture()

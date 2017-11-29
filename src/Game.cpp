@@ -8,6 +8,7 @@ Game::Game() :
 {
 
 }
+#include <Graphics/Sprite.hpp>
 
 extern std::string lua_middleclass;
 

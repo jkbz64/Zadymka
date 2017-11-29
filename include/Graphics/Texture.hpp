@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 #include <string>
+#include <memory>
 
 class Texture
 {
@@ -15,6 +16,7 @@ public:
     Texture(Texture&&) = delete;
     Texture& operator=(Texture&&) = delete;
     ~Texture();
+    GLuint getID() const;
     void bind() const;
     bool loadFromFile(const std::string&);
     const glm::vec2& getSize() const;
@@ -22,7 +24,7 @@ public:
 private:
     friend class Window;
     friend class RenderTexture;
-    GLuint m_ID;
+    std::shared_ptr<GLuint> m_ID;
     //Texture dimensions
     glm::vec2 m_size;
     //Format
@@ -37,9 +39,16 @@ private:
     bool m_fboAttachment;
 };
 
+inline GLuint Texture::getID() const
+{
+    if(m_ID)
+        return *m_ID.get();
+    return 0;
+}
+
 inline void Texture::bind() const
 {
-    glBindTexture(GL_TEXTURE_2D, m_ID);
+    glBindTexture(GL_TEXTURE_2D, getID());
 }
 
 #endif

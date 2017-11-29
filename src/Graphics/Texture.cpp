@@ -2,13 +2,16 @@
 #include <Lua.hpp>
 #include <iostream>
 
-#ifdef _WIN32
-    #include <winsock.h>
-#elif __linux__
-    #include <arpa/inet.h>
-#endif
-
 #include <stb_image.h>
+
+struct TextureDeleter
+{
+    void operator()(GLuint* id)
+    {
+        std::cerr << "deleting texture" << std::endl;
+        glDeleteTextures(1, id);
+    }
+};
 
 void Texture::registerClass()
 {
@@ -20,7 +23,7 @@ void Texture::registerClass()
 }
 
 Texture::Texture() :
-    m_ID(0),
+    m_ID(nullptr),
     m_size(0, 0),
     m_internalFormat(GL_RGBA),
     m_imageFormat(GL_RGBA),
@@ -35,8 +38,7 @@ Texture::Texture() :
 
 Texture::~Texture()
 {
-    if(m_ID != 0)
-        glDeleteTextures(1, &m_ID);
+
 }
 
 const glm::vec2& Texture::getSize() const
@@ -56,9 +58,8 @@ bool Texture::loadFromFile(const std::string &filename)
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
     if(data)
     {
-        if(m_ID != 0)
-            glDeleteTextures(1, &m_ID);
-        glGenTextures(1, &m_ID);
+        m_ID = std::shared_ptr<GLuint>(0, TextureDeleter());
+        glGenTextures(1, m_ID.get());
         m_size.x = width;
         m_size.y = height;
         //Bind texture
@@ -87,9 +88,6 @@ bool Texture::loadFromFile(const std::string &filename)
     {
         std::cerr << "Failed to load texture\n";
         stbi_image_free(data);
-        if(m_ID != 0)
-            glDeleteTextures(1, &m_ID);
-        m_ID = 0;
         m_size = glm::vec2(0, 0);
         return false;
     }
