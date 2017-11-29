@@ -21,7 +21,6 @@ public:
     void create(unsigned int, unsigned int);
     bool loadFromFile(const std::string&);
     const glm::uvec2& getSize() const;
-    bool isAttachment();
 private:
     friend class Window;
     friend class RenderTexture;
@@ -36,7 +35,6 @@ private:
     GLuint m_wrapT;
     GLuint m_filterMin;
     GLuint m_filterMax;
-    //
     bool m_fboAttachment;
 };
 

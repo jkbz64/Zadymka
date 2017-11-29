@@ -42,11 +42,6 @@ const glm::uvec2& Texture::getSize() const
     return m_size;
 }
 
-bool Texture::isAttachment()
-{
-    return m_fboAttachment;
-}
-
 void Texture::create(unsigned int width, unsigned int height)
 {
     m_ID = std::shared_ptr<GLuint>(new GLuint(0), TextureDeleter());

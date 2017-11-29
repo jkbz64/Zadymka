@@ -28,10 +28,16 @@ void Window::registerClass()
                              "onResize", &Window::m_onResize,
                              "onClose", &Window::m_onClose,
                              //Draw
-                             "draw", [](Window& window, sol::object drawable)
+                             "draw",
+                             sol::overload(
+                             [](Window& window, sol::object drawable)
                              {
                                 window.draw(drawable.as<Drawable&>());
                              },
+                             [](Window& window, sol::object drawable, const Shader& shader)
+                             {
+                                window.draw(drawable.as<Drawable&>(), shader);
+                             }),
                              "drawRect", &Window::drawRect,
                              "drawText", &Window::drawText,
                              "drawSprite", &Window::drawSprite

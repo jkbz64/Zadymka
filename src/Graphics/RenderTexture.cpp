@@ -21,6 +21,16 @@ void RenderTexture::registerClass()
                                                 sol::constructors<RenderTexture()>(),
                                                 "create", &RenderTexture::create,
                                                 "getTexture", &RenderTexture::getTexture,
+                                                "draw",
+                                                sol::overload(
+                                                [](RenderTexture& target, sol::object drawable)
+                                                {
+                                                   target.draw(drawable.as<Drawable&>());
+                                                },
+                                                [](RenderTexture& target, sol::object drawable, const Shader& shader)
+                                                {
+                                                   target.draw(drawable.as<Drawable&>(), shader);
+                                                }),
                                                 "drawRect", &RenderTexture::drawRect,
                                                 "drawSprite", &RenderTexture::drawSprite,
                                                 "drawText", &RenderTexture::drawText,
@@ -34,8 +44,6 @@ void RenderTexture::create(unsigned int w, unsigned int h)
     glGenFramebuffers(1, &m_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     m_texture.create(w, h);
-    m_texture.m_fboAttachment = true;
-    m_texture.m_size = glm::vec2(w, h);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.getID(), 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
