@@ -35,7 +35,6 @@ private:
     GLuint m_wrapT;
     GLuint m_filterMin;
     GLuint m_filterMax;
-    bool m_fboAttachment;
 };
 
 inline GLuint Texture::getID() const

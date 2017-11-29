@@ -31,8 +31,7 @@ Texture::Texture() :
     m_wrapS(GL_REPEAT),
     m_wrapT(GL_REPEAT),
     m_filterMin(GL_LINEAR),
-    m_filterMax(GL_LINEAR),
-    m_fboAttachment(false)
+    m_filterMax(GL_LINEAR)
 {
 
 }
