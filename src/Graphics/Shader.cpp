@@ -9,9 +9,16 @@ void Shader::registerClass()
 {
     Lua::getState().new_usertype<Shader>("Shader",
                                          sol::constructors<Shader(), Shader(const std::string&, const std::string&)>(),
+                                         "use", &Shader::use,
+                                         "getID", &Shader::getID,
+                                         "isLoaded", &Shader::isLoaded,
                                          "loadFromFile", &Shader::loadFromFile,
-                                         "loadFromMemory", &Shader::loadFromMemory
-                                         //Setters TODO
+                                         "loadFromMemory", &Shader::loadFromMemory,
+                                         "setFloat", &Shader::setFloat,
+                                         "setInteger", &Shader::setInteger,
+                                         "setVector2f", &Shader::setVector2f,
+                                         "setVector3f", &Shader::setVector3f,
+                                         "setMatrix4", &Shader::setMatrix4
     );
 }
 

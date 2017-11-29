@@ -12,7 +12,8 @@ void Rectangle::registerClass()
                                             "getSize", &Rectangle::getSize,
                                             "setSize", &Rectangle::setSize,
                                             "getColor", &Rectangle::getColor,
-                                            "setColor", &Rectangle::setColor
+                                            "setColor", &Rectangle::setColor,
+                                            sol::base_classes, sol::bases<Drawable>()
     );
 }
 

@@ -30,14 +30,12 @@ void Window::registerClass()
                              //Draw
                              "draw",
                              sol::overload(
-                             [](Window& window, sol::object drawable)
+                             [](Window& window, Drawable& drawable)
                              {
-                                window.draw(drawable.as<Drawable&>());
+                                window.draw(drawable);
                              },
-                             [](Window& window, sol::object drawable, const Shader& shader)
-                             {
-                                window.draw(drawable.as<Drawable&>(), shader);
-                             }),
+                             &Window::draw
+                             ),
                              "drawRect", &Window::drawRect,
                              "drawText", &Window::drawText,
                              "drawSprite", &Window::drawSprite

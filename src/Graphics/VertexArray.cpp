@@ -14,7 +14,8 @@ void VertexArray::registerClass()
                                               sol::constructors<VertexArray(const PrimitiveType&)>(),
                                               "resize", &VertexArray::resize,
                                               "setTexture", &VertexArray::setTexture,
-                                              "getVertexes", &VertexArray::getVertexes
+                                              "getVertexes", &VertexArray::getVertexes,
+                                              sol::base_classes, sol::bases<Drawable>()
     );
 }
 

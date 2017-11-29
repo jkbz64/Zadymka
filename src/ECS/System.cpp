@@ -11,11 +11,13 @@ void System::registerClass()
                                          {
                                              return [name](System& system, sol::variadic_args args)
                                              {
+                                                 sol::function_result results;
                                                  if(system.m_system.valid())
                                                  {
                                                      sol::table meta = system.m_system;
-                                                     return meta[name].call(system.m_system, args);
+                                                     results = meta[name].call(system.m_system, args);
                                                  }
+                                                 return results;
                                              };
                                          },
                                          "update", &System::update,

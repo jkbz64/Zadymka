@@ -111,6 +111,7 @@ void Game::registerClasses()
     Camera::registerClass();
     Texture::registerClass();
     Shader::registerClass();
+    Lua::getState().new_usertype<Drawable>("Drawable", "new", sol::no_constructor);
     Rectangle::registerClass();
     Sprite::registerClass();
     Font::registerClass();

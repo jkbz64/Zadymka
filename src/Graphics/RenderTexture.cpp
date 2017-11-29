@@ -23,14 +23,12 @@ void RenderTexture::registerClass()
                                                 "getTexture", &RenderTexture::getTexture,
                                                 "draw",
                                                 sol::overload(
-                                                [](RenderTexture& target, sol::object drawable)
+                                                [](RenderTexture& target, Drawable& drawable)
                                                 {
-                                                   target.draw(drawable.as<Drawable&>());
+                                                   target.draw(drawable);
                                                 },
-                                                [](RenderTexture& target, sol::object drawable, const Shader& shader)
-                                                {
-                                                   target.draw(drawable.as<Drawable&>(), shader);
-                                                }),
+                                                &RenderTexture::draw
+                                                ),
                                                 "drawRect", &RenderTexture::drawRect,
                                                 "drawSprite", &RenderTexture::drawSprite,
                                                 "drawText", &RenderTexture::drawText,

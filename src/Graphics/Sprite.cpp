@@ -11,7 +11,8 @@ void Sprite::registerClass()
                                          "getSize", &Sprite::getSize,
                                          "setSize", &Sprite::setSize,
                                          "getTexture", &Sprite::getTexture,
-                                         "setTexture", &Sprite::setTexture
+                                         "setTexture", &Sprite::setTexture,
+                                         sol::base_classes, sol::bases<Drawable>()
     );
 }
 
@@ -52,9 +53,15 @@ Sprite::Sprite()
     m_color = Color(255, 255, 255, 255);
 }
 
-Sprite::Sprite(const Sprite& other)
+Sprite::Sprite(const Sprite& other) :
+    Rectangle(other)
 {
-    static_cast<Transformable>(*this) = static_cast<Transformable>(other);
+    m_texture = other.m_texture;
+}
+
+Sprite::Sprite(Sprite&& other) :
+    Rectangle(other)
+{
     m_texture = other.m_texture;
 }
 
@@ -66,12 +73,6 @@ Sprite& Sprite::operator =(const Sprite& other)
         m_texture = other.m_texture;
     }
     return *this;
-}
-
-Sprite::Sprite(Sprite&& other)
-{
-    static_cast<Transformable>(*this) = std::move(static_cast<Transformable>(other));
-    m_texture = other.m_texture;
 }
 
 Sprite& Sprite::operator =(Sprite&& other)

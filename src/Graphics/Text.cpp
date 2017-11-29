@@ -12,9 +12,10 @@ void Text::registerClass()
                                        "getString", &Text::getString,
                                        "setFont", &Text::setFont,
                                        "setCharacterSize", &Text::setCharacterSize,
-                                       "getCharacterSize", &Text::getCharacterSize
+                                       "getCharacterSize", &Text::getCharacterSize,
                                        //"setColor", &Text::setColor,
                                       // "getColor", &Text::getColor
+                                       sol::base_classes, sol::bases<Drawable>()
                                        );
 }
 
