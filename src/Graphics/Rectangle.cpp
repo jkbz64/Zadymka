@@ -53,9 +53,16 @@ Rectangle::Rectangle(unsigned int width, unsigned int height) :
     setSize(glm::vec2(width, height));
 }
 
-Rectangle::Rectangle(const Rectangle &other)
+Rectangle::Rectangle(const Rectangle &other) :
+    Transformable(other)
 {
-    static_cast<Transformable>(*this) = static_cast<Transformable>(other);
+
+}
+
+Rectangle::Rectangle(Rectangle&& other) :
+    Transformable(std::move(other))
+{
+
 }
 
 Rectangle& Rectangle::operator =(const Rectangle& other)
@@ -63,11 +70,6 @@ Rectangle& Rectangle::operator =(const Rectangle& other)
     if(this != &other)
         static_cast<Transformable>(*this) = static_cast<Transformable>(other);
     return *this;
-}
-
-Rectangle::Rectangle(Rectangle&& other)
-{
-    static_cast<Transformable>(*this) = std::move(static_cast<Transformable>(other));
 }
 
 Rectangle& Rectangle::operator =(Rectangle&& other)

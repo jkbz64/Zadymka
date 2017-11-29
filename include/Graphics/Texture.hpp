@@ -15,18 +15,19 @@ public:
     Texture& operator=(const Texture&) = default;
     Texture(Texture&&) = delete;
     Texture& operator=(Texture&&) = delete;
-    ~Texture();
+    ~Texture() = default;
     GLuint getID() const;
     void bind() const;
+    void create(unsigned int, unsigned int);
     bool loadFromFile(const std::string&);
-    const glm::vec2& getSize() const;
+    const glm::uvec2& getSize() const;
     bool isAttachment();
 private:
     friend class Window;
     friend class RenderTexture;
     std::shared_ptr<GLuint> m_ID;
     //Texture dimensions
-    glm::vec2 m_size;
+    glm::uvec2 m_size;
     //Format
     GLuint m_internalFormat;
     GLuint m_imageFormat;
