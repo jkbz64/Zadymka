@@ -20,6 +20,7 @@ public:
     void bind() const;
     void create(unsigned int, unsigned int);
     bool loadFromFile(const std::string&);
+    bool loadFromMemory(const std::string&);
     const glm::uvec2& getSize() const;
 private:
     friend class Window;

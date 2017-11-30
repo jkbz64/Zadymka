@@ -7,9 +7,9 @@ void Sprite::registerClass()
     Lua::getState().new_usertype<Sprite>("Sprite",
                                          sol::constructors<Sprite()>(),
                                          "getPosition", [](Sprite& sprite) { return std::make_tuple(sprite.getPosition().x, sprite.getPosition().y); },
-                                         "setPosition", &Sprite::setPosition,
-                                         "getSize", &Sprite::getSize,
-                                         "setSize", &Sprite::setSize,
+                                         "setPosition", [](Sprite& sprite, float x, float y) { sprite.setPosition(glm::vec2(x, y)); },
+                                         "getSize", [](Sprite& sprite) { return std::make_tuple(sprite.getSize().x, sprite.getSize().y); },
+                                         "setSize", [](Sprite& sprite, unsigned int w, unsigned int h) { sprite.setSize(glm::vec2(w, h)); },
                                          "getTexture", &Sprite::getTexture,
                                          "setTexture", &Sprite::setTexture,
                                          sol::base_classes, sol::bases<Drawable>()

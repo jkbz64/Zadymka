@@ -23,6 +23,8 @@ public:
     const std::string& getString();
     const glm::vec2& getPosition();
     unsigned int getCharacterSize();
+    void setColor(const Color&);
+    const Color& getColor();
 protected:
     virtual void draw(const Shader&) override;
     virtual Shader& getDefaultShader() override;

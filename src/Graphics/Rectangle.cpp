@@ -7,10 +7,10 @@ void Rectangle::registerClass()
 {
     Lua::getState().new_usertype<Rectangle>("Rectangle",
                                             sol::constructors<Rectangle(unsigned int, unsigned int)>(),
-                                            "getPosition", &Rectangle::getPosition,
-                                            "setPosition", &Rectangle::setPosition,
-                                            "getSize", &Rectangle::getSize,
-                                            "setSize", &Rectangle::setSize,
+                                            "getPosition", [](Rectangle& rect) { return std::make_tuple(rect.getSize().x, rect.getSize().y); },
+                                            "setPosition", [](Rectangle& rect, float x, float y) { rect.setPosition(glm::vec2(x, y)); },
+                                            "getSize", [](Rectangle& rect) { return std::make_tuple(rect.getSize().x, rect.getSize().y); },
+                                            "setSize", [](Rectangle& rect, unsigned int w, unsigned int h) { rect.setSize(glm::vec2(w, h)); },
                                             "getColor", &Rectangle::getColor,
                                             "setColor", &Rectangle::setColor,
                                             sol::base_classes, sol::bases<Drawable>()

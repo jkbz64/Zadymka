@@ -8,13 +8,15 @@ void Text::registerClass()
 {
     Lua::getState().new_usertype<Text>("Text",
                                        sol::constructors<Text(), Text(Font&)>(),
+                                       "setPosition", [](Text& text, float x, float y) { text.setPosition(glm::vec2(x, y)); },
+                                       "getPosition", [](Text& text) { return std::make_tuple(text.getPosition().x, text.getPosition().y); },
                                        "setString", &Text::setString,
                                        "getString", &Text::getString,
                                        "setFont", &Text::setFont,
                                        "setCharacterSize", &Text::setCharacterSize,
                                        "getCharacterSize", &Text::getCharacterSize,
-                                       //"setColor", &Text::setColor,
-                                      // "getColor", &Text::getColor
+                                       "setColor", &Text::setColor,
+                                       "getColor", &Text::getColor,
                                        sol::base_classes, sol::bases<Drawable>()
                                        );
 }
@@ -27,14 +29,12 @@ Shader& Text::getDefaultShader()
     layout (location = 0) in vec4 vertex;
     uniform mat4 projection;
     uniform mat4 view;
-    uniform vec4 textColor;
     out vec2 TexCoords;
     out vec4 oTextColor;
     void main()
     {
         gl_Position = projection * view * vec4(vertex.x, vertex.y, 0.0, 1.0);
         TexCoords = vertex.zw;
-        oTextColor = textColor;
     }
     )", // FRAGMENT SHADER
     R"(
@@ -42,12 +42,12 @@ Shader& Text::getDefaultShader()
     in vec2 TexCoords;
     in vec4 oTextColor;
     out vec4 FragColor;
-
+    uniform vec4 color;
     uniform sampler2D texture1;
     void main()
     {
-        vec4 sampled = vec4(1.0, 1.0, 1.0, texture(texture1, TexCoords).r);
-        FragColor = oTextColor * sampled;
+        vec4 sampled = vec4(1.0, 1.0, 1.0, texture(texture1, TexCoords).r) ;
+        FragColor = color * sampled;
     }
     )");
     shader.setInteger("texture1", 0);
@@ -57,7 +57,7 @@ Shader& Text::getDefaultShader()
 Text::Text() :
     Drawable()
 {
-    //setColor(Color::Black);*/
+    setColor(Color::Black);
     setCharacterSize(48);
 }
 
@@ -103,6 +103,16 @@ unsigned int Text::getCharacterSize()
     return m_characterSize;
 }
 
+const Color& Text::getColor()
+{
+    return m_color;
+}
+
+void Text::setColor(const Color& color)
+{
+    m_color = color;
+}
+
 void Text::draw(const Shader& shader)
 {
     static GLuint vao = 0;
@@ -125,7 +135,7 @@ void Text::draw(const Shader& shader)
     {
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(vao);
-        shader.setVector4f("textColor", glm::vec4(1.f, 0.f, 0.f, 1.f));
+        shader.setVector4f("color", m_color.normalized());
 
         glm::vec2 m_pos = m_translation;
         std::string::const_iterator c;
