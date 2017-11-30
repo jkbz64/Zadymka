@@ -2,6 +2,7 @@
 #include <thread>
 #include <iostream>
 //Modules
+#include <Math.hpp>
 #include <Graphics/Graphics.hpp>
 #include <Audio/Audio.hpp>
 #include <ECS/ECS.hpp>
@@ -98,9 +99,9 @@ void Game::run()
 
 void Game::registerModules()
 {
+    Math::registerModule();
     StateManager::registerClass();
     Graphics::registerModule();
     Audio::registerModule();
     ECS::registerModule();
-
 }
