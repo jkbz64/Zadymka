@@ -1,14 +1,16 @@
 #include <Game.hpp>
-#include <SFML/Window/Event.hpp>
 #include <thread>
 #include <iostream>
+//Modules
+#include <Graphics/Graphics.hpp>
+#include <Audio/Audio.hpp>
+#include <ECS/ECS.hpp>
 
 Game::Game() :
     m_inputManager(m_window)
 {
 
 }
-#include <Graphics/Sprite.hpp>
 
 extern std::string lua_middleclass;
 
@@ -32,10 +34,12 @@ void Game::run()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    Audio::init();
+
     m_window.create(800, 600, "Zadymka", Window::Style::Windowed);
 
     //Register lua classes
-    registerClasses();
+    registerModules();
     //Load init script
     state.safe_script_file("init.lua");
 
@@ -89,39 +93,14 @@ void Game::run()
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     glfwTerminate();
+    Audio::destroy();
 }
 
-#include <ECS/EntityManager.hpp>
-#include <ECS/SystemManager.hpp>
-#include <Graphics/Texture.hpp>
-#include <Graphics/Shader.hpp>
-#include <Graphics/Rectangle.hpp>
-#include <Graphics/Sprite.hpp>
-#include <Graphics/Font.hpp>
-#include <Graphics/Text.hpp>
-#include <Graphics/RenderTexture.hpp>
-#include <Graphics/VertexArray.hpp>
-
-void Game::registerClasses()
+void Game::registerModules()
 {
-    //Core
     StateManager::registerClass();
-    Window::registerClass();
-    //Graphics
-    Camera::registerClass();
-    Texture::registerClass();
-    Shader::registerClass();
-    Lua::getState().new_usertype<Drawable>("Drawable", "new", sol::no_constructor);
-    Rectangle::registerClass();
-    Sprite::registerClass();
-    Font::registerClass();
-    Text::registerClass();
-    RenderTexture::registerClass();
-    VertexArray::registerClass();
-    //ECS
-    Entity::registerClass();
-    EventManager::registerClass();
-    EntityManager::registerClass();
-    SystemManager::registerClass();
-    System::registerClass();
+    Graphics::registerModule();
+    Audio::registerModule();
+    ECS::registerModule();
+
 }

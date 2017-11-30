@@ -19,7 +19,7 @@ protected:
     StateManager m_stateManager;
     InputManager m_inputManager;
 
-    void registerClasses();
+    void registerModules();
 };
 
 #endif
