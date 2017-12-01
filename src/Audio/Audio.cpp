@@ -3,6 +3,8 @@
 #include <iostream>
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <Audio/AudioBuffer.hpp>
+#include <Audio/Sound.hpp>
 
 namespace
 {
@@ -19,6 +21,9 @@ void Audio::registerModule()
     Lua::getState()["Audio"] = Lua::getState().create_table_with(
         "getDevices", &Audio::getDevices
     );
+    
+    AudioBuffer::registerClass();
+    Sound::registerClass();
 }
 
 bool Audio::init()
