@@ -9,16 +9,15 @@ Zadymka aims to be an 2D game framework.
 
 | Module    	| Technology    |
 |-----------	|-------------	|
-| Window / Contex|  GLFW 3    |
-| Input       | GLFW 3        |
+| Window / Context |  GLFW 3    |
+| Input       | GLFW 3       |
 | Rendering 	| OpenGL 3.3  	|
 | OpenGL extensions | GLAD    |
-| Audio     	| OpenAL soft 	|
+| Audio     	| OpenAL      	|
 | Math        | glm           |
-| Scripting 	| Lua 5.3         |
-| Other       | Freetype2, sol2, stb_image, stb_vorbis | 
-|-----------  |               |
+| Scripting 	| Lua 5.3       |
 
+Other libraries used - sol2, freetyp2, stb_image, stb_vorbis
 ##  Buidling
 *Remember to clone recursively or ship libraries by yourself*
 ```
