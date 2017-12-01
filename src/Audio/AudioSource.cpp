@@ -5,12 +5,15 @@
 AudioSource::AudioSource()
 {
     alGenSources(1, &m_source);
-    alSourcei(m_source, AL_BUFFER, 0);
+    alSourcef(m_source, AL_PITCH, 1);
+    alSourcef(m_source, AL_GAIN, 1);
+    alSource3f(m_source, AL_POSITION, 0, 0, 0);
+    alSource3f(m_source, AL_VELOCITY, 0, 0, 0);
+    alSourcei(m_source, AL_LOOPING, AL_FALSE);
 }
 
 AudioSource::~AudioSource()
 {
-    alSourcei(m_source, AL_BUFFER, 0);
     alDeleteSources(1, &m_source);
 }
 
@@ -34,4 +37,10 @@ void AudioSource::setPosition(const glm::vec3 &position)
 const glm::vec3& AudioSource::getPosition()
 {
     return m_position;
+}
+
+void AudioSource::setBuffer(AudioBuffer &buffer)
+{
+    m_currentBuffer = &buffer;
+    alSourcei(m_source, AL_BUFFER, m_currentBuffer->m_buffer);
 }

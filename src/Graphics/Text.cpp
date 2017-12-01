@@ -9,7 +9,7 @@ void Text::registerClass()
     Lua::getState().new_usertype<Text>("Text",
                                        sol::constructors<Text(), Text(Font&)>(),
                                        "setPosition", [](Text& text, float x, float y) { text.setPosition(glm::vec2(x, y)); },
-                                       "getPosition", [](Text& text) { return std::make_tuple(text.getPosition().x, text.getPosition().y); },
+                                       "getPosition", &Text::getPosition,
                                        "setString", &Text::setString,
                                        "getString", &Text::getString,
                                        "setFont", &Text::setFont,

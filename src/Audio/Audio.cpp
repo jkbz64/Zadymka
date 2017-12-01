@@ -3,12 +3,11 @@
 #include <iostream>
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <stb_vorbis.c>
 
 namespace
 {
-    ALCdevice *device = nullptr;
-    ALCcontext* context = nullptr;
+    ALCdevice *device = NULL;
+    ALCcontext* context = NULL;
     float globalVolume = 100.f;
     glm::vec3 listenerPosition(0.f, 0.f, 0.f);
     glm::vec3 listenerDirection(0.f, 0.f, -1.f);
@@ -81,29 +80,7 @@ std::vector<std::string> Audio::getDevices()
         next += (len + 2);
     }
     fprintf(stdout, "----------\n");
-
     return devicesList;
-}
-
-ALenum Audio::toAlFormat(short channels, short samples)
-{
-    bool stereo = (channels > 1);
-
-    switch (samples)
-    {
-    case 16:
-        if (stereo)
-            return AL_FORMAT_STEREO16;
-        else
-            return AL_FORMAT_MONO16;
-    case 8:
-        if (stereo)
-            return AL_FORMAT_STEREO8;
-        else
-            return AL_FORMAT_MONO8;
-    default:
-        return -1;
-    }
 }
 
 void Audio::setGlobalVolume(float v)

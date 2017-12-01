@@ -7,9 +7,9 @@ void Camera::registerClass()
     Lua::getState().new_usertype<Camera>("Camera",
                                          sol::constructors<Camera()>(),
                                          "setCenter", [](Camera& camera, float x, float y) { camera.setCenter(glm::vec2(x, y)); },
-                                         "getCenter", [](Camera& camera) { return std::make_tuple(camera.getCenter().x, camera.getCenter().y); },
+                                         "getCenter", &Camera::getCenter,
                                          "setSize", [](Camera& camera, unsigned int width, unsigned int height) { camera.setSize(glm::vec2(width, height)); },
-                                         "getSize", [](Camera& camera) { return std::make_tuple(camera.getSize().x, camera.getSize().y); },
+                                         "getSize", &Camera::getSize,
                                          "move", &Camera::move
    );
 }

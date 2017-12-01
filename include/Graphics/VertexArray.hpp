@@ -17,7 +17,7 @@ class VertexArray : public Drawable, private std::vector<Vertex>, public Transfo
 public:
     static void registerClass();
     VertexArray(const PrimitiveType& type);
-    virtual ~VertexArray() = default;
+    ~VertexArray() = default;
     void resize(std::size_t);
     std::vector<Vertex>& getVertexes();
     void setTexture(const Texture&);
@@ -26,7 +26,7 @@ protected:
     PrimitiveType m_primitiveType;
     bool m_needUpdate;
     Texture m_texture;
-    virtual GLuint update();
+    virtual GLuint update() override;
 };
 
 #endif

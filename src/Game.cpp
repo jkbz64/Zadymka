@@ -38,27 +38,14 @@ void Game::run()
     registerModules();
     //Load init script
     state.safe_script_file("init.lua");
-
-    //Frame time counter
-    double lastTime = glfwGetTime();
-    int framesCount = 0;
-
+    
     double dt = Lua::getState().get_or("dt", 1.0 / 20.0);
     double currentTime = glfwGetTime();
     double accumulator = 0.0;
-
+    
     while(m_window.isOpen())
     {
         const double newTime = glfwGetTime();
-
-        ++framesCount;
-        if(newTime - lastTime >= 1.0)
-        {
-            std::cerr << 1000.0/double(framesCount) << " ms/frame - " << framesCount << '\n';
-            framesCount = 0;
-            lastTime += 1.0;
-        }
-
         double frameTime = newTime - currentTime;
         if (frameTime > 0.25)
             frameTime = 0.25;

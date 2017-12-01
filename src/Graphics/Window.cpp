@@ -22,7 +22,7 @@ void Window::registerClass()
     Lua::getState().new_usertype<Window>("Window",
                              "new", sol::no_constructor,
                              "setTitle", &Window::setTitle,
-                             "getSize", [](Window& window) { return std::make_tuple(window.m_width, window.m_height); },
+                             "getSize", [](Window& window) { return glm::vec2(window.m_width, window.m_height); },
                              "setSize", &Window::setSize,
                              "onOpen", &Window::m_onOpen,
                              "onResize", &Window::m_onResize,

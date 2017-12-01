@@ -26,14 +26,16 @@ find_package(OpenAL REQUIRED)
 file(GLOB_RECURSE HDRS include/*.hpp)
 file(GLOB_RECURSE SRCS src/*.cpp)
 
-set(STB_IMAGE_CPP ${CMAKE_SOURCE_DIR}/src/Graphics/stb_image/stb_image.cpp)
 set(GLAD_C ${CMAKE_SOURCE_DIR}/src/Graphics/glad/glad.c)
+set(STB_IMAGE_CPP ${CMAKE_SOURCE_DIR}/src/Graphics/stb_image/stb_image.cpp)
+set(STB_VORBIS_C ${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c)
 
 add_executable(Zadymka
-	${HDRS}
-	${SRCS}
-	${STB_IMAGE_CPP}
-	${GLAD_C}
+		${HDRS}
+		${SRCS}
+		${GLAD_C}
+		${STB_IMAGE_CPP}
+		${STB_VORBIS_C}
 )
 
 target_include_directories(Zadymka PUBLIC
@@ -60,9 +62,5 @@ target_link_libraries(Zadymka
 
 if(DEMO)
 	file(COPY demo/ DESTINATION ${CMAKE_BINARY_DIR})
-	add_custom_target(copy_demo ALL
-			COMMAND ${CMAKE_COMMAND} -E copy_directory
-			"${CMAKE_SOURCE_DIR}/demo" "${CMAKE_BINARY_DIR}/"
-			COMMENT "Copy demo to build directory"
-			VERBATIM)
+
 endif()

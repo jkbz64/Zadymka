@@ -20,7 +20,7 @@ void Texture::registerClass()
                                           "create", &Texture::create,
                                           "loadFromFile", &Texture::loadFromFile,
                                           "loadFromMemory", &Texture::loadFromMemory,
-                                          "getSize", [](Texture& texture) { return std::make_tuple(texture.m_size.x, texture.m_size.y); }
+                                          "getSize", &Texture::getSize
     );
 }
 
