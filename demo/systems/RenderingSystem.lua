@@ -1,11 +1,7 @@
 local RenderingSystem = class('RenderingSystem')
 
 function RenderingSystem:init(ev, em)
-    
-end
-
-function RenderingSystem:require()
-    return {"Position", "Renderable"}
+    self.entities = {}
 end
 
 function RenderingSystem:saveCurrentState()

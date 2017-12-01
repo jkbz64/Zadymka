@@ -27,11 +27,11 @@ void Game::run()
     
     if(!Graphics::init())
         return;
-    if(!Audio::init())
+    /*if(!Audio::init())
     {
         Audio::destroy();
         return;
-    }
+    }*/
     m_window.create(800, 600, "Zadymka", Window::Style::Windowed);
 
     //Register lua classes
@@ -76,12 +76,13 @@ void Game::run()
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     glfwTerminate();
-    Audio::destroy();
+    //Audio::destroy();
 }
 
 void Game::registerModules()
 {
     Math::registerModule();
+    GameState::registerClass();
     StateManager::registerClass();
     Graphics::registerModule();
     Audio::registerModule();

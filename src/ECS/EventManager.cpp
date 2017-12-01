@@ -4,7 +4,7 @@ void EventManager::registerClass()
 {
     Lua::getState().new_usertype<EventManager>("EventManager",
                                                sol::constructors<EventManager()>(),
-                                               "subscribe", static_cast<void (EventManager::*)(const std::string&, sol::object, sol::function)>(&EventManager::subscribe),
+                                               "subscribe", &EventManager::subscribe,
                                                "emit", &EventManager::emit
                                                );
 }
@@ -16,7 +16,8 @@ void EventManager::subscribe(const std::string& eventName, sol::object obj, sol:
     std::vector<std::function<void(sol::table)>>& callbacks = m_eventCallbacks[eventName];
     callbacks.emplace_back([obj, f](sol::table table)
     {
-        f.call(obj, table);
+        if(obj.valid())
+            f.call(obj, table);
     });
 }
 

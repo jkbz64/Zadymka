@@ -1,4 +1,4 @@
-#include <StateManager.hpp>
+#include <include/ECS/StateManager.hpp>
 #include <iostream>
 
 void StateManager::registerClass()
@@ -7,9 +7,9 @@ void StateManager::registerClass()
                                                "new", sol::no_constructor,
                                                "setState", &StateManager::setState,
                                                "popBack", &StateManager::popState,
-                                               "getCurrentState", [](StateManager& mgr)
+                                               "getCurrentState", [](StateManager& mgr) -> const GameState&
                                                {
-                                                   return mgr.getCurrentState().getState();
+                                                   return mgr.getCurrentState();
                                                }
 
     );
@@ -17,17 +17,22 @@ void StateManager::registerClass()
 
 void StateManager::setState(const std::string& name)
 {
-    sol::object state;
+    sol::table stateTable;
     try
     {
-        state = Lua::scriptArgs("return dofile('states/' .. arg[1] .. '.lua')", name);
+        stateTable = Lua::scriptArgs("return dofile('states/' .. arg[1] .. '.lua')", name);
     }
     catch(sol::error& e)
     {
         std::cerr << e.what() << "\n";
         return;
     }
-    m_gameStates.emplace(state);
+    m_gameStates.emplace(stateTable);
+    if(stateTable["init"].valid())
+    {
+        GameState& state = m_gameStates.top();
+        stateTable["init"].call(&state);
+    }
 }
 
 void StateManager::popState()

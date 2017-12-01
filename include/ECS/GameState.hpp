@@ -3,54 +3,50 @@
 #include <Lua.hpp>
 #include <Graphics/Camera.hpp>
 #include <ECS/EntityManager.hpp>
-#include <ECS/SystemManager.hpp>
+#include <ECS/System.hpp>
 
 class Window;
 
 class GameState
 {
 public:
+    static void registerClass();
     GameState();
-    explicit GameState(sol::object);
+    explicit GameState(sol::table);
     GameState(const GameState&) = delete;
     GameState& operator=(const GameState&) = delete;
     GameState(GameState&&) = delete;
     GameState& operator=(GameState&&) = delete;
     ~GameState();
 
-    void cleanup();
+    void cleanup() const;
     void update(double dt) const;
     void fixedUpdate(double dt) const;
     void draw(Window& window, double alpha) const;
 
     const Camera& getCamera() const;
-    const EntityManager& getEntityManager() const;
-    sol::object getState() const;
+    
+    System& addSystem(const std::string&);
+    void removeSystem(const std::string&);
+    System& getSystem(const std::string&);
 protected:
-    sol::object m_state;
+    sol::table m_table;
+    std::function<void()> m_cleanup;
+    std::function<void(double)> m_update;
+    std::function<void(double)> m_fixedUpdate;
+    std::function<void(Window&, double)> m_draw;
+    //Camera
     Camera m_camera;
+    //ECS
     EventManager m_eventManager;
     EntityManager m_entityManager;
-    SystemManager m_systemManager;
-    sol::function m_cleanup;
-    sol::function m_update;
-    sol::function m_fixedUpdate;
-    sol::function m_draw;
+    std::unordered_map<std::string, System> m_systems;
+    static System m_nullSystem;
 };
 
 inline const Camera& GameState::getCamera() const
 {
     return m_camera;
-}
-
-inline const EntityManager& GameState::getEntityManager() const
-{
-    return m_entityManager;
-}
-
-inline sol::object GameState::getState() const
-{
-    return m_state;
 }
 
 #endif

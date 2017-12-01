@@ -1,6 +1,6 @@
 #ifndef STATEMANAGER_HPP
 #define STATEMANAGER_HPP
-#include <GameState.hpp>
+#include <include/ECS/GameState.hpp>
 #include <stack>
 
 class StateManager

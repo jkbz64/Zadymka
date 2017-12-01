@@ -1,26 +1,15 @@
-local DemoState = class('DemoState')
+return {
+    systems = {"RenderingSystem", "MovementSystem"},
+    init = function(self)
+        self.camera:setCenter(400, 300)
+    end,
+    update = function(self, dt)
 
-function DemoState:init()
-    --self.renderingSystem = self.systemManager:addSystem('RenderingSystem')
-    --self.movementSystem = self.systemManager:addSystem('MovementSystem')
-    --self.entity = self.entityManager:createEntity('Player')
-    self.camera:setCenter(400, 300)
-    print('')
-end
-
-function DemoState:update(dt)
-
-end
-
-function DemoState:fixedUpdate(dt)
-    --self.renderingSystem:saveCurrentState()
-    --self.movementSystem:fixedUpdate(dt)
-end
-
-function DemoState:draw(window, alpha)
-    --self.renderingSystem:draw(window, alpha)
-    --window:drawRect(0.0, 100.0, 300, 300, 255, 0, 255, 255)
-    --window:draw(self.sprite)
-end
-
-return DemoState
+    end,
+    fixedUpdate = function(self, dt)
+        self.systems["RenderingSystem"]:saveCurrentState()
+    end,
+    draw = function(self, window, alpha)
+        self.systems["RenderingSystem"]:draw(window, alpha)
+    end,
+}
