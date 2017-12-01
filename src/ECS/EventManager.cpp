@@ -17,7 +17,7 @@ void EventManager::subscribe(const std::string& eventName, sol::object obj, sol:
     callbacks.emplace_back([obj, f](sol::table table)
     {
         if(obj.valid())
-            f.call(obj, table);
+            f.call(obj, table)  ;
     });
 }
 

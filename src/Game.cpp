@@ -26,7 +26,11 @@ void Game::run()
     state.set("stateManager", &m_stateManager);
     
     if(!Graphics::init())
+    {
+        glfwTerminate();
         return;
+    }
+    
     /*if(!Audio::init())
     {
         Audio::destroy();

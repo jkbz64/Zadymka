@@ -1,5 +1,4 @@
 #include <ECS/EntityManager.hpp>
-#include <Lua.hpp>
 
 void EntityManager::registerClass()
 {
