@@ -53,7 +53,7 @@ Transformable& Transformable::operator =(Transformable&& other)
 
 void Transformable::translateBy(float dx, float dy)
 {
-    if(dx == 0.f || dx == 0.f)
+    if(dx == 0.f || dy == 0.f)
        return;
     m_modified = true;
     m_translation.x += dx;

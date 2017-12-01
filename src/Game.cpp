@@ -24,19 +24,14 @@ void Game::run()
     //Expose
     state.set("window", &m_window);
     state.set("stateManager", &m_stateManager);
-
-    if(!glfwInit())
+    
+    if(!Graphics::init())
+        return;
+    if(!Audio::init())
     {
-        std::cerr << "Failed to load glfw. Aborting\n";
+        Audio::destroy();
         return;
     }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    Audio::init();
-
     m_window.create(800, 600, "Zadymka", Window::Style::Windowed);
 
     //Register lua classes

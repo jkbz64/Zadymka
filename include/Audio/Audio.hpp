@@ -4,16 +4,14 @@
 #include <glm/vec3.hpp>
 #include <vector>
 #include <string>
-#include <AL/al.h>
-#include <AL/alc.h>
 
 namespace Audio
 {
     void registerModule();
-    void init();
+    bool init();
     void destroy();
     std::vector<std::string> getDevices();
-    ALenum toAlFormat(short, short);
+    int toAlFormat(short, short);
     void setGlobalVolume(float);
     float getGlobalVolume();
     void setPosition(glm::vec3);

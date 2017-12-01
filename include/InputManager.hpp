@@ -6,7 +6,6 @@
 class InputManager
 {
 public:
-    static void registerClass();
     InputManager(Window&);
     InputManager(const InputManager&) = delete;
     InputManager(InputManager&&) = delete;

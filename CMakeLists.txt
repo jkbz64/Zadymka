@@ -60,4 +60,9 @@ target_link_libraries(Zadymka
 
 if(DEMO)
 	file(COPY demo/ DESTINATION ${CMAKE_BINARY_DIR})
+	add_custom_target(copy_demo ALL
+			COMMAND ${CMAKE_COMMAND} -E copy_directory
+			"${CMAKE_SOURCE_DIR}/demo" "${CMAKE_BINARY_DIR}/"
+			COMMENT "Copy demo to build directory"
+			VERBATIM)
 endif()

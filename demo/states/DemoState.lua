@@ -5,7 +5,7 @@ function DemoState:init()
     --self.movementSystem = self.systemManager:addSystem('MovementSystem')
     --self.entity = self.entityManager:createEntity('Player')
     self.camera:setCenter(400, 300)
-    print(Audio.getDevices()[1])
+    print('')
 end
 
 function DemoState:update(dt)

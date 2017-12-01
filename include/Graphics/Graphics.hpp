@@ -4,6 +4,7 @@
 namespace Graphics
 {
     void registerModule();
+    bool init();
 }
 
 #endif

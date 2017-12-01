@@ -1,6 +1,8 @@
 #include <Audio/Audio.hpp>
 #include <Lua.hpp>
 #include <iostream>
+#include <AL/al.h>
+#include <AL/alc.h>
 #include <stb_vorbis.c>
 
 namespace
@@ -20,7 +22,7 @@ void Audio::registerModule()
     );
 }
 
-void Audio::init()
+bool Audio::init()
 {
     device = alcOpenDevice(NULL);
     if(device)
@@ -40,10 +42,17 @@ void Audio::init()
             alListenerfv(AL_ORIENTATION, orientation);
         }
         else
+        {
             std::cerr << "Failed to create audio context\n";
+            return false;
+        }
     }
     else
+    {
         std::cerr << "Failed to create audio context\n";
+        return false;
+    }
+    return true;
 }
 
 void Audio::destroy()

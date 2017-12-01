@@ -1,8 +1,5 @@
 #include <GameState.hpp>
 #include <Graphics/Window.hpp>
-#include <ECS/EventManager.hpp>
-#include <ECS/EntityManager.hpp>
-#include <ECS/SystemManager.hpp>
 
 GameState::GameState() :
     m_camera(),
