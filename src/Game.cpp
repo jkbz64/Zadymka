@@ -64,10 +64,8 @@ void Game::run()
 void Game::registerModules()
 {
     Math::registerModule();
-    GameState::registerClass();
-    StateManager::registerClass();
     Graphics::registerModule();
-    Audio::registerModule();
+    //Audio::registerModule();
     ECS::registerModule();
 }
 
