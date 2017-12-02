@@ -1,4 +1,4 @@
-#include <Graphics/Graphics.hpp>
+#include <include/Graphics.hpp>
 #include <Graphics/Texture.hpp>
 #include <Graphics/Shader.hpp>
 #include <Graphics/Rectangle.hpp>
@@ -8,11 +8,6 @@
 #include <Graphics/RenderTexture.hpp>
 #include <Graphics/VertexArray.hpp>
 #include <Graphics/Window.hpp>
-
-namespace
-{
-
-}
 
 void Graphics::registerModule()
 {
@@ -37,4 +32,9 @@ bool Graphics::init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     return true;
+}
+
+void Graphics::deinit()
+{
+    glfwTerminate();
 }

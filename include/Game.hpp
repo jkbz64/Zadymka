@@ -19,6 +19,8 @@ protected:
     StateManager m_stateManager;
     InputManager m_inputManager;
 
+    bool initModules();
+    void deinitModules();
     void registerModules();
 };
 

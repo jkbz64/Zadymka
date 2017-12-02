@@ -17,7 +17,7 @@ public:
     EntityManager& operator=(EntityManager&&) = delete;
     ~EntityManager();
     Entity& createEntity();
-    Entity& createEntity(const std::string&);
+    Entity& createEntity(sol::table);
     void destroyEntity(std::size_t);
     Entity& getEntity(std::size_t);
     std::vector<std::reference_wrapper<Entity>> getEntities();
@@ -34,7 +34,7 @@ private:
 
 protected:
     friend class Entity;
-    sol::object createComponent(Entity&, const std::string&, sol::table);
+    sol::table getDefaultComponent(const std::string&);
 };
 
 #endif

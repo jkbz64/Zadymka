@@ -15,18 +15,8 @@ void StateManager::registerClass()
     );
 }
 
-void StateManager::setState(const std::string& name)
+void StateManager::setState(sol::table stateTable)
 {
-    sol::table stateTable;
-    try
-    {
-        stateTable = Lua::scriptArgs("return dofile('states/' .. arg[1] .. '.lua')", name);
-    }
-    catch(sol::error& e)
-    {
-        std::cerr << e.what() << "\n";
-        return;
-    }
     m_gameStates.emplace(stateTable);
     if(stateTable["init"].valid())
     {

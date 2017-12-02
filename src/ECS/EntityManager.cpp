@@ -4,14 +4,15 @@ void EntityManager::registerClass()
 {
     Lua::getState().new_usertype<EntityManager>("EntityManager",
                                                 sol::constructors<EntityManager(EventManager&)>(),
-                                                "createEntity",
-                                                [](EntityManager& mgr, const std::string& entityName = std::string()) -> sol::object
+                                                "createEntity", sol::overload(
+                                                [](EntityManager& mgr, sol::table entityTable) -> sol::object
                                                 {
-                                                    if(entityName.empty())
-                                                        return mgr.createHandle(mgr.createEntity());
-                                                    else
-                                                        return mgr.createHandle(mgr.createEntity(entityName));
+                                                    return mgr.createHandle(mgr.createEntity(entityTable));
                                                 },
+                                                [](EntityManager& mgr) -> sol::object
+                                                {
+                                                    return mgr.createHandle(mgr.createEntity());
+                                                }),
                                                 "destroyEntity", &EntityManager::destroyEntity,
                                                 "getEntity", [](EntityManager& mgr, std::size_t id) -> sol::object
                                                 {
@@ -72,7 +73,7 @@ Entity& EntityManager::createEntity()
     return e;
 }
 
-Entity& EntityManager::createEntity(const std::string& entityName)
+Entity& EntityManager::createEntity(sol::table componentTable)
 {
     const auto id = m_poolIndex++;
     auto inserted = m_entities.emplace(std::piecewise_construct,
@@ -80,11 +81,6 @@ Entity& EntityManager::createEntity(const std::string& entityName)
                                        std::forward_as_tuple(this, id));
     auto it = inserted.first;
     auto& e = it->second;
-
-    sol::table componentTable = Lua::scriptArgs(
-    R"(
-    return dofile('entities/' .. arg[1] .. '.lua')
-    )", entityName);
 
     for(std::pair<sol::object, sol::table> pair : componentTable)
     {
@@ -148,13 +144,7 @@ std::vector<std::reference_wrapper<Entity>> EntityManager::getEntities()
     return entities;
 }
 
-sol::object EntityManager::createComponent(Entity& entity, const std::string& componentName, sol::table table)
-{    
-    sol::object component = Lua::scriptArgs(
-    R"(
-    local c = dofile('components/' .. arg[1] .. '.lua'):new(arg[3])
-    c.entity = arg[2]
-    return c
-    )", componentName, createHandle(entity), table);
-    return component;
+sol::table EntityManager::getDefaultComponent(const std::string& componentName)
+{
+    return Lua::getState()["ECS"]["components"][componentName];
 }

@@ -14,7 +14,7 @@ public:
     StateManager& operator=(StateManager&&) = delete;
     ~StateManager() = default;
     const GameState& getCurrentState() const;
-    void setState(const std::string&);
+    void setState(sol::table);
     void popState();
 private:
     std::stack<GameState> m_gameStates;

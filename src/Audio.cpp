@@ -1,4 +1,4 @@
-#include <Audio/Audio.hpp>
+#include <include/Audio.hpp>
 #include <Lua.hpp>
 #include <iostream>
 #include <AL/al.h>
@@ -59,7 +59,7 @@ bool Audio::init()
     return true;
 }
 
-void Audio::destroy()
+void Audio::deinit()
 {
     alcMakeContextCurrent(NULL);
     if(context)

@@ -28,7 +28,7 @@ Font::~Font()
 
 Font::Font(const std::string &fontName)
 {
-    loadFromFile("fonts/" + fontName);
+    loadFromFile(fontName);
 }
 
 bool Font::loadFromFile(const std::string &file)

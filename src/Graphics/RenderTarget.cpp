@@ -33,7 +33,7 @@ void RenderTarget::drawSprite(const std::string& textureName, float x, float y, 
     if(cachedTextures.find(textureName) == std::end(cachedTextures))
     {
         auto& texture = cachedTextures[textureName];
-        if(!texture.loadFromFile("textures/" + textureName))
+        if(!texture.loadFromFile(textureName))
         {
             cachedTextures.erase(cachedTextures.find(textureName));
             std::cerr << "Failed to load texture " << textureName << '\n';
@@ -54,7 +54,7 @@ void RenderTarget::drawText(const std::string& str, float x, float y, const std:
     if(cachedFonts.find(fontName) == std::end(cachedFonts))
     {
         auto& font = cachedFonts[fontName];
-        if(!font.loadFromFile("fonts/" + fontName))
+        if(!font.loadFromFile(fontName))
         {
             cachedFonts.erase(cachedFonts.find(fontName));
             std::cerr << "Failed to load font " + fontName << '\n';

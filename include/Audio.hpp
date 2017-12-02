@@ -10,7 +10,7 @@ namespace Audio
 {
     void registerModule();
     bool init();
-    void destroy();
+    void deinit();
     std::vector<std::string> getDevices();
     void setGlobalVolume(float);
     float getGlobalVolume();

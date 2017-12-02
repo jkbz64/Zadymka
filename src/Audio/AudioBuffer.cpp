@@ -3,7 +3,7 @@
 #include <AL/alc.h>
 #include <Lua.hpp>
 #include <Audio/stb_vorbis/stb_vorbis.hpp>
-#include <Audio/Audio.hpp>
+#include <include/Audio.hpp>
 #include <iostream>
 
 void AudioBuffer::registerClass()

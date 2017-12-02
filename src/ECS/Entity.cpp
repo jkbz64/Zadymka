@@ -1,6 +1,7 @@
 #include <ECS/Entity.hpp>
 #include <Lua.hpp>
 #include <ECS/EntityManager.hpp>
+#include <iostream>
 
 void Entity::registerClass()
 {
@@ -13,7 +14,6 @@ void Entity::registerClass()
                                          "has", sol::overload(&Entity::hasComponent, &Entity::hasComponents),
                                          "components", &Entity::m_components
     );
-    Lua::getState().script_file("entities/Entity.lua");
 }
 
 Entity::Entity(EntityManager* manager, int id) :
@@ -30,7 +30,72 @@ int Entity::getID()
 
 void Entity::addComponent(const std::string& componentName, sol::table table)
 {
-    m_components[componentName] = m_manager->createComponent(*this, componentName, table);
+    auto defaultComponent = m_manager->getDefaultComponent(componentName);
+    if(defaultComponent.valid())
+    {
+        sol::table componentTable = m_components[componentName] = Lua::getState().create_table();
+        //First copy from given table
+        for(std::pair<sol::object, sol::object> cVar : table)
+        {
+            std::string key = cVar.first.as<std::string>();
+            sol::object value = cVar.second;
+            sol::type type = value.get_type();
+            
+            if(type == sol::type::number  || // Copy POD
+               type == sol::type::boolean ||
+               type == sol::type::string  ||
+               type == sol::type::function)
+            {
+                componentTable[key] = value;
+            }
+            else if(type == sol::type::userdata) // Copy Userdata's by using copy constructor
+            {
+                sol::object copied = Lua::scriptArgs("return getmetatable(arg[1]).new(arg[1])", value);
+                componentTable[key] = copied;
+            }
+            else if(type == sol::type::table) // TODO table copy
+            {
+                //TODO
+            }
+            else // Fallback to POD copy, welp
+            {
+                componentTable[key] = value;
+            }
+        }
+        //Now copy remaining field if they are not present
+        for(std::pair<sol::object, sol::object> cVar : table)
+        {
+            std::string key = cVar.first.as<std::string>();
+            sol::object value = cVar.second;
+            sol::type type = value.get_type();
+    
+            if(componentTable[key].get_type() != sol::type::nil) // Skip copying existing variables
+                continue;
+        
+            if(type == sol::type::number  || // Copy POD
+               type == sol::type::boolean ||
+               type == sol::type::string  ||
+               type == sol::type::function)
+            {
+                componentTable[key] = value;
+            }
+            else if(type == sol::type::userdata) // Copy Userdata's by using copy constructor
+            {
+                sol::object copied = Lua::scriptArgs("return getmetatable(arg[1]).new(arg[1])", value);
+                componentTable[key] = copied;
+            }
+            else if(type == sol::type::table) // TODO table copy
+            {
+                //TODO
+            }
+            else // Fallback to POD copy, welp
+            {
+                componentTable[key] = value;
+            }
+        }
+    }
+    else
+        std::cerr << componentName << " couldn't be found. Register component before adding to entity\n";
 }
 
 bool Entity::hasComponent(const std::string& name)
