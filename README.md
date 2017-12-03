@@ -27,11 +27,10 @@ cd Zadymka
 mkdir build && cd build
 cmake ..
 make -j4
-// Optionally run demo, check demo for code
+// Optionally run demo, check demo directory for code
 lua init.lua
 ```
 
 ## Usage
-Zadymka is a lua module, so you can just copy library file and `require("Zadymka")` in your lua code.
+Zadymka is a lua module, so you can just copy libraries along with Zadymka and `require("Zadymka")` in your lua code.
 Remember to use function `init` before using other library features.
-Check demo directory to see the example code.
