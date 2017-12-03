@@ -1,5 +1,6 @@
--- Define basic stuff
-dt = 1.0 / 60.0
+Zadymka = require("Zadymka")
+Zadymka.init()
+
 
 -- You can implement some syntax sugar for operating on components
 function Entity:getPosition()
@@ -73,3 +74,9 @@ ECS.registerState('DemoState', {
 
 -- Code...
 stateManager:setState(ECS.states["DemoState"])
+
+
+
+
+-- Deinitialize zadymka
+Zadymka.deinit()

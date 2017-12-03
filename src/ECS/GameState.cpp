@@ -5,7 +5,7 @@
 
 void GameState::registerClass(sol::table module)
 {
-    module.new_usertype<GameState>("GameState", "new", sol::no_constructor,
+    module.new_usertype<GameState>("GameState", sol::constructors<GameState(), GameState(sol::table)>(),
                                             "camera", &GameState::m_camera,
                                             "eventManager", &GameState::m_eventManager,
                                             "entityManager", &GameState::m_entityManager,
@@ -19,7 +19,10 @@ void GameState::registerClass(sol::table module)
                                             sol::meta_function::new_index, [](GameState& state, const std::string& key, sol::object value)
                                             {
                                                 state.m_table[key] =  value;
-                                            }
+                                            },
+                                            "update", &GameState::update,
+                                            "fixedUpdate", &GameState::fixedUpdate,
+                                            "draw", &GameState::draw
     );
 }
 

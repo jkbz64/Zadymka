@@ -1,6 +1,6 @@
 #include <include/ECS.hpp>
-#include <ECS/StateManager.hpp>
 #include <Lua.hpp>
+#include <ECS/GameState.hpp>
 
 namespace
 {
@@ -14,7 +14,6 @@ sol::table ECS::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
     sol::table module = lua.create_table();
-    StateManager::registerClass(module);
     GameState::registerClass(module);
     Entity::registerClass(module);
     EntityManager::registerClass(module);

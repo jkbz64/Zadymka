@@ -25,12 +25,15 @@ void Window::registerClass(sol::table module)
                              {
                                  window.create(width, height, title, static_cast<Window::Style>(style));
                              },
+                             "isOpen", &Window::isOpen,
+                             "close", &Window::close,
                              "setTitle", &Window::setTitle,
                              "getSize", [](Window& window) { return glm::vec2(window.m_width, window.m_height); },
                              "setSize", &Window::setSize,
                              "onOpen", &Window::m_onOpen,
                              "onResize", &Window::m_onResize,
                              "onClose", &Window::m_onClose,
+                             "setCamera", &Window::setCamera,
                              //Draw
                              "draw",
                              sol::overload(
@@ -42,7 +45,9 @@ void Window::registerClass(sol::table module)
                              ),
                              "drawRect", &Window::drawRect,
                              "drawText", &Window::drawText,
-                             "drawSprite", &Window::drawSprite
+                             "drawSprite", &Window::drawSprite,
+                             "clear", &Window::clear,
+                             "display", &Window::display
     );
 }
 

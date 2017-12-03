@@ -4,6 +4,7 @@
 #include <Graphics.hpp>
 #include <Audio.hpp>
 #include <ECS.hpp>
+#include <Timer.hpp>
 
 sol::table Zadymka::createModule(sol::this_state L)
 {
@@ -14,6 +15,7 @@ sol::table Zadymka::createModule(sol::this_state L)
     module["Math"] = Math::createModule(L);
     module["Graphics"] = Graphics::createModule(L);
     module["ECS"] = ECS::createModule(L);
+    module["Timer"] = Timer::createModule(L);
     //module["Audio"] = Audio::createModule(L);
     return module;
 }
@@ -33,7 +35,6 @@ void Zadymka::deinit(sol::this_state)
     Graphics::deinit();
     //Audio::deinit();
     ECS::deinit();
-    Lua::setState(nullptr);
 }
 
 extern "C" int luaopen_Zadymka(lua_State* L)
