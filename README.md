@@ -1,7 +1,7 @@
 # Zadymka
 **Work in progress**
 
-Zadymka aims to be an 2D game framework.
+Zadymka is a 2D game framework lua module.
 
 | Language    | C++14 + Lua   |
 |-----------	|-------------	|
@@ -27,4 +27,11 @@ cd Zadymka
 mkdir build && cd build
 cmake ..
 make -j4
+// Optionally run demo, check demo for code
+lua init.lua
 ```
+
+## Usage
+Zadymka is a lua module, so you can just copy library file and `require("Zadymka")` in your lua code.
+Remember to use function `init` before using other library features.
+Check demo directory to see the example code.
