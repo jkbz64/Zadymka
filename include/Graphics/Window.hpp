@@ -1,15 +1,13 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
-#include <Lua.hpp>
 #include <Graphics/glad/glad.h>
 #include <Graphics/Drawable.hpp>
 #include <Graphics/RenderTarget.hpp>
 
-
 class Window : public RenderTarget
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     enum class Style
     {
         Windowed,

@@ -4,9 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <Lua.hpp>
 
-void Text::registerClass()
+void Text::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Text>("Text",
+    module.new_usertype<Text>("Text",
                                        sol::constructors<Text(), Text(Font&)>(),
                                        "setPosition", [](Text& text, float x, float y) { text.setPosition(glm::vec2(x, y)); },
                                        "getPosition", &Text::getPosition,

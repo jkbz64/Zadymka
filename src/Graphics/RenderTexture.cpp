@@ -15,9 +15,9 @@ namespace
     }
 }
 
-void RenderTexture::registerClass()
+void RenderTexture::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<RenderTexture>("RenderTexture",
+    module.new_usertype<RenderTexture>("RenderTexture",
                                                 sol::constructors<RenderTexture()>(),
                                                 "create", &RenderTexture::create,
                                                 "getTexture", &RenderTexture::getTexture,

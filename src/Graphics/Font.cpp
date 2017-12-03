@@ -2,9 +2,9 @@
 #include <iostream>
 #include <Lua.hpp>
 
-void Font::registerClass()
+void Font::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Font>("Font",
+    module.new_usertype<Font>("Font",
                                        sol::constructors<Font(), Font(const std::string&)>(),
                                        "loadFromFile", &Font::loadFromFile
                                        );

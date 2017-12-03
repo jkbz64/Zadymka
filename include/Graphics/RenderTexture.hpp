@@ -6,7 +6,7 @@
 class RenderTexture : public RenderTarget
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     RenderTexture() = default;
     virtual ~RenderTexture() = default;
     void create(unsigned int w, unsigned int h);

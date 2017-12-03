@@ -2,9 +2,9 @@
 #include <Lua.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-void Sprite::registerClass()
+void Sprite::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Sprite>("Sprite",
+    module.new_usertype<Sprite>("Sprite",
                                          sol::constructors<Sprite()>(),
                                          "getPosition", &Sprite::getPosition,
                                          "setPosition", [](Sprite& sprite, float x, float y) { sprite.setPosition(glm::vec2(x, y)); },

@@ -1,6 +1,5 @@
 #ifndef GAMESTATE_HPP
 #define GAMESTATE_HPP
-#include <Lua.hpp>
 #include <Graphics/Camera.hpp>
 #include <ECS/EntityManager.hpp>
 #include <ECS/System.hpp>
@@ -10,7 +9,7 @@ class Window;
 class GameState
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     GameState();
     explicit GameState(sol::table);
     GameState(const GameState&) = delete;
@@ -41,7 +40,6 @@ protected:
     EventManager m_eventManager;
     EntityManager m_entityManager;
     std::unordered_map<std::string, System> m_systems;
-    static System m_nullSystem;
 };
 
 inline const Camera& GameState::getCamera() const

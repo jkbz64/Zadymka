@@ -2,89 +2,45 @@
 #include <ECS/EventManager.hpp>
 #include <ECS/EntityManager.hpp>
 #include <Graphics/Window.hpp>
+#include <iostream>
+#include <Lua.hpp>
 
-void System::registerClass()
+void System::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<System>("System",
-                                         "new", sol::no_constructor,
-                                         sol::meta_function::index, [](sol::object, const std::string& name)
+    module.new_usertype<System>("System", "new", sol::no_constructor,
+                                         sol::meta_function::index, [](System& system, const std::string& name)
                                          {
-                                             return [name](System& system, sol::variadic_args args)
-                                             {
-                                                 sol::function_result results;
-                                                 if(system.m_system.valid())
-                                                 {
-                                                     sol::table meta = system.m_system;
-                                                     results = meta[name].call(system.m_system, args);
-                                                 }
-                                                 return results;
-                                             };
+                                             return system.m_systemTable[name];
                                          },
-                                         "update", &System::update,
-                                         "fixedUpdate", &System::fixedUpdate,
-                                         "draw", &System::draw
-            );
+                                         sol::meta_function::new_index, [](System& system, const std::string& key, sol::object value)
+                                         {
+                                             system.m_systemTable[key] = value;
+                                         }
+    );
 }
 
 System::System()
 {
-    m_system = Lua::getState().script("return nil");
-    m_init = [](EventManager &, EntityManager &) {};
-    m_update = [](double) {};
-    m_fixedUpdate = [](double) {};
-    m_draw = [](Window &, double) {};
+
 }
 
-System::System(sol::object system) :
-    m_system(std::move(system))
+System::System(sol::table systemTable)
 {
-    m_init = [](EventManager &, EntityManager &) {};
-    m_update = [](double) {};
-    m_fixedUpdate = [](double) {};
-    m_draw = [](Window &, double) {};
-    sol::function _init, _update, _fixedUpdate, _draw;
-    sol::tie(_init, _update, _fixedUpdate, _draw) = Lua::scriptArgs(
-    R"(
-        local system = arg[1]
-        local returnWrappedFunction = function(f)
-            if f ~= nil then
-                return function(...) return f(system, ...) end
-            else
-                return nil
-            end
-        end
-        return returnWrappedFunction(system.init),
-               returnWrappedFunction(system.update),
-               returnWrappedFunction(system.fixedUpdate),
-               returnWrappedFunction(system.draw)
-    )", m_system);
-    
-    if(_init.valid())
-        m_init = [_init](EventManager &ev, EntityManager &em) { _init.call(ev, em); };
-    if(_update.valid())
-        m_update = [_update](double dt) { _update.call(dt); };
-    if(_fixedUpdate.valid())
-        m_fixedUpdate = [_fixedUpdate](double dt) { _fixedUpdate.call(dt); };
-    if(_draw.valid())
-        m_draw = [_draw](Window &w, double alpha) { _draw.call(w, alpha); };
-}
-
-void System::init(EventManager &ev, EntityManager &em) const
-{
-    m_init(ev, em);
-}
-
-void System::update(double dt) const
-{
-    m_update(dt);
-}
-
-void System::fixedUpdate(double dt) const
-{
-    m_fixedUpdate(dt);
-}
-
-void System::draw(Window &w, double alpha) const
-{
-    m_draw(w, alpha);
+    m_systemTable = Lua::getState().create_table();
+    for(std::pair<sol::object, sol::object> p : systemTable)
+    {
+        std::string key = p.first.as<std::string>();
+        auto val = p.second;
+        if(val.get_type() == sol::type::function)
+        {
+            sol::function f = val.as<sol::function>();
+            m_systemTable[key] = [f](System& system, sol::variadic_args args)
+            {
+                f.call(&system, args);
+            };
+        }
+        else
+            m_systemTable[key] = val;
+    }
+    init = m_systemTable["init"];
 }

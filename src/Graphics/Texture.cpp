@@ -13,9 +13,9 @@ struct TextureDeleter
     }
 };
 
-void Texture::registerClass()
+void Texture::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Texture>("Texture",
+    module.new_usertype<Texture>("Texture",
                                           sol::constructors<Texture()>(),
                                           "create", &Texture::create,
                                           "loadFromFile", &Texture::loadFromFile,

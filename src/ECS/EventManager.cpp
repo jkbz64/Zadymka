@@ -1,8 +1,8 @@
 #include <ECS/EventManager.hpp>
 
-void EventManager::registerClass()
+void EventManager::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<EventManager>("EventManager",
+    module.new_usertype<EventManager>("EventManager",
                                                sol::constructors<EventManager()>(),
                                                "subscribe", &EventManager::subscribe,
                                                "emit", &EventManager::emit

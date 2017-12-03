@@ -14,6 +14,7 @@ elseif (CMAKE_BUILD_TYPE MATCHES "Release")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
 option(DEMO "Build demo?" ON)
 
@@ -30,7 +31,7 @@ set(GLAD_C ${CMAKE_SOURCE_DIR}/src/Graphics/glad/glad.c)
 set(STB_IMAGE_CPP ${CMAKE_SOURCE_DIR}/src/Graphics/stb_image/stb_image.cpp)
 set(STB_VORBIS_C ${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c)
 
-add_executable(Zadymka
+add_library(Zadymka SHARED
 		${HDRS}
 		${SRCS}
 		${GLAD_C}

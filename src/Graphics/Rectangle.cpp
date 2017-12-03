@@ -3,9 +3,9 @@
 #include <Lua.hpp>
 #include <Graphics/Window.hpp>
 
-void Rectangle::registerClass()
+void Rectangle::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Rectangle>("Rectangle",
+    module.new_usertype<Rectangle>("Rectangle",
                                             sol::constructors<Rectangle(unsigned int, unsigned int)>(),
                                             "getPosition", &Rectangle::getPosition,
                                             "setPosition", [](Rectangle& rect, float x, float y) { rect.setPosition(glm::vec2(x, y)); },

@@ -9,7 +9,7 @@ class EntityManager;
 class Entity
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     Entity(EntityManager*, int);
     Entity(const Entity&) = delete;
     Entity(Entity&&) = delete;

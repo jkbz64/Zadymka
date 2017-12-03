@@ -7,11 +7,12 @@
 #include <string>
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <sol/table.hpp>
 
 class Shader
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     Shader();
     Shader(const std::string&, const std::string&, const std::string& = std::string(""));
     const Shader& use() const;

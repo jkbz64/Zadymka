@@ -8,20 +8,25 @@
 #include <Graphics/RenderTexture.hpp>
 #include <Graphics/VertexArray.hpp>
 #include <Graphics/Window.hpp>
+#include <sol/state_view.hpp>
+#include <include/Lua.hpp>
 
-void Graphics::registerModule()
+sol::table Graphics::createModule(sol::this_state L)
 {
-    Window::registerClass();
-    Camera::registerClass();
-    Texture::registerClass();
-    Shader::registerClass();
-    Lua::getState().new_usertype<Drawable>("Drawable", "new", sol::no_constructor);
-    Rectangle::registerClass();
-    Sprite::registerClass();
-    Font::registerClass();
-    Text::registerClass();
-    RenderTexture::registerClass();
-    VertexArray::registerClass();
+    sol::state_view lua(L);
+    sol::table module = lua.create_table();
+    Window::registerClass(module);
+    Camera::registerClass(module);
+    Texture::registerClass(module);
+    Shader::registerClass(module);
+    module.new_usertype<Drawable>("Drawable", "new", sol::no_constructor);
+    Rectangle::registerClass(module);
+    Sprite::registerClass(module);
+    Font::registerClass(module);
+    Text::registerClass(module);
+    RenderTexture::registerClass(module);
+    VertexArray::registerClass(module);
+    return module;
 }
 
 bool Graphics::init()
@@ -31,10 +36,22 @@ bool Graphics::init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
+    Lua::getState()["WindowStyle"] = Lua::getState().create_table_with(
+            "Windowed", 0,
+            "Fullscreen", 1,
+            "FullscreenWindowed", 2
+    );
+    
     return true;
 }
 
 void Graphics::deinit()
 {
     glfwTerminate();
+}
+
+extern "C" int luaopen_Zadymka_Graphics(lua_State* L)
+{
+    return sol::stack::call_lua(L, 1, Graphics::createModule);
 }

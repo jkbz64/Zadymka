@@ -1,9 +1,9 @@
 #include <include/ECS/StateManager.hpp>
 #include <iostream>
 
-void StateManager::registerClass()
+void StateManager::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<StateManager>("StateManager",
+    module.new_usertype<StateManager>("StateManager",
                                                "new", sol::no_constructor,
                                                "setState", &StateManager::setState,
                                                "popBack", &StateManager::popState,

@@ -1,8 +1,9 @@
 #include <ECS/EntityManager.hpp>
+#include <Lua.hpp>
 
-void EntityManager::registerClass()
+void EntityManager::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<EntityManager>("EntityManager",
+    module.new_usertype<EntityManager>("EntityManager",
                                                 sol::constructors<EntityManager(EventManager&)>(),
                                                 "createEntity", sol::overload(
                                                 [](EntityManager& mgr, sol::table entityTable) -> sol::object

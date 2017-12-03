@@ -1,11 +1,10 @@
 #include <Audio/Sound.hpp>
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <Lua.hpp>
 
-void Sound::registerClass()
+void Sound::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Sound>("Sound", sol::constructors<Sound()>(),
+    module.new_usertype<Sound>("Sound", sol::constructors<Sound()>(),
                                         "getPosition", &Sound::getPosition,
                                         "setPosition", &Sound::setPosition,
                                         "setBuffer", &Sound::setBuffer,

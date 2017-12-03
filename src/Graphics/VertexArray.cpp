@@ -2,15 +2,15 @@
 #include <Lua.hpp>
 #include <Graphics/Sprite.hpp>
 
-void VertexArray::registerClass()
+void VertexArray::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Vertex>("Vertex",
+    module.new_usertype<Vertex>("Vertex",
                                          "position", &Vertex::m_position,
                                          "texCoords", &Vertex::m_texCoords
                                          //"color", &Vertex::m_color
                                          );
 
-    Lua::getState().new_usertype<VertexArray>("VertexArray",
+    module.new_usertype<VertexArray>("VertexArray",
                                               sol::constructors<VertexArray(const PrimitiveType&)>(),
                                               "resize", &VertexArray::resize,
                                               "setTexture", &VertexArray::setTexture,

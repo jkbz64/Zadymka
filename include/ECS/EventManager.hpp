@@ -1,12 +1,12 @@
 #ifndef EVENTMANAGER_HPP
 #define EVENTMANAGER_HPP
 #include <unordered_map>
-#include <Lua.hpp>
+#include <sol/table.hpp>
 
 class EventManager
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     EventManager() = default;
     EventManager(const EventManager&) = delete;
     EventManager(EventManager&&) = delete;

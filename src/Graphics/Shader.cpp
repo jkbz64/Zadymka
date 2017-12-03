@@ -4,9 +4,9 @@
 #include <iostream>
 #include <Lua.hpp>
 
-void Shader::registerClass()
+void Shader::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Shader>("Shader",
+    module.new_usertype<Shader>("Shader",
                                          sol::constructors<Shader(), Shader(const std::string&, const std::string&)>(),
                                          "use", &Shader::use,
                                          "getID", &Shader::getID,

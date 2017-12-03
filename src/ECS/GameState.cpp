@@ -1,12 +1,11 @@
 #include <include/ECS/GameState.hpp>
 #include <Graphics/Window.hpp>
-#include <iostream>
+#include <include/ECS.hpp>
+#include <Lua.hpp>
 
-System GameState::m_nullSystem;
-
-void GameState::registerClass()
+void GameState::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<GameState>("GameState", "new", sol::no_constructor,
+    module.new_usertype<GameState>("GameState", "new", sol::no_constructor,
                                             "camera", &GameState::m_camera,
                                             "eventManager", &GameState::m_eventManager,
                                             "entityManager", &GameState::m_entityManager,
@@ -34,6 +33,7 @@ GameState::GameState() :
     m_update = [](double){};
     m_fixedUpdate = [](double){};
     m_draw = [](Window&, double){};
+    m_table["systems"] = std::unordered_map<std::string, std::reference_wrapper<System>>();
 }
 
 GameState::GameState(sol::table state) :
@@ -84,19 +84,10 @@ void GameState::draw(Window &window, double alpha) const
 
 System& GameState::addSystem(const std::string& systemName)
 {
-    sol::object lsystem;
-    try
-    {
-        lsystem = Lua::getState().safe_script("return dofile('systems/' .. '" + systemName + "' .. '.lua')()");
-    }
-    catch(sol::error& e)
-    {
-        std::cerr << "Couldn't find " + systemName + " in systems directory\n";
-        return m_nullSystem;
-    }
-    m_systems.emplace(systemName, lsystem);
+    sol::table systemTable = ECS::getSystem(systemName);
+    m_systems.emplace(systemName, systemTable);
     auto& system = m_systems[systemName];
-    system.init(m_eventManager, m_entityManager);
+    system.init.call(&system, m_eventManager, m_entityManager);
     std::unordered_map<std::string, std::reference_wrapper<System>>& addedSystems = m_table["systems"];
     addedSystems.emplace(systemName, system);
     return system;
@@ -116,6 +107,4 @@ System& GameState::getSystem(const std::string& systemName)
 {
     if(m_systems.find(systemName) != std::end(m_systems))
         return m_systems[systemName];
-    else
-        return m_nullSystem;
 }

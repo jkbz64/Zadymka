@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <Graphics/RenderTexture.hpp>
+#include <Lua.hpp>
 
 namespace
 {
@@ -17,10 +18,13 @@ namespace
     }
 }
 
-void Window::registerClass()
+void Window::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Window>("Window",
-                             "new", sol::no_constructor,
+    module.new_usertype<Window>("Window", sol::constructors<Window()>(),
+                             "create", [](Window& window, unsigned int width, unsigned int height, const std::string& title, int style)
+                             {
+                                 window.create(width, height, title, static_cast<Window::Style>(style));
+                             },
                              "setTitle", &Window::setTitle,
                              "getSize", [](Window& window) { return glm::vec2(window.m_width, window.m_height); },
                              "setSize", &Window::setSize,

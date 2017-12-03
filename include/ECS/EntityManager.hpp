@@ -1,7 +1,6 @@
 #ifndef ENTITYMANAGER_HPP
 #define ENTITYMANAGER_HPP
 #include <unordered_map>
-#include <Lua.hpp>
 #include <ECS/Entity.hpp>
 #include <functional>
 #include <ECS/EventManager.hpp>
@@ -9,7 +8,7 @@
 class EntityManager
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     EntityManager(EventManager&);
     EntityManager(const EntityManager&) = delete;
     EntityManager(EntityManager&&) = delete;

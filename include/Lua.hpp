@@ -1,16 +1,12 @@
 #ifndef LUA_HPP
 #define LUA_HPP
-#include <sol/state.hpp>
-#include <string>
+
+#include <sol/state_view.hpp>
 
 struct Lua
 {
-    static sol::state& getState()
-    {
-        static sol::state state = sol::state();
-        return state;
-    }
-
+    static void setState(lua_State*);
+    static sol::state_view getState();
     template<typename... Args>
     static sol::protected_function_result scriptArgs(const std::string& code, Args&&... arguments)
     {
@@ -18,6 +14,5 @@ struct Lua
         return f.call(arguments...);
     }
 };
-
 
 #endif

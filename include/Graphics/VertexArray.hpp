@@ -15,7 +15,7 @@ enum class PrimitiveType
 class VertexArray : public Drawable, private std::vector<Vertex>, public Transformable
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     VertexArray(const PrimitiveType& type);
     ~VertexArray() = default;
     void resize(std::size_t);

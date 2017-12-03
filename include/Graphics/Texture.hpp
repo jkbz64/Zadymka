@@ -5,11 +5,12 @@
 #include <glm/vec2.hpp>
 #include <string>
 #include <memory>
+#include <sol/table.hpp>
 
 class Texture
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     Texture();
     Texture(const Texture&) = default;
     Texture& operator=(const Texture&) = default;

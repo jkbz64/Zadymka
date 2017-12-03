@@ -1,9 +1,16 @@
 #ifndef MATH_HPP
 #define MATH_HPP
+#include <Lua.hpp>
 
 namespace Math
 {
-    void registerModule();
+    sol::table createModule(sol::this_state);
 }
+
+extern "C" {
+struct lua_State;
+}
+
+extern "C" int luaopen_Zadymka_Math(lua_State*);
 
 #endif

@@ -5,7 +5,7 @@
 class Sound : public AudioSource
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     Sound();
     virtual ~Sound();
     

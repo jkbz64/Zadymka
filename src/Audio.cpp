@@ -1,10 +1,10 @@
 #include <include/Audio.hpp>
-#include <Lua.hpp>
 #include <iostream>
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <Audio/AudioBuffer.hpp>
 #include <Audio/Sound.hpp>
+#include <sol/state_view.hpp>
 
 namespace
 {
@@ -16,14 +16,13 @@ namespace
     glm::vec3 listenerUpVector(0.f, 1.f, 0.f);
 }
 
-void Audio::registerModule()
+sol::table Audio::createModule(sol::this_state L)
 {
-    Lua::getState()["Audio"] = Lua::getState().create_table_with(
-        "getDevices", &Audio::getDevices
-    );
-    
-    AudioBuffer::registerClass();
-    Sound::registerClass();
+    sol::state_view lua(L);
+    sol::table module = lua.create_table();
+    AudioBuffer::registerClass(module);
+    Sound::registerClass(module);
+    return module;
 }
 
 bool Audio::init()
@@ -110,4 +109,9 @@ void Audio::setPosition(glm::vec3 pos)
 const glm::vec3& Audio::getPosition()
 {
     return listenerPosition;
+}
+
+extern "C" int luaopen_Zadymka_Audio(lua_State* L)
+{
+    return sol::stack::call_lua(L, 1, Audio::createModule);
 }

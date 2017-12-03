@@ -1,14 +1,13 @@
 #include <Audio/AudioBuffer.hpp>
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <Lua.hpp>
 #include <Audio/stb_vorbis/stb_vorbis.hpp>
 #include <include/Audio.hpp>
 #include <iostream>
 
-void AudioBuffer::registerClass()
+void AudioBuffer::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<AudioBuffer>("AudioBuffer", sol::constructors<AudioBuffer()>(),
+    module.new_usertype<AudioBuffer>("AudioBuffer", sol::constructors<AudioBuffer()>(),
                                               "loadFromFile", &AudioBuffer::loadFromFile
     );
 }

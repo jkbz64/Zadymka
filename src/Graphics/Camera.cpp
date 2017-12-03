@@ -2,9 +2,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 
-void Camera::registerClass()
+void Camera::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Camera>("Camera",
+    module.new_usertype<Camera>("Camera",
                                          sol::constructors<Camera()>(),
                                          "setCenter", [](Camera& camera, float x, float y) { camera.setCenter(glm::vec2(x, y)); },
                                          "getCenter", &Camera::getCenter,

@@ -4,9 +4,11 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-void Math::registerModule()
+sol::table Math::createModule(sol::this_state L)
 {
-    Lua::getState().new_usertype<glm::vec2>("Vec2f",
+    sol::state_view lua(L);
+    sol::table module = lua.create_table();
+    module.new_usertype<glm::vec2>("Vec2f",
                                             sol::constructors<glm::vec2(), glm::vec2(float, float), glm::vec2(glm::vec2), glm::vec2(const glm::vec2&), glm::vec2(const glm::uvec2&)>(),
                                             "x", &glm::vec2::x,
                                             "y", &glm::vec2::y,
@@ -32,7 +34,7 @@ void Math::registerModule()
                                             }
     );
 
-    Lua::getState().new_usertype<glm::uvec2>("Vec2u",
+    module.new_usertype<glm::uvec2>("Vec2u",
                                             sol::constructors<glm::uvec2(), glm::uvec2(unsigned int, unsigned int), glm::uvec2(glm::uvec2), glm::uvec2(const glm::uvec2&), glm::uvec2(const glm::vec2&)>(),
                                             "x", &glm::uvec2::x,
                                             "y", &glm::uvec2::y,
@@ -58,7 +60,7 @@ void Math::registerModule()
                                             }
     );
 
-    Lua::getState().new_usertype<glm::ivec2>("Vec2i",
+    module.new_usertype<glm::ivec2>("Vec2i",
                                             sol::constructors<glm::ivec2(), glm::ivec2(int, int), glm::ivec2(glm::ivec2), glm::ivec2(const glm::ivec2&), glm::ivec2(const glm::vec2&)>(),
                                             "x", &glm::ivec2::x,
                                             "y", &glm::ivec2::y,
@@ -83,4 +85,10 @@ void Math::registerModule()
                                                 return a == b;
                                             }
     );
+    return module;
+}
+
+extern "C" int luaopen_Zadymka_Math(lua_State* L)
+{
+    return sol::stack::call_lua(L, 1, Math::createModule);
 }

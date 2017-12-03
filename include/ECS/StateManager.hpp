@@ -6,7 +6,7 @@
 class StateManager
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     StateManager() = default;
     StateManager(const StateManager&) = delete;
     StateManager(StateManager&&) = delete;

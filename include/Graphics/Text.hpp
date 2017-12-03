@@ -8,7 +8,7 @@ class Font;
 class Text : public Drawable, public Transformable
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     Text();
     Text(Font&);
     Text(const Text&) = default;

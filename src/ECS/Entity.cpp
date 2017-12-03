@@ -1,11 +1,13 @@
 #include <ECS/Entity.hpp>
+#include <sol/state_view.hpp>
+#include <sol/table.hpp>
 #include <Lua.hpp>
 #include <ECS/EntityManager.hpp>
 #include <iostream>
 
-void Entity::registerClass()
+void Entity::registerClass(sol::table module)
 {
-    Lua::getState().new_usertype<Entity>("Entity",
+    module.new_usertype<Entity>("Entity",
                                          "new", sol::no_constructor,
                                          "getID", &Entity::getID,
                                          "addComponent", &Entity::addComponent,

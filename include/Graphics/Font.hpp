@@ -6,11 +6,12 @@
 #include <string>
 #include <Graphics/Glyph.hpp>
 #include <map>
+#include <sol/table.hpp>
 
 class Font
 {
 public:
-    static void registerClass();
+    static void registerClass(sol::table);
     Font();
     Font(const std::string&);
     Font(const Font&) = delete;
