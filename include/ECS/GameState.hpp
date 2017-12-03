@@ -18,6 +18,7 @@ public:
     GameState& operator=(GameState&&) = delete;
     ~GameState();
 
+    void init() const;
     void cleanup() const;
     void update(double dt) const;
     void fixedUpdate(double dt) const;
@@ -30,6 +31,7 @@ public:
     System& getSystem(const std::string&);
 protected:
     sol::table m_table;
+    std::function<void()> m_init;
     std::function<void()> m_cleanup;
     std::function<void(double)> m_update;
     std::function<void(double)> m_fixedUpdate;

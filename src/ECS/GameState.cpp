@@ -20,6 +20,7 @@ void GameState::registerClass(sol::table module)
                                             {
                                                 state.m_table[key] =  value;
                                             },
+                                            "init", &GameState::init,
                                             "update", &GameState::update,
                                             "fixedUpdate", &GameState::fixedUpdate,
                                             "draw", &GameState::draw
@@ -32,6 +33,7 @@ GameState::GameState() :
     m_entityManager(m_eventManager)
 {
     m_table = Lua::getState().create_table();
+    m_init = [](){};
     m_cleanup = [](){};
     m_update = [](double){};
     m_fixedUpdate = [](double){};
@@ -42,6 +44,8 @@ GameState::GameState() :
 GameState::GameState(sol::table state) :
     GameState()
 {
+    if(state["init"].valid())
+        m_init = [state, this]() { state["init"].call(this); };
     if(state["cleanup"].valid())
         m_cleanup = [state, this]() { state["cleanup"].call(this); };
     if(state["update"].valid())
@@ -58,11 +62,18 @@ GameState::GameState(sol::table state) :
         for(std::pair<sol::object, sol::object> system : systems)
             addedSystems.emplace(system.second.as<std::string>(), addSystem(system.second.as<std::string>()));
     }
+    
+    init();
 }
 
 GameState::~GameState()
 {
     cleanup();
+}
+
+void GameState::init() const
+{
+    m_init();
 }
 
 void GameState::cleanup() const
