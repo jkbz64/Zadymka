@@ -2,10 +2,10 @@
 #define TIMER_HPP
 #include <sol/table.hpp>
 
-namespace Timer
+struct Timer
 {
-    sol::table createModule(sol::this_state);
-}
+    static sol::table createModule(sol::this_state);
+};
 
 extern "C"
 {

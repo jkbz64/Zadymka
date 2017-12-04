@@ -6,17 +6,17 @@
 #include <vector>
 #include <string>
 
-namespace Audio
+struct Audio
 {
-    sol::table createModule(sol::this_state);
-    bool init();
-    void deinit();
-    std::vector<std::string> getDevices();
-    void setGlobalVolume(float);
-    float getGlobalVolume();
-    void setPosition(glm::vec3);
-    const glm::vec3& getPosition();
-}
+    static sol::table createModule(sol::this_state);
+    static bool init();
+    static void deinit();
+    static std::vector<std::string> getDevices();
+    static void setGlobalVolume(float);
+    static float getGlobalVolume();
+    static void setPosition(glm::vec3);
+    static const glm::vec3& getPosition();
+};
 
 extern "C"
 {

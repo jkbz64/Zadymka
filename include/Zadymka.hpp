@@ -1,13 +1,13 @@
-#ifndef ZADYMKA_ZADYMKA_HPP
-#define ZADYMKA_ZADYMKA_HPP
+#ifndef ZADYMKA_HPP
+#define ZADYMKA_HPP
 #include <sol/table.hpp>
 
-namespace Zadymka
+struct Zadymka
 {
-    sol::table createModule(sol::this_state);
-    void init(sol::this_state);
-    void deinit(sol::this_state);
-}
+    static sol::table createModule(sol::this_state);
+    static void init(sol::this_state);
+    static void deinit(sol::this_state);
+};
 
 extern "C"
 {
@@ -16,4 +16,4 @@ extern "C"
 
 extern "C" int luaopen_Zadymka(lua_State* L);
 
-#endif //ZADYMKA_ZADYMKA_HPP
+#endif

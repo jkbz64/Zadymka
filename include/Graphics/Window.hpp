@@ -34,7 +34,7 @@ protected:
             glfwDestroyWindow(ptr);
         }
     };
-    std::unique_ptr<GLFWwindow, DestroyGLFWWindow> m_window{nullptr};
+    std::unique_ptr<GLFWwindow, DestroyGLFWWindow> m_window;
     bool m_isOpen;
     //Window details
     unsigned int m_width;

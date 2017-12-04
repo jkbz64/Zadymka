@@ -8,8 +8,9 @@ struct TextureDeleter
 {
     void operator()(GLuint* id)
     {
-        std::cerr << "deleting texture" << std::endl;
-        glDeleteTextures(1, id);
+        if(id)
+            glDeleteTextures(1, id);
+        delete id;
     }
 };
 

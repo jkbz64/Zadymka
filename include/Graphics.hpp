@@ -2,12 +2,12 @@
 #define GRAPHICS_HPP
 #include <sol/table.hpp>
 
-namespace Graphics
+struct Graphics
 {
-    sol::table createModule(sol::this_state);
-    bool init();
-    void deinit();
-}
+    static sol::table createModule(sol::this_state);
+    static bool init();
+    static void deinit();
+};
 
 extern "C"
 {

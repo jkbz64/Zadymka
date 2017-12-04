@@ -5,6 +5,7 @@
 #include <Audio.hpp>
 #include <ECS.hpp>
 #include <Timer.hpp>
+#include <Input.hpp>
 
 sol::table Zadymka::createModule(sol::this_state L)
 {
@@ -16,6 +17,7 @@ sol::table Zadymka::createModule(sol::this_state L)
     module["Graphics"] = Graphics::createModule(L);
     module["ECS"] = ECS::createModule(L);
     module["Timer"] = Timer::createModule(L);
+    module["Input"] = Input::createModule(L);
     //module["Audio"] = Audio::createModule(L);
     return module;
 }

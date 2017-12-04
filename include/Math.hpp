@@ -2,10 +2,10 @@
 #define MATH_HPP
 #include <Lua.hpp>
 
-namespace Math
+struct Math
 {
-    sol::table createModule(sol::this_state);
-}
+    static sol::table createModule(sol::this_state);
+};
 
 extern "C" {
 struct lua_State;

@@ -4,11 +4,13 @@
 
 class GLFWwindow;
 
-namespace Input
+struct Input
 {
-    void setWindow(GLFWwindow*);
-    sol::table createModule(sol::this_state);
-}
+    static sol::table createModule(sol::this_state);
+private:
+    friend class Window;
+    static void setWindow(GLFWwindow*);
+};
 
 extern "C"
 {

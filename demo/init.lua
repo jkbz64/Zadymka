@@ -108,7 +108,7 @@ ECS.registerState('DemoState', {
 local demoState = ECS.createState('DemoState')
 
 local window = Zadymka.Graphics.Window:new()
-window:create(800, 600, 'Zadymka', WindowStyle.FullscreenWindowed)
+window:create(800, 600, 'Zadymka', 0)
 
 local Timer = Zadymka.Timer
 dt = 1.0 / 60.0
