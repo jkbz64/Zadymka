@@ -3,6 +3,18 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/compatibility.hpp>
+
+namespace
+{
+    template<class T>
+    T lerp(const T& start, const T& end, double alpha)
+    {
+        return glm::mix(start, end, alpha);
+    }
+}
+
 
 sol::table Math::createModule(sol::this_state L)
 {
@@ -31,6 +43,10 @@ sol::table Math::createModule(sol::this_state L)
                                             sol::meta_function::equal_to, [](const glm::vec2& a, const glm::vec2& b)
                                             {
                                                 return a == b;
+                                            },
+                                            sol::meta_function::to_string, [](const glm::vec2& a)
+                                            {
+                                                return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
                                             }
     );
 
@@ -57,6 +73,10 @@ sol::table Math::createModule(sol::this_state L)
                                             sol::meta_function::equal_to, [](const glm::uvec2& a, const glm::uvec2& b)
                                             {
                                                 return a == b;
+                                            },
+                                            sol::meta_function::to_string, [](const glm::uvec2& a)
+                                            {
+                                                return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
                                             }
     );
 
@@ -83,8 +103,17 @@ sol::table Math::createModule(sol::this_state L)
                                             sol::meta_function::equal_to, [](const glm::ivec2& a, const glm::ivec2& b)
                                             {
                                                 return a == b;
+                                            },
+                                            sol::meta_function::to_string, [](const glm::ivec2& a)
+                                            {
+                                                return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
                                             }
     );
+    
+    module["Lerp"] = sol::overload(&lerp<glm::vec2>,
+                                   &lerp<glm::uvec2>,
+                                   &lerp<glm::ivec2>);
+    
     return module;
 }
 

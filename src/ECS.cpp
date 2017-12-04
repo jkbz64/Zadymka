@@ -19,21 +19,21 @@ sol::table ECS::createModule(sol::this_state L)
     EntityManager::registerClass(module);
     EventManager::registerClass(module);
     System::registerClass(module);
+    
+    module["registerState"] = &ECS::registerState;
+    module["createState"] = &ECS::createState;
+    module["registerComponent"] = &ECS::registerComponent;
+    module["registerEntity"] = &ECS::registerEntity;
+    module["registerSystem"] = &ECS::registerSystem;
+    module["states"] = &m_registeredStates;
+    module["components"] = &m_registeredComponents;
+    module["entities"] = &m_registeredEntities;
+    
     return module;
 }
 
 bool ECS::init()
 {
-    Lua::getState()["ECS"] = Lua::getState().create_table_with(
-            "registerState", &ECS::registerState,
-            "registerComponent", &ECS::registerComponent,
-            "registerEntity", &ECS::registerEntity,
-            "registerSystem", &ECS::registerSystem,
-            "states", &m_registeredStates,
-            "components", &m_registeredComponents,
-            "entities", &m_registeredEntities,
-            "systems", &m_registeredSystems
-    );
     return true;
 }
 
@@ -48,6 +48,13 @@ void ECS::deinit()
 void ECS::registerState(const std::string &stateName, sol::table stateTable)
 {
     m_registeredStates[stateName] = stateTable;
+}
+
+std::unique_ptr<GameState> ECS::createState(const std::string& stateName)
+{
+    if(m_registeredStates.find(stateName) != std::end(m_registeredStates))
+        return std::make_unique<GameState>(m_registeredStates[stateName]);
+    return std::make_unique<GameState>();
 }
 
 void ECS::registerComponent(const std::string &componentName, sol::table componentTable)

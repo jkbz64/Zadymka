@@ -65,13 +65,13 @@ void Entity::addComponent(const std::string& componentName, sol::table table)
             }
         }
         //Now copy remaining field if they are not present
-        for(std::pair<sol::object, sol::object> cVar : table)
+        for(std::pair<sol::object, sol::object> cVar : defaultComponent)
         {
             std::string key = cVar.first.as<std::string>();
             sol::object value = cVar.second;
             sol::type type = value.get_type();
-    
-            if(componentTable[key].get_type() != sol::type::nil) // Skip copying existing variables
+            
+            if(componentTable[key].valid()) // Skip copying existing variables
                 continue;
         
             if(type == sol::type::number  || // Copy POD

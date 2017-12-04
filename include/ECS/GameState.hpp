@@ -11,7 +11,7 @@ class GameState
 public:
     static void registerClass(sol::table);
     GameState();
-    explicit GameState(sol::table);
+    GameState(sol::table);
     GameState(const GameState&) = delete;
     GameState& operator=(const GameState&) = delete;
     GameState(GameState&&) = delete;
