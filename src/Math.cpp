@@ -15,7 +15,6 @@ namespace
     }
 }
 
-
 sol::table Math::createModule(sol::this_state L)
 {
     sol::state_view lua(L);

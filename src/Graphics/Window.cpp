@@ -8,6 +8,7 @@
 #include <iostream>
 #include <Graphics/RenderTexture.hpp>
 #include <Lua.hpp>
+#include <Input.hpp>
 
 namespace
 {
@@ -108,6 +109,7 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
         Window* w = (Window*)glfwGetWindowUserPointer(window);
         w->m_onResize.call(width, height);
     });
+    Input::setWindow(getNativeWindow());
     m_onOpen.call();
 }
 
