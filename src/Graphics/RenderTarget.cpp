@@ -1,11 +1,10 @@
 #include <Graphics/RenderTarget.hpp>
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Sprite.hpp>
-#include <unordered_map>
-#include <iostream>
 #include <Graphics/DefaultRenderer.hpp>
 #include <Graphics/Font.hpp>
 #include <Graphics/Text.hpp>
+#include <iostream>
 
 
 RenderTarget::RenderTarget() :
@@ -14,11 +13,15 @@ RenderTarget::RenderTarget() :
 
 }
 
+void RenderTarget::draw(Drawable& drawable)
+{
+    m_renderer = std::make_unique<DefaultRenderer>(m_camera);
+    drawable.draw(m_renderer.get());
+}
+
 void RenderTarget::draw(Drawable& drawable, const Shader& shader)
 {
-    // Set Custom Renderer when shader is not specified
-    //if(shader.isLoaded()) //
-    //    m_renderer = new CustomRenderer();
+    //TODO set custom renderer
     drawable.draw(m_renderer.get());
 }
 

@@ -6,9 +6,9 @@
 #include <Graphics/Font.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
-#include <Graphics/RenderTexture.hpp>
 #include <Lua.hpp>
 #include <Input.hpp>
+#include <Graphics/Shader.hpp>
 
 namespace
 {
@@ -37,11 +37,8 @@ void Window::registerClass(sol::table module)
                              "setCamera", &Window::setCamera,
                              //Draw
                              "draw", sol::overload(
-                             [](Window& window, Drawable& drawable)
-                             {
-                                 window.draw(drawable);
-                             },
-                             &Window::draw
+                             static_cast<void(Window::*)(Drawable&)>(&Window::draw),
+                             static_cast<void(Window::*)(Drawable&, const Shader&)>(&Window::draw)
                              ),
                              "drawRect", &Window::drawRect,
                              "drawText", &Window::drawText,

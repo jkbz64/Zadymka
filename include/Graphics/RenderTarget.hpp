@@ -1,8 +1,10 @@
 #ifndef RENDERTARGET_HPP
 #define RENDERTARGET_HPP
 #include <Graphics/Camera.hpp>
-#include <Graphics/Shader.hpp>
-#include <Graphics/Renderer.hpp>
+
+class Drawable;
+class Shader;
+class Renderer;
 
 class RenderTarget
 {
@@ -11,7 +13,8 @@ public:
     virtual ~RenderTarget() = default;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int = 255u) = 0;
     virtual void display() = 0;
-    void draw(Drawable&, const Shader& = Shader());
+    void draw(Drawable&);
+    void draw(Drawable&, const Shader&);
     void setRenderer(Renderer*);
 
     void drawRect(float, float, int, int, int, int, int, int);

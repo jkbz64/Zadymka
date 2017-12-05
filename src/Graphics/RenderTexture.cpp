@@ -4,6 +4,7 @@
 #include <Graphics/Text.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <Graphics/Shader.hpp>
 #include <iostream>
 
 namespace
@@ -22,11 +23,8 @@ void RenderTexture::registerClass(sol::table module)
                                                 "create", &RenderTexture::create,
                                                 "getTexture", &RenderTexture::getTexture,
                                                 "draw", sol::overload(
-                                                [](RenderTexture& target, Drawable& drawable)
-                                                {
-                                                    target.draw(drawable);
-                                                },
-                                                &RenderTexture::draw
+                                                static_cast<void(RenderTexture::*)(Drawable&)>(&RenderTexture::draw),
+                                                static_cast<void(RenderTexture::*)(Drawable&, const Shader&)>(&RenderTexture::draw)
                                                 ),
                                                 "drawRect", &RenderTexture::drawRect,
                                                 "drawSprite", &RenderTexture::drawSprite,

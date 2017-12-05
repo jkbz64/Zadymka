@@ -1,7 +1,7 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 #include <Graphics/glad/glad.h>
-#include <Graphics/Drawable.hpp>
+#include <GLFW/glfw3.h>
 #include <Graphics/RenderTarget.hpp>
 
 class Window : public RenderTarget

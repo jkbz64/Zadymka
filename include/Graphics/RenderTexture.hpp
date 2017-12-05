@@ -12,7 +12,6 @@ public:
     void create(unsigned int w, unsigned int h);
     virtual void display() override;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int) override;
-
     Texture& getTexture();
 private:
     Texture m_texture;
