@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <Lua.hpp>
 #include <Graphics/Window.hpp>
+#include <Graphics/Renderer.hpp>
 
 void Rectangle::registerClass(sol::table module)
 {

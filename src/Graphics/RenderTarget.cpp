@@ -4,14 +4,16 @@
 #include <Graphics/DefaultRenderer.hpp>
 #include <Graphics/Font.hpp>
 #include <Graphics/Text.hpp>
+#include <Graphics/Renderer.hpp>
 #include <iostream>
-
 
 RenderTarget::RenderTarget() :
     m_renderer(new DefaultRenderer(m_camera))
 {
 
 }
+
+RenderTarget::~RenderTarget() = default;
 
 void RenderTarget::draw(Drawable& drawable)
 {

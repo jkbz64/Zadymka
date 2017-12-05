@@ -2,6 +2,7 @@
 #include <Graphics/Glyph.hpp>
 #include <Graphics/Font.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <Graphics/Renderer.hpp>
 #include <Lua.hpp>
 
 void Text::registerClass(sol::table module)

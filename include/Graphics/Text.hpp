@@ -4,6 +4,7 @@
 #include <Graphics/Transformable.hpp>
 #include <Graphics/Color.hpp>
 #include <freetype2/ft2build.h>
+#include <sol/table.hpp>
 
 class Font;
 

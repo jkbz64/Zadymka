@@ -1,6 +1,7 @@
 #include <Graphics/VertexArray.hpp>
 #include <Lua.hpp>
 #include <Graphics/Sprite.hpp>
+#include <Graphics/Renderer.hpp>
 
 void VertexArray::registerClass(sol::table module)
 {

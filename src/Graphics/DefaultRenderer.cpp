@@ -2,7 +2,7 @@
 #include <Graphics/Shader.hpp>
 
 DefaultRenderer::DefaultRenderer(Camera& camera) :
-        Renderer(camera)
+        m_camera(camera)
 {
 
 }

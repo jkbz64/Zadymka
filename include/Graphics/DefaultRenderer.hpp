@@ -14,6 +14,8 @@ public:
     void render(Sprite&) override;
     void render(Text&) override;
     void render(VertexArray&) override;
+private:
+    Camera& m_camera;
 };
 
 #endif

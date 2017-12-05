@@ -1,6 +1,7 @@
 #ifndef DRAWABLE_HPP
 #define DRAWABLE_HPP
-#include <Graphics/Renderer.hpp>
+
+class Renderer;
 
 class Drawable
 {

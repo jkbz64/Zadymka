@@ -10,7 +10,7 @@ class RenderTarget
 {
 public:
     RenderTarget();
-    virtual ~RenderTarget() = default;
+    virtual ~RenderTarget();
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int = 255u) = 0;
     virtual void display() = 0;
     void draw(Drawable&);
