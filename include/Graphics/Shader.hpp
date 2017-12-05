@@ -6,7 +6,6 @@
 #include <glm/mat4x4.hpp>
 #include <string>
 #include <Graphics/glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <sol/table.hpp>
 
 class Shader

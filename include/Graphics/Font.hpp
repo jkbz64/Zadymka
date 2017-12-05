@@ -3,10 +3,10 @@
 #include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
 #include <GLFW/glfw3.h>
-#include <string>
 #include <Graphics/Glyph.hpp>
-#include <map>
 #include <sol/table.hpp>
+#include <string>
+#include <map>
 
 class Font
 {

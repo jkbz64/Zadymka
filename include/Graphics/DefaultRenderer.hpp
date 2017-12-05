@@ -1,6 +1,5 @@
 #ifndef DEFAULTRENDERER_HPP
 #define DEFAULTRENDERER_HPP
-
 #include <Graphics/Renderer.hpp>
 #include <Graphics/Camera.hpp>
 

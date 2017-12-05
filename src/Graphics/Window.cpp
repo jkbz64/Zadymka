@@ -9,6 +9,7 @@
 #include <Lua.hpp>
 #include <Input.hpp>
 #include <Graphics/Shader.hpp>
+#include <GLFW/glfw3.h>
 
 namespace
 {
@@ -50,6 +51,7 @@ void Window::registerClass(sol::table module)
 
 Window::Window() :
     RenderTarget(),
+    m_window(nullptr),
     m_isOpen(false),
     m_style(Window::Style::Windowed)
 {
@@ -58,9 +60,15 @@ Window::Window() :
                                                                                  function() end)");
 }
 
+Window::~Window()
+{
+    if(m_window)
+        glfwDestroyWindow(getNativeWindow());
+}
+
 GLFWwindow* Window::getNativeWindow()
 {
-    return m_window.get();
+    return m_window;
 }
 
 void Window::create(unsigned int w, unsigned int h, const std::string& title, const Style& style = Window::Style::Windowed)
@@ -75,14 +83,17 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
     m_height = h;
     m_title = title;
     m_style = style;
-
+    
+    if(m_window)
+        glfwDestroyWindow(getNativeWindow());
+    
     switch(m_style)
     {
     case Style::Windowed:
-        m_window.reset(glfwCreateWindow(m_width, m_height, title.c_str(), NULL, NULL));
+        m_window = glfwCreateWindow(m_width, m_height, title.c_str(), NULL, NULL);
         break;
     case Style::Fullscreen:
-        m_window.reset(glfwCreateWindow(m_width, m_height, title.c_str(), glfwGetPrimaryMonitor(), NULL));
+        m_window = glfwCreateWindow(m_width, m_height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
         break;
     case Style::FullscreenWindowed:
         auto monitor = glfwGetPrimaryMonitor();
@@ -91,7 +102,7 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
         glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
         glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-        m_window.reset(glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, NULL));
+        m_window = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, NULL);
         break;
     }
 
@@ -112,7 +123,7 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
 bool Window::isOpen()
 {
     if(m_window)
-        return !glfwWindowShouldClose(m_window.get()) && m_isOpen;
+        return !glfwWindowShouldClose(getNativeWindow()) && m_isOpen;
     else
         return false;
 }
