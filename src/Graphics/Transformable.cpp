@@ -3,9 +3,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Transformable::Transformable() :
-    m_modified(true),
     m_translation(0.f, 0.f),
     m_rotation(0.f),
+    m_modified(true),
     m_model(1.f)
 {
 
@@ -81,7 +81,7 @@ void Transformable::rotate(float deg)
     m_rotation = deg;
 }
 
-const glm::mat4& Transformable::getModel()
+const glm::mat4& Transformable::getModel() const
 {
     if(m_modified)
     {

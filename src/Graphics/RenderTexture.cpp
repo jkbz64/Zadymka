@@ -21,11 +21,10 @@ void RenderTexture::registerClass(sol::table module)
                                                 sol::constructors<RenderTexture()>(),
                                                 "create", &RenderTexture::create,
                                                 "getTexture", &RenderTexture::getTexture,
-                                                "draw",
-                                                sol::overload(
+                                                "draw", sol::overload(
                                                 [](RenderTexture& target, Drawable& drawable)
                                                 {
-                                                   target.draw(drawable);
+                                                    target.draw(drawable);
                                                 },
                                                 &RenderTexture::draw
                                                 ),

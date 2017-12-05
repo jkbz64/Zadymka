@@ -1,22 +1,30 @@
 #include <Graphics/RenderTarget.hpp>
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Sprite.hpp>
-#include <Graphics/Texture.hpp>
-#include <Graphics/Font.hpp>
-#include <Graphics/Text.hpp>
 #include <unordered_map>
 #include <iostream>
+#include <Graphics/DefaultRenderer.hpp>
+#include <Graphics/Font.hpp>
+#include <Graphics/Text.hpp>
 
-void RenderTarget::draw(Drawable &drawable, const Shader &shader)
+
+RenderTarget::RenderTarget() :
+    m_renderer(new DefaultRenderer(m_camera))
 {
-    std::reference_wrapper<const Shader> currentShader(shader);
-    //Bind default shader in case shader was not given
-    if(!currentShader.get().isLoaded())
-        currentShader = drawable.getDefaultShader();
-    currentShader.get().use();
-    currentShader.get().setMatrix4("projection", m_camera.getProjection());
-    currentShader.get().setMatrix4("view", m_camera.getView());
-    drawable.draw(currentShader.get());
+
+}
+
+void RenderTarget::draw(Drawable& drawable, const Shader& shader)
+{
+    // Set Custom Renderer when shader is not specified
+    //if(shader.isLoaded()) //
+    //    m_renderer = new CustomRenderer();
+    drawable.draw(m_renderer.get());
+}
+
+void RenderTarget::setRenderer(Renderer *renderer)
+{
+    m_renderer.reset(renderer);
 }
 
 void RenderTarget::drawRect(float x, float y, int w, int h, int r, int g, int b, int a)

@@ -1,6 +1,8 @@
 #ifndef TEXT_HPP
 #define TEXT_HPP
 #include <Graphics/Drawable.hpp>
+#include <Graphics/Transformable.hpp>
+#include <Graphics/Color.hpp>
 #include <freetype2/ft2build.h>
 
 class Font;
@@ -25,10 +27,11 @@ public:
     unsigned int getCharacterSize();
     void setColor(const Color&);
     const Color& getColor();
+    Font* getFont() const;
 protected:
-    virtual void draw(const Shader&) override;
-    virtual Shader& getDefaultShader() override;
+    void draw(Renderer*) override;
     Font* m_font;
+    Color m_color;
     unsigned int m_characterSize;
     std::string m_text;
 };

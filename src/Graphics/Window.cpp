@@ -36,11 +36,10 @@ void Window::registerClass(sol::table module)
                              "onClose", &Window::m_onClose,
                              "setCamera", &Window::setCamera,
                              //Draw
-                             "draw",
-                             sol::overload(
+                             "draw", sol::overload(
                              [](Window& window, Drawable& drawable)
                              {
-                                window.draw(drawable);
+                                 window.draw(drawable);
                              },
                              &Window::draw
                              ),

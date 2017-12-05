@@ -2,6 +2,8 @@
 #define RECTANGLE_HPP
 #include <Graphics/Drawable.hpp>
 #include <Graphics/Color.hpp>
+#include <Graphics/Transformable.hpp>
+#include <sol/table.hpp>
 
 class Rectangle : public Drawable, public Transformable
 {
@@ -18,12 +20,11 @@ public:
     const glm::vec2& getPosition();
     void setSize(const glm::vec2&);
     const glm::vec2& getSize();
-    const Color& getColor();
+    const Color& getColor() const;
     void setColor(const Color&);
 protected:
-    virtual void draw(const Shader&) override;
-    virtual GLuint update() override;
-    virtual Shader& getDefaultShader() override;
+    void draw(Renderer*) override;
+    Color m_color;
 };
 
 #endif

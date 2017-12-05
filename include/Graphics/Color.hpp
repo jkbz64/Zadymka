@@ -14,7 +14,7 @@ public:
     Color& operator=(Color&&) = default;
     ~Color() = default;
 
-    glm::vec4 normalized();
+    glm::vec4 normalized() const;
     int r() const;
     int g() const;
     int b() const;

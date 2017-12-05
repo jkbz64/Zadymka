@@ -16,13 +16,13 @@ public:
     void translateBy(float, float);
     void scale(float, float);
     void rotate(float);
-    const glm::mat4& getModel();
+    const glm::mat4& getModel() const;
 protected:
-    bool m_modified;
     glm::vec2 m_translation;
     glm::vec2 m_scale;
     float m_rotation;
-    glm::mat4 m_model;
+    mutable bool m_modified;
+    mutable glm::mat4 m_model;
 };
 
 #endif

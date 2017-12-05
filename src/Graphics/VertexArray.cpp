@@ -45,22 +45,22 @@ void VertexArray::resize(std::size_t newSize)
     m_needUpdate = true;
 }
 
-void VertexArray::draw(const Shader& shader)
+const Texture& VertexArray::getTexture() const
 {
-    if(!empty())
-    {
-        glActiveTexture(GL_TEXTURE0);
-        m_texture.bind();
-        shader.setMatrix4("model", getModel());
-        static const GLenum modes[] = {GL_POINTS, GL_TRIANGLES, GL_TRIANGLES};
-        GLenum mode = modes[static_cast<int>(m_primitiveType)];
-        glBindVertexArray(update());
-        glDrawArrays(mode, 0, size());
-        glBindVertexArray(0);
-    }
+    return m_texture;
 }
 
-GLuint VertexArray::update()
+void VertexArray::draw(Renderer* renderer)
+{
+    renderer->render(*this);
+}
+
+const PrimitiveType& VertexArray::getPrimitiveType() const
+{
+    return m_primitiveType;
+}
+
+GLuint VertexArray::update() const
 {
     static GLuint vao = 0;
     static GLuint vVBO = 0;

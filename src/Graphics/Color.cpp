@@ -24,7 +24,7 @@ Color::Color(int cr, int cg, int cb, int ca) :
 
 }
 
-glm::vec4 Color::normalized()
+glm::vec4 Color::normalized() const
 {
     return glm::vec4(normalize(r()), normalize(g()), normalize(b()), normalize(a()));
 }

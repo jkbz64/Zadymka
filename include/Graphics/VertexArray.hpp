@@ -4,6 +4,7 @@
 #include <Graphics/Vertex.hpp>
 #include <vector>
 #include <Graphics/Texture.hpp>
+#include <Graphics/Transformable.hpp>
 
 enum class PrimitiveType
 {
@@ -21,12 +22,14 @@ public:
     void resize(std::size_t);
     std::vector<Vertex>& getVertexes();
     void setTexture(const Texture&);
+    const Texture& getTexture() const;
+    GLuint update() const;
+    const PrimitiveType& getPrimitiveType() const;
 protected:
-    virtual void draw(const Shader&) override;
+    virtual void draw(Renderer*) override;
     PrimitiveType m_primitiveType;
-    bool m_needUpdate;
+    mutable bool m_needUpdate;
     Texture m_texture;
-    virtual GLuint update() override;
 };
 
 #endif

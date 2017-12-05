@@ -16,7 +16,7 @@ sol::table Input::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
     sol::table module = lua.create_table();
-    sol::table buttons = Lua::getState().create_table_with(
+    sol::table buttons = lua.create_table_with(
             "Left", GLFW_MOUSE_BUTTON_LEFT,
             "Right", GLFW_MOUSE_BUTTON_RIGHT,
             "Middle", GLFW_MOUSE_BUTTON_MIDDLE,

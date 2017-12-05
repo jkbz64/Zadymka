@@ -11,6 +11,8 @@
 #include <sol/state_view.hpp>
 #include <include/Lua.hpp>
 
+void draw(const Rectangle&);
+
 sol::table Graphics::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
