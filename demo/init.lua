@@ -8,14 +8,14 @@ Zadymka.init()
 
 -- Register our ECS stuff -- notice that these can be reloaded during runtime
 -- Components
-dofile('components/Position.lua')
+dofile('demo/components/Position.lua')
 -- Entities
-dofile('entities/Player.lua')
+dofile('demo/entities/Player.lua')
 -- Systems
-dofile('systems/RenderingSystem.lua')
-dofile('systems/MovementSystem.lua')
+dofile('demo/systems/RenderingSystem.lua')
+dofile('demo/systems/MovementSystem.lua')
 -- States
-dofile('states/DemoState.lua')
+dofile('demo/states/DemoState.lua')
 
 local demoState = ECS.createState('DemoState')
 
