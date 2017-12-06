@@ -38,15 +38,15 @@ while(window:isOpen()) do
 	currentTime = newTime
     accumulator = accumulator + frameTime
 
-    -- demoState:update(dt)
+    demoState:update(dt)
     while(accumulator >= dt) do
-        -- demoState:fixedUpdate(dt)
+        demoState:fixedUpdate(dt)
         accumulator = accumulator - dt
     end
 	local alpha = accumulator / dt
 	window:setCamera(demoState.camera)
 	window:clear(0, 125, 125)
-	-- demoState:draw(window, alpha)
+	demoState:draw(window, alpha)
 	window:display()
 	Timer.sleep(1)
 end
