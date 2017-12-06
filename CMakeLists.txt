@@ -19,7 +19,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
 option(DEMO "Build demo?" ON)
-option(TESTS "Build tests?" ON)
+option(TESTS "Build tests?" OFF)
 
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
@@ -69,5 +69,5 @@ if(DEMO)
 endif()
 
 if(TESTS)
-    file(COPY tests/ DESTINATION ${CMAKE_BINARY_DIR})
+    file(COPY tests/ DESTINATION ${CMAKE_BINARY_DIR}/tests/)
 endif()

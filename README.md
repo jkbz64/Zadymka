@@ -36,4 +36,5 @@ Zadymka is a lua module, so you can just copy libraries along with Zadymka and `
 Remember to use function `init` before using other library features.
 
 ## Tests
-If you want to run tests you will need to install busted lua library.
+If you want to run tests you will need to generate `cmake .. -DTESTS=ON` and install busted lua library.
+To run tests execute `busted .` in build directory.
