@@ -16,12 +16,11 @@ public:
     void setTexture(const Texture&);
     const Texture& getTexture() const;
     void setPosition(const glm::vec2&);
-    const glm::vec2& getPosition();
+    const glm::vec2& getPosition() const;
     void setSize(const glm::vec2&);
-    const glm::vec2& getSize();
+    const glm::vec2& getSize() const;
 protected:
     Texture m_texture;
-    Color m_color;
 };
 
 #endif

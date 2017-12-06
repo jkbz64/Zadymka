@@ -45,7 +45,7 @@ void Text::setString(const std::string& str)
     m_text = str;
 }
 
-const std::string& Text::getString()
+const std::string& Text::getString() const
 {
     return m_text;
 }
@@ -55,7 +55,7 @@ void Text::setPosition(const glm::vec2& pos)
     translate(glm::vec2(pos.x, pos.y));
 }
 
-const glm::vec2& Text::getPosition()
+const glm::vec2& Text::getPosition() const
 {
     return m_translation;
 }
@@ -66,12 +66,12 @@ void Text::setCharacterSize(unsigned int charSize)
     scale(1.f, static_cast<float>(m_characterSize) / 48.f);
 }
 
-unsigned int Text::getCharacterSize()
+unsigned int Text::getCharacterSize() const
 {
     return m_characterSize;
 }
 
-const Color& Text::getColor()
+const Color& Text::getColor() const
 {
     return m_color;
 }

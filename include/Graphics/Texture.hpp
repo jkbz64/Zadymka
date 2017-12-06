@@ -12,8 +12,8 @@ public:
     Texture();
     Texture(const Texture&) = default;
     Texture& operator=(const Texture&) = default;
-    Texture(Texture&&) = delete;
-    Texture& operator=(Texture&&) = delete;
+    Texture(Texture&&) = default;
+    Texture& operator=(Texture&&) = default;
     ~Texture() = default;
     GLuint getID() const;
     void bind() const;

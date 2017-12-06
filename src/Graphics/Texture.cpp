@@ -20,6 +20,8 @@ void Texture::registerClass(sol::table module)
     module.new_usertype<Texture>("Texture",
                                           sol::constructors<Texture(), Texture(const Texture&)>(),
                                           "create", &Texture::create,
+                                          "getID", &Texture::getID,
+                                          "bind", &Texture::bind,
                                           "loadFromFile", &Texture::loadFromFile,
                                           "loadFromMemory", &Texture::loadFromMemory,
                                           "getSize", &Texture::getSize
@@ -99,9 +101,9 @@ bool Texture::loadFromFile(const std::string &filename)
     }
     else
     {
-        std::cerr << "Failed to load texture\n";
         stbi_image_free(data);
         m_size = glm::vec2(0, 0);
+        std::cerr << "Failed to load texture\n";
         return false;
     }
 }

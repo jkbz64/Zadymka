@@ -8,7 +8,11 @@ class RenderTexture : public RenderTarget
 public:
     static void registerClass(sol::table);
     RenderTexture() = default;
-    virtual ~RenderTexture() = default;
+    RenderTexture(const RenderTexture&) = delete;
+    RenderTexture(RenderTexture&&) = delete;
+    RenderTexture& operator=(const RenderTexture&) = delete;
+    RenderTexture& operator=(RenderTexture&&) = delete;
+    ~RenderTexture() = default;
     void create(unsigned int w, unsigned int h);
     virtual void display() override;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int) override;

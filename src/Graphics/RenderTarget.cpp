@@ -21,7 +21,7 @@ void RenderTarget::draw(Drawable& drawable)
     drawable.draw(m_renderer.get());
 }
 
-void RenderTarget::draw(Drawable& drawable, const Shader& shader)
+void RenderTarget::draw(Drawable& drawable, const Shader&)
 {
     //TODO set custom renderer
     drawable.draw(m_renderer.get());

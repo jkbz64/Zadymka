@@ -73,7 +73,7 @@ describe("Graphics module", function()
 
     describe("RenderTexture class", function()
         local renderTexture
-        it("Checks constructor validity", function()
+        it("RenderTexture::RenderTexture()", function()
             assert.has_no_errors(function() renderTexture = Graphics.RenderTexture:new() end)
         end)
         it("RenderTexture::create", function()
@@ -81,8 +81,20 @@ describe("Graphics module", function()
         end)
     end)
 
-
-
+    describe("Texture class", function()
+        local texture = Graphics.Texture:new()
+        it("Texture:loadFromFile()", function()
+            assert.is_true(texture:loadFromFile('test.png'))
+            assert.are_equal(texture:getSize(), Zadymka.Math.Vec2u:new(640, 640))
+        end)
+        it("Texture:loadFromMemory()", function()
+            local file = io.open('test.png', 'rb')
+            local content = file:read("*all")
+            file:close()
+            assert.is_true(texture:loadFromMemory(content))
+            assert.are_equal(texture:getSize(), Zadymka.Math.Vec2u:new(640, 640))
+        end)
+    end)
 
     it("Graphics' module deinit works", function()
         assert.has_no_errors(function() Graphics.deinit() end)

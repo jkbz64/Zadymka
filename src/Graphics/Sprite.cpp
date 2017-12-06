@@ -69,7 +69,7 @@ void Sprite::setPosition(const glm::vec2& position)
     translate(position);
 }
 
-const glm::vec2& Sprite::getPosition()
+const glm::vec2& Sprite::getPosition() const
 {
     return m_translation;
 }
@@ -79,7 +79,7 @@ void Sprite::setSize(const glm::vec2& size)
     scale(size.x, size.y);
 }
 
-const glm::vec2& Sprite::getSize()
+const glm::vec2& Sprite::getSize() const
 {
     return m_scale;
 }

@@ -19,7 +19,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
 option(DEMO "Build demo?" ON)
-option(TESTS "Build tests?" OFF)
+option(TESTS "Build tests?" ON)
 
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)

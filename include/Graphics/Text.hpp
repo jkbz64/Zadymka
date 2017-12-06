@@ -23,11 +23,11 @@ public:
     void setString(const std::string&);
     void setPosition(const glm::vec2&);
     void setCharacterSize(unsigned int);
-    const std::string& getString();
-    const glm::vec2& getPosition();
-    unsigned int getCharacterSize();
+    const std::string& getString() const;
+    const glm::vec2& getPosition() const;
+    unsigned int getCharacterSize() const;
     void setColor(const Color&);
-    const Color& getColor();
+    const Color& getColor() const;
     Font* getFont() const;
 protected:
     void draw(Renderer*) override;

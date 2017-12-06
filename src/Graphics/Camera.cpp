@@ -57,7 +57,7 @@ Camera& Camera::operator=(Camera&& other)
     return *this;
 }
 
-const glm::vec2& Camera::getSize()
+const glm::vec2& Camera::getSize() const
 {
     return m_size;
 }
@@ -68,7 +68,7 @@ void Camera::setSize(const glm::vec2 &size)
     update();
 }
 
-const glm::vec2& Camera::getCenter()
+const glm::vec2& Camera::getCenter() const
 {
     return m_center;
 }
@@ -86,12 +86,12 @@ void Camera::move(float dx, float dy)
     update();
 }
 
-const glm::mat4& Camera::getView()
+const glm::mat4& Camera::getView() const
 {
     return m_view;
 }
 
-const glm::mat4& Camera::getProjection()
+const glm::mat4& Camera::getProjection() const
 {
     return m_projection;
 }
