@@ -5,6 +5,30 @@
 namespace
 {
     GLFWwindow* window{nullptr};
+    
+    bool isKeyPressed(int key)
+    {
+        int state = glfwGetKey(window, key);
+        return state == GLFW_PRESS;
+    }
+    
+    bool isKeyReleased(int key)
+    {
+        int state = glfwGetKey(window, key);
+        return state == GLFW_RELEASE;
+    }
+    
+    bool isButtonPressed(int key)
+    {
+        int state = glfwGetMouseButton(window, key);
+        return state == GLFW_PRESS;
+    }
+    
+    bool isButtonReleased(int key)
+    {
+        int state = glfwGetMouseButton(window, key);
+        return state == GLFW_RELEASE;
+    }
 }
 
 void Input::setWindow(GLFWwindow *w)
@@ -29,16 +53,8 @@ sol::table Input::createModule(sol::this_state L)
     );
     module["Mouse"] = lua.create_table_with(
             "Buttons", buttons,
-            "isButtonPressed", [](int key) -> bool
-            {
-                int state = glfwGetMouseButton(window, key);
-                return state == GLFW_PRESS;
-            },
-            "isButtonReleased", [](int key) -> bool
-            {
-                int state = glfwGetMouseButton(window, key);
-                return state == GLFW_RELEASE;
-            }
+            "isButtonPressed", &isButtonPressed,
+            "isButtonReleased", &isButtonReleased
     );
     sol::table keys = lua.create_table();
     keys["UNKNOWN"] = GLFW_KEY_UNKNOWN;
@@ -163,17 +179,9 @@ sol::table Input::createModule(sol::this_state L)
     keys["RIGHT_SUPER"] = GLFW_KEY_RIGHT_SUPER;
     keys["MENU"] = GLFW_KEY_MENU;
     module["Keyboard"] = lua.create_table_with(
-            "keys", keys,
-            "isKeyPressed", [](int key) -> bool
-            {
-                int state = glfwGetKey(window, key);
-                return state == GLFW_PRESS;
-            },
-            "isButtonReleased", [](int key) -> bool
-            {
-                int state = glfwGetKey(window, key);
-                return state == GLFW_RELEASE;
-            }
+            "Keys", keys,
+            "isKeyPressed", &isKeyPressed,
+            "isKeyReleased", &isKeyReleased
     );
     return module;
 }

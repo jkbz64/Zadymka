@@ -1,0 +1,1 @@
+Zadymka = require("Zadymka")

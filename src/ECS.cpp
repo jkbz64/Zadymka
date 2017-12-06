@@ -1,6 +1,7 @@
 #include <include/ECS.hpp>
 #include <Lua.hpp>
 #include <ECS/GameState.hpp>
+#include <iostream>
 
 namespace
 {
@@ -54,7 +55,11 @@ std::unique_ptr<GameState> ECS::createState(const std::string& stateName)
 {
     if(m_registeredStates.find(stateName) != std::end(m_registeredStates))
         return std::make_unique<GameState>(m_registeredStates[stateName]);
-    return std::make_unique<GameState>();
+    else
+    {
+        std::cerr << stateName << " has not been registered, returning nullState\n";
+        return std::make_unique<GameState>();
+    }
 }
 
 void ECS::registerComponent(const std::string &componentName, sol::table componentTable)

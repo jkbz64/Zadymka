@@ -13,6 +13,12 @@ namespace
     {
         return glm::mix(start, end, alpha);
     }
+    
+    template<class T>
+    T normalize(const T& a)
+    {
+        return glm::normalize(a);
+    }
 }
 
 sol::table Math::createModule(sol::this_state L)
@@ -109,9 +115,12 @@ sol::table Math::createModule(sol::this_state L)
                                             }
     );
     
+    module.new_usertype<glm::mat4>("Matrix4", sol::constructors<glm::mat4(), glm::mat4(const glm::mat4&)>());
+    
     module["Lerp"] = sol::overload(&lerp<glm::vec2>,
                                    &lerp<glm::uvec2>,
                                    &lerp<glm::ivec2>);
+    module["Normalize"] = &normalize<glm::vec2>;
     
     return module;
 }
