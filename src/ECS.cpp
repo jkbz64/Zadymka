@@ -15,6 +15,8 @@ sol::table ECS::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
     sol::table module = lua.create_table();
+    module["init"] = &ECS::init;
+    module["deinit"] = &ECS::deinit;
     GameState::registerClass(module);
     Entity::registerClass(module);
     EntityManager::registerClass(module);
@@ -33,7 +35,7 @@ sol::table ECS::createModule(sol::this_state L)
     return module;
 }
 
-bool ECS::init()
+bool ECS::init(sol::this_state)
 {
     return true;
 }

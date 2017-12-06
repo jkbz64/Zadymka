@@ -5,7 +5,7 @@
 struct Graphics
 {
     static sol::table createModule(sol::this_state);
-    static bool init();
+    static bool init(sol::this_state);
     static void deinit();
 };
 

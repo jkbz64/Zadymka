@@ -1,7 +1,7 @@
 #ifndef EVENTMANAGER_HPP
 #define EVENTMANAGER_HPP
-#include <unordered_map>
 #include <sol/table.hpp>
+#include <unordered_map>
 
 class EventManager
 {

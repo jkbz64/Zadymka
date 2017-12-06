@@ -1,11 +1,12 @@
 #ifndef COLOR_HPP
 #define COLOR_HPP
-#include <glm/vec4.hpp>
-#include <array>
+#include <sol/table.hpp>
+#include <glm/fwd.hpp>
 
 class Color
 {
 public:
+    static void registerClass(sol::table);
     Color();
     Color(int, int, int, int);
     Color(const Color&) = default;

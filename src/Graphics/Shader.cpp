@@ -1,18 +1,31 @@
 #include <Graphics/Shader.hpp>
-#include <fstream>
 #include <glm/gtc/type_ptr.hpp>
+#include <fstream>
 #include <iostream>
-#include <Lua.hpp>
+#include <Graphics/glad/glad.h>
+#include <GLFW/glfw3.h>
 
 void Shader::registerClass(sol::table module)
 {
-    module.new_usertype<Shader>("Shader",
-                                         sol::constructors<Shader(), Shader(const std::string&, const std::string&)>(),
+    module.new_usertype<Shader>("Shader", sol::constructors<Shader(), Shader(const std::string&, const std::string&)>(),
                                          "use", &Shader::use,
                                          "getID", &Shader::getID,
                                          "isLoaded", &Shader::isLoaded,
-                                         "loadFromFile", &Shader::loadFromFile,
-                                         "loadFromMemory", &Shader::loadFromMemory,
+                                         "loadFromFile", sol::overload
+                                         (
+                                             static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromFile),
+                                             [](Shader& shader, const std::string& vs, const std::string& fs)
+                                             {
+                                                 return shader.loadFromFile(vs, fs);
+                                             }
+                                         ),
+                                         "loadFromMemory", sol::overload(
+                                             static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromMemory),
+                                             [](Shader& shader, const std::string& vs, const std::string& fs)
+                                             {
+                                                 return shader.loadFromMemory(vs, fs);
+                                             }
+                                         ),
                                          "setFloat", &Shader::setFloat,
                                          "setInteger", &Shader::setInteger,
                                          "setVector2f", &Shader::setVector2f,
@@ -22,9 +35,16 @@ void Shader::registerClass(sol::table module)
 }
 
 Shader::Shader() :
-      m_isLoaded(false)
+        m_isLoaded(false),
+        m_ID(0)
 {
 
+}
+
+Shader::~Shader()
+{
+    if(m_ID != 0)
+        glDeleteProgram(m_ID);
 }
 
 Shader::Shader(const std::string& sV, const std::string& sF, const std::string& sG)
@@ -32,14 +52,30 @@ Shader::Shader(const std::string& sV, const std::string& sF, const std::string& 
     m_isLoaded = loadFromMemory(sV, sF, sG);
 }
 
-bool Shader::loadFromFile(std::string vertexPath, std::string fragmentPath, std::string geometryPath)
+const Shader& Shader::use() const
+{
+    glUseProgram(m_ID);
+    return *this;
+}
+
+GLuint Shader::getID() const
+{
+    return m_ID;
+}
+
+bool Shader::isLoaded() const
+{
+    return m_isLoaded;
+}
+
+bool Shader::loadFromFile(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
 {
     if(m_isLoaded)
     {
         glDeleteProgram(m_ID);
         m_isLoaded = false;
     }
-    std::string vSource, fSource, gSource = "";
+    std::string vSource, fSource, gSource = std::string();
     std::ifstream fin(vertexPath);
     std::stringstream contentStream;
     if(fin.is_open())
@@ -60,17 +96,14 @@ bool Shader::loadFromFile(std::string vertexPath, std::string fragmentPath, std:
     else
         return false;
     fin.close();
-    if(geometryPath != "")
+    if(!geometryPath.empty())
     {
         //TODO
     }
-    if(loadFromMemory(vSource, fSource, gSource))
-        return true;
-    else
-        return false;
+    return loadFromMemory(vSource, fSource, gSource);
 }
 
-bool Shader::loadFromMemory(std::string vSource, std::string sSource, std::string gSource)
+bool Shader::loadFromMemory(const std::string& vSource, const std::string& sSource, const std::string& gSource)
 {
     GLuint sVertex, sFragment, gShader;
 
@@ -87,7 +120,7 @@ bool Shader::loadFromMemory(std::string vSource, std::string sSource, std::strin
     glCompileShader(sFragment);
     checkCompileErrors(sFragment, "FRAGMENT");
     //Geo
-    if(gSource != "")
+    if(!gSource.empty())
     {
         source = gSource.c_str();
         gShader = glCreateShader(GL_GEOMETRY_SHADER);
@@ -98,14 +131,14 @@ bool Shader::loadFromMemory(std::string vSource, std::string sSource, std::strin
     m_ID = glCreateProgram();
     glAttachShader(m_ID, sVertex);
     glAttachShader(m_ID, sFragment);
-    if(gSource != "")
+    if(!gSource.empty())
         glAttachShader(m_ID, gShader);
     glLinkProgram(m_ID);
     checkCompileErrors(m_ID, "PROGRAM");
 
     glDeleteShader(sVertex);
     glDeleteShader(sFragment);
-    if(gSource != "")
+    if(!gSource.empty())
         glDeleteShader(gShader);
     m_isLoaded = true;
     return true;
@@ -121,8 +154,7 @@ void Shader::checkCompileErrors(GLuint object, const std::string& type)
         if (!success)
         {
             glGetShaderInfoLog(object, 1024, NULL, infoLog);
-            std::cout << "| ERROR::SHADER: Compile-time error: Type: " << type << "\n"
-                << infoLog << "\n -- --------------------------------------------------- -- \n";
+            throw std::runtime_error(type + " SHADER ERROR:\n" + infoLog + "\n");
         }
     }
     else
@@ -131,8 +163,7 @@ void Shader::checkCompileErrors(GLuint object, const std::string& type)
         if (!success)
         {
             glGetProgramInfoLog(object, 1024, NULL, infoLog);
-            std::cout << "| ERROR::Shader: Link-time error: Type: " << type << "\n"
-                << infoLog << "\n -- --------------------------------------------------- -- \n";
+            throw std::runtime_error(type + " SHADER ERROR:\n" + infoLog + "\n");
         }
     }
 }

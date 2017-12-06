@@ -1,4 +1,5 @@
 #include <Graphics/Color.hpp>
+#include <glm/vec4.hpp>
 
 namespace
 {
@@ -7,6 +8,17 @@ namespace
     {
       return value < 0.f ? 0.f : static_cast<float>(value) / 255.f;
     }
+}
+
+void Color::registerClass(sol::table module)
+{
+    module.new_usertype<Color>("Color", sol::constructors<Color(), Color(unsigned int, unsigned int, unsigned int, unsigned int), Color(const Color&)>(),
+                               "r", &Color::m_r,
+                               "g", &Color::m_g,
+                               "b", &Color::m_b,
+                               "a", &Color::m_a,
+                               "normalized", &Color::normalized
+    );
 }
 
 Color::Color() :

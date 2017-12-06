@@ -1,13 +1,14 @@
 #ifndef ECS_HPP
 #define ECS_HPP
 #include <sol/table.hpp>
-#include <ECS/GameState.hpp>
 #include <memory>
+
+class GameState;
 
 struct ECS
 {
     static sol::table createModule(sol::this_state);
-    static bool init();
+    static bool init(sol::this_state);
     static void deinit();
     static void registerState(const std::string&, sol::table);
     static std::unique_ptr<GameState> createState(const std::string&);

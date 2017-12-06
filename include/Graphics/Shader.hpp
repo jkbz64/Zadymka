@@ -1,12 +1,14 @@
 #ifndef SHADER_HPP
 #define SHADER_HPP
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
 #include <string>
-#include <Graphics/glad/glad.h>
 #include <sol/table.hpp>
+#include <glm/fwd.hpp>
+
+using GLuint = unsigned int;
+using GLchar = char;
+using GLfloat = float;
+using GLboolean = unsigned char;
+using GLint = int;
 
 class Shader
 {
@@ -14,10 +16,11 @@ public:
     static void registerClass(sol::table);
     Shader();
     Shader(const std::string&, const std::string&, const std::string& = std::string(""));
+    ~Shader();
     const Shader& use() const;
     GLuint getID() const;
-    bool loadFromFile(std::string, std::string, std::string = "");
-    bool loadFromMemory(std::string, std::string, std::string = "");
+    bool loadFromFile(const std::string&, const std::string&, const std::string& = std::string());
+    bool loadFromMemory(const std::string&, const std::string&, const std::string& = std::string());
     void setFloat(const GLchar*, GLfloat, GLboolean = false) const;
     void setInteger(const GLchar*, GLint, GLboolean = false) const;
     void setVector2f(const GLchar*, const glm::vec2&, GLboolean = false) const;
@@ -30,21 +33,5 @@ private:
     GLuint m_ID;
     void checkCompileErrors(GLuint, const std::string&);
 };
-
-inline GLuint Shader::getID() const
-{
-    return m_ID;
-}
-
-inline bool Shader::isLoaded() const
-{
-    return m_isLoaded;
-}
-
-inline const Shader& Shader::use() const
-{
-    glUseProgram(m_ID);
-    return *this;
-}
 
 #endif

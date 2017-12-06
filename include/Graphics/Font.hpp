@@ -2,11 +2,12 @@
 #define FONT_HPP
 #include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
-#include <GLFW/glfw3.h>
 #include <Graphics/Glyph.hpp>
 #include <sol/table.hpp>
-#include <string>
 #include <map>
+#include <string>
+
+using GLchar = char;
 
 class Font
 {

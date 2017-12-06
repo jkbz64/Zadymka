@@ -1,8 +1,4 @@
 #include <ECS/System.hpp>
-#include <ECS/EventManager.hpp>
-#include <ECS/EntityManager.hpp>
-#include <Graphics/Window.hpp>
-#include <iostream>
 #include <Lua.hpp>
 
 void System::registerClass(sol::table module)

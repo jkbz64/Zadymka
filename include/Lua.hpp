@@ -1,6 +1,5 @@
 #ifndef LUA_HPP
 #define LUA_HPP
-
 #include <sol/state_view.hpp>
 
 struct Lua

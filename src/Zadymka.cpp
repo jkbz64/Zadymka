@@ -1,14 +1,15 @@
 #include <Zadymka.hpp>
-#include <sol/state_view.hpp>
 #include <Math.hpp>
 #include <Graphics.hpp>
 #include <Audio.hpp>
 #include <ECS.hpp>
 #include <Timer.hpp>
 #include <Input.hpp>
+#include <Lua.hpp>
 
 sol::table Zadymka::createModule(sol::this_state L)
 {
+    Lua::setState(L);
     sol::state_view lua(L);
     sol::table module = lua.create_table();
     module["init"] = &Zadymka::init;
@@ -22,14 +23,10 @@ sol::table Zadymka::createModule(sol::this_state L)
     return module;
 }
 
-void Zadymka::init(sol::this_state L)
+bool Zadymka::init(sol::this_state L)
 {
-    //Set state to lua singleton
     Lua::setState(L);
-    
-    Graphics::init();
-    //Audio::init();
-    ECS::init();
+    return Graphics::init(L); /* && Audio::init() && */
 }
 
 void Zadymka::deinit(sol::this_state)

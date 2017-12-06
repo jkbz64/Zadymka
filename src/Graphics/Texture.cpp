@@ -1,8 +1,9 @@
 #include <Graphics/Texture.hpp>
 #include <Lua.hpp>
 #include <iostream>
-
 #include <stb_image.h>
+#include <Graphics/glad/glad.h>
+#include <GLFW/glfw3.h>
 
 struct TextureDeleter
 {
@@ -17,7 +18,7 @@ struct TextureDeleter
 void Texture::registerClass(sol::table module)
 {
     module.new_usertype<Texture>("Texture",
-                                          sol::constructors<Texture()>(),
+                                          sol::constructors<Texture(), Texture(const Texture&)>(),
                                           "create", &Texture::create,
                                           "loadFromFile", &Texture::loadFromFile,
                                           "loadFromMemory", &Texture::loadFromMemory,
@@ -36,6 +37,18 @@ Texture::Texture() :
     m_filterMax(GL_LINEAR)
 {
 
+}
+
+GLuint Texture::getID() const
+{
+    if(m_ID)
+        return *m_ID.get();
+    return 0;
+}
+
+void Texture::bind() const
+{
+    glBindTexture(GL_TEXTURE_2D, getID());
 }
 
 const glm::uvec2& Texture::getSize() const
@@ -67,14 +80,11 @@ bool Texture::loadFromFile(const std::string &filename)
         m_ID = std::shared_ptr<GLuint>(new GLuint(0), TextureDeleter());
         glGenTextures(1, m_ID.get());
         m_size = glm::uvec2(width, height);
-        //Bind texture
         bind();
-        //Wrapping/ filtering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_filterMin);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_filterMax);
-        //Choose appropriate format
         GLenum format = GL_RGB;
         if (nrChannels == 1)
             format = GL_RED;
@@ -107,14 +117,11 @@ bool Texture::loadFromMemory(const std::string& str)
         m_ID = std::shared_ptr<GLuint>(new GLuint(0), TextureDeleter());
         glGenTextures(1, m_ID.get());
         m_size = glm::uvec2(width, height);
-        //Bind texture
         bind();
-        //Wrapping/ filtering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_filterMin);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_filterMax);
-        //Choose appropriate format
         GLenum format = GL_RGB;
         if (nrChannels == 1)
             format = GL_RED;

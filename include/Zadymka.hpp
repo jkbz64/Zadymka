@@ -5,7 +5,7 @@
 struct Zadymka
 {
     static sol::table createModule(sol::this_state);
-    static void init(sol::this_state);
+    static bool init(sol::this_state);
     static void deinit(sol::this_state);
 };
 

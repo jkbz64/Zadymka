@@ -15,7 +15,7 @@ public:
     Texture& getTexture();
 private:
     Texture m_texture;
-    GLuint m_framebuffer;
+    unsigned int m_framebuffer;
 };
 
 #endif

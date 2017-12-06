@@ -1,7 +1,8 @@
 #ifndef GLYPH_HPP
 #define GLYPH_HPP
 #include <glm/vec2.hpp>
-#include <GLFW/glfw3.h>
+
+using GLuint = unsigned int;
 
 struct Glyph
 {

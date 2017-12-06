@@ -1,5 +1,7 @@
 #include <Graphics/DefaultRenderer.hpp>
 #include <Graphics/Shader.hpp>
+#include <Graphics/glad/glad.h>
+#include <GLFW/glfw3.h>
 
 DefaultRenderer::DefaultRenderer(Camera& camera) :
         m_camera(camera)

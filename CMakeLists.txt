@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 project(Zadymka)
 
-set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build(Release or Debug)")
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build(Release or Debug)" FORCE)
+endif()
 
 # Enforce C++14 standard
 set(CMAKE_CXX_STANDARD 14)
@@ -17,6 +19,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
 option(DEMO "Build demo?" ON)
+option(TESTS "Build tests?" OFF)
 
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
@@ -63,4 +66,8 @@ target_link_libraries(Zadymka
 
 if(DEMO)
 	file(COPY demo/ DESTINATION ${CMAKE_BINARY_DIR})
+endif()
+
+if(TESTS)
+    file(COPY tests/ DESTINATION ${CMAKE_BINARY_DIR})
 endif()

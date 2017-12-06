@@ -5,6 +5,8 @@
 #include <functional>
 #include <ECS/EventManager.hpp>
 
+class Entity;
+
 class EntityManager
 {
 public:

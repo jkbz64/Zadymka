@@ -1,6 +1,7 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 #include <Graphics/RenderTarget.hpp>
+
 struct GLFWwindow;
 
 class Window : public RenderTarget
@@ -24,13 +25,13 @@ public:
 
     void setTitle(const std::string&);
     void setSize(unsigned int, unsigned int);
+    const glm::uvec2& getSize();
 protected:
     //Window
     GLFWwindow* m_window;
     bool m_isOpen;
     //Window details
-    unsigned int m_width;
-    unsigned int m_height;
+    glm::uvec2 m_size;
     std::string m_title;
     Style m_style;
     //Callbacks

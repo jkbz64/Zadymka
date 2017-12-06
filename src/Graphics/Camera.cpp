@@ -5,7 +5,7 @@
 void Camera::registerClass(sol::table module)
 {
     module.new_usertype<Camera>("Camera",
-                                         sol::constructors<Camera()>(),
+                                         sol::constructors<Camera(), Camera(const Camera&)>(),
                                          "setCenter", [](Camera& camera, float x, float y) { camera.setCenter(glm::vec2(x, y)); },
                                          "getCenter", &Camera::getCenter,
                                          "setSize", [](Camera& camera, unsigned int width, unsigned int height) { camera.setSize(glm::vec2(width, height)); },

@@ -9,6 +9,7 @@
 #include <Graphics/VertexArray.hpp>
 #include <Graphics/Window.hpp>
 #include <sol/state_view.hpp>
+#include <GLFW/glfw3.h>
 #include <include/Lua.hpp>
 
 void draw(const Rectangle&);
@@ -17,10 +18,13 @@ sol::table Graphics::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
     sol::table module = lua.create_table();
+    module["init"] = &Graphics::init;
+    module["deinit"] = &Graphics::deinit;
     Window::registerClass(module);
     Camera::registerClass(module);
     Texture::registerClass(module);
     Shader::registerClass(module);
+    Color::registerClass(module);
     module.new_usertype<Drawable>("Drawable", "new", sol::no_constructor);
     Rectangle::registerClass(module);
     Sprite::registerClass(module);
@@ -31,7 +35,7 @@ sol::table Graphics::createModule(sol::this_state L)
     return module;
 }
 
-bool Graphics::init()
+bool Graphics::init(sol::this_state L)
 {
     if(!glfwInit())
         return false;
@@ -39,7 +43,8 @@ bool Graphics::init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
-    Lua::getState()["WindowStyle"] = Lua::getState().create_table_with(
+    sol::state_view lua(L);
+    lua["WindowStyle"] = lua.create_table_with(
             "Windowed", 0,
             "Fullscreen", 1,
             "FullscreenWindowed", 2

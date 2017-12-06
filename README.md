@@ -34,3 +34,6 @@ lua init.lua
 ## Usage
 Zadymka is a lua module, so you can just copy libraries along with Zadymka and `require("Zadymka")` in your lua code.
 Remember to use function `init` before using other library features.
+
+## Tests
+If you want to run tests you will need to install busted lua library.

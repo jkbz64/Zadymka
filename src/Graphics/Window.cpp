@@ -1,14 +1,14 @@
 #include <Graphics/Window.hpp>
 #include <Graphics/Drawable.hpp>
+#include <Graphics/Shader.hpp>
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Sprite.hpp>
 #include <Graphics/Text.hpp>
-#include <Graphics/Font.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <Lua.hpp>
 #include <Input.hpp>
-#include <Graphics/Shader.hpp>
+#include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace
@@ -22,6 +22,14 @@ namespace
 
 void Window::registerClass(sol::table module)
 {
+    struct StyleEntry {
+        char const *name;
+        Style style;
+    };
+    constexpr StyleEntry styles[]= { {"Windowed", Style::Windowed},
+                                     {"Fullscreen", Style::Fullscreen},
+                                     {"FullscreenWindowed", Style::FullscreenWindowed} };
+    module["WindowStyle"] = std::ref(styles);
     module.new_usertype<Window>("Window", sol::constructors<Window()>(),
                              "create", [](Window& window, unsigned int width, unsigned int height, const std::string& title, int style)
                              {
@@ -30,11 +38,12 @@ void Window::registerClass(sol::table module)
                              "isOpen", &Window::isOpen,
                              "close", &Window::close,
                              "setTitle", &Window::setTitle,
-                             "getSize", [](Window& window) { return glm::vec2(window.m_width, window.m_height); },
+                             "getSize", &Window::getSize,
                              "setSize", &Window::setSize,
                              "onOpen", &Window::m_onOpen,
                              "onResize", &Window::m_onResize,
                              "onClose", &Window::m_onClose,
+                             "getCamera", &Window::getCamera,
                              "setCamera", &Window::setCamera,
                              //Draw
                              "draw", sol::overload(
@@ -55,9 +64,7 @@ Window::Window() :
     m_isOpen(false),
     m_style(Window::Style::Windowed)
 {
-    sol::tie(m_onOpen, m_onClose, m_onResize) = Lua::getState().script(R"(return function() end,
-                                                                                 function() end,
-                                                                                 function() end)");
+
 }
 
 Window::~Window()
@@ -79,8 +86,7 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
         throw std::logic_error("Window width nor height cannot be 0");
     }
 
-    m_width = w;
-    m_height = h;
+    m_size = glm::uvec2(w, h);
     m_title = title;
     m_style = style;
     
@@ -90,10 +96,10 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
     switch(m_style)
     {
     case Style::Windowed:
-        m_window = glfwCreateWindow(m_width, m_height, title.c_str(), NULL, NULL);
+        m_window = glfwCreateWindow(m_size.x, m_size.y, title.c_str(), NULL, NULL);
         break;
     case Style::Fullscreen:
-        m_window = glfwCreateWindow(m_width, m_height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
+        m_window = glfwCreateWindow(m_size.x, m_size.y, title.c_str(), glfwGetPrimaryMonitor(), NULL);
         break;
     case Style::FullscreenWindowed:
         auto monitor = glfwGetPrimaryMonitor();
@@ -114,10 +120,12 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
     {
         glViewport(0, 0, width, height);
         auto w = (Window*)glfwGetWindowUserPointer(window);
-        w->m_onResize.call(width, height);
+        if(w->m_onResize.valid())
+            w->m_onResize.call(width, height);
     });
     Input::setWindow(getNativeWindow());
-    m_onOpen.call();
+    if(m_onOpen.valid())
+        m_onOpen.call();
 }
 
 bool Window::isOpen()
@@ -167,8 +175,12 @@ void Window::setSize(unsigned int width, unsigned int height)
     if(width == 0 || height == 0)
         return;
 
-    m_width = width;
-    m_height = height;
+    m_size = glm::uvec2(width, height);
     if(m_isOpen)
-        glfwSetWindowSize(getNativeWindow(), m_width, m_height);
+        glfwSetWindowSize(getNativeWindow(), m_size.x, m_size.y);
+}
+
+const glm::uvec2& Window::getSize()
+{
+    return m_size;
 }

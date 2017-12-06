@@ -1,0 +1,21 @@
+Zadymka = require("Zadymka")
+
+describe('Zadymka module', function()
+	it("Init should work", function()
+        assert.is_true(Zadymka.init())
+	end)
+
+    it("Submodules shouldn't be nil", function()
+        assert.is_not_nil(Zadymka.init)
+        assert.is_not_nil(Zadymka.deinit)
+        assert.is_not_nil(Zadymka.Math)
+        assert.is_not_nil(Zadymka.Graphics)
+        assert.is_not_nil(Zadymka.ECS)
+        assert.is_not_nil(Zadymka.Timer)
+        assert.is_not_nil(Zadymka.Input)
+    end)
+
+    it("Deinit should work", function()
+        Zadymka.deinit()
+    end)
+end)

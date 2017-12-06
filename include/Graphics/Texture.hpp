@@ -1,11 +1,9 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
-#include <Graphics/glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/vec2.hpp>
-#include <string>
-#include <memory>
 #include <sol/table.hpp>
+#include <glm/vec2.hpp>
+
+using GLuint = unsigned int;
 
 class Texture
 {
@@ -38,17 +36,5 @@ private:
     GLuint m_filterMin;
     GLuint m_filterMax;
 };
-
-inline GLuint Texture::getID() const
-{
-    if(m_ID)
-        return *m_ID.get();
-    return 0;
-}
-
-inline void Texture::bind() const
-{
-    glBindTexture(GL_TEXTURE_2D, getID());
-}
 
 #endif

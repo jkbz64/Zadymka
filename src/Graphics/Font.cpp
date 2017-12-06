@@ -1,6 +1,7 @@
 #include <Graphics/Font.hpp>
-#include <iostream>
 #include <Lua.hpp>
+#include <Graphics/glad/glad.h>
+#include <GLFW/glfw3.h>
 
 void Font::registerClass(sol::table module)
 {
@@ -42,7 +43,7 @@ bool Font::loadFromFile(const std::string &file)
     FT_Face face;
     if (FT_New_Face(static_cast<FT_Library>(m_ft), file.c_str(), 0, &face))
     {
-        std::cerr << "Failed to load font face " + file + '\n';
+       // std::cerr << "Failed to load font face " + file + '\n';
         return false;
     }
     m_face = face;

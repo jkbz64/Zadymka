@@ -1,12 +1,9 @@
 #include <Graphics/RenderTexture.hpp>
 #include <Graphics/Rectangle.hpp>
-#include <Graphics/Sprite.hpp>
-#include <Graphics/Text.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <Graphics/Shader.hpp>
 #include <Graphics/Renderer.hpp>
-#include <iostream>
+#include <Graphics/glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace
 {
@@ -43,7 +40,7 @@ void RenderTexture::create(unsigned int w, unsigned int h)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.getID(), 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+        throw std::runtime_error("Framebuffer not completed");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
