@@ -1,6 +1,6 @@
-#include <include/ECS/GameState.hpp>
+#include <ECS/GameState.hpp>
 #include <Graphics/Window.hpp>
-#include <include/ECS.hpp>
+#include <ECS.hpp>
 #include <Lua.hpp>
 
 GameState::GameState() :

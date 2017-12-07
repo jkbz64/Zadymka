@@ -1,4 +1,4 @@
-#include <include/ECS.hpp>
+#include <ECS.hpp>
 #include <Lua.hpp>
 #include <ECS/GameState.hpp>
 #include <iostream>

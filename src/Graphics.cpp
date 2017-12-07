@@ -1,4 +1,4 @@
-#include <include/Graphics.hpp>
+#include <Graphics.hpp>
 #include <Graphics/Texture.hpp>
 #include <Graphics/Shader.hpp>
 #include <Graphics/Rectangle.hpp>
@@ -10,7 +10,7 @@
 #include <Graphics/Window.hpp>
 #include <sol/state_view.hpp>
 #include <GLFW/glfw3.h>
-#include <include/Lua.hpp>
+#include <Lua.hpp>
 
 void draw(const Rectangle&);
 
