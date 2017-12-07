@@ -1,6 +1,6 @@
 #include <Graphics/Transformable.hpp>
-#include <Lua.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <utility>
 
 Transformable::Transformable() :
     m_translation(0.f, 0.f),

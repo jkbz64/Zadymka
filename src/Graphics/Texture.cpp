@@ -1,6 +1,4 @@
 #include <Graphics/Texture.hpp>
-#include <Lua.hpp>
-#include <iostream>
 #include <stb_image.h>
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -103,7 +101,7 @@ bool Texture::loadFromFile(const std::string &filename)
     {
         stbi_image_free(data);
         m_size = glm::vec2(0, 0);
-        std::cerr << "Failed to load texture\n";
+        std::puts("Failed to load texture");
         return false;
     }
 }
@@ -138,7 +136,7 @@ bool Texture::loadFromMemory(const std::string& str)
     }
     else
     {
-        std::cerr << "Failed to load texture\n";
+        std::puts("Failed to load texture");
         stbi_image_free(data);
         m_size = glm::vec2(0, 0);
         return false;

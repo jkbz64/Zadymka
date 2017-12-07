@@ -1,12 +1,6 @@
 #include <Graphics/Window.hpp>
-#include <Graphics/Drawable.hpp>
 #include <Graphics/Shader.hpp>
-#include <Graphics/Rectangle.hpp>
-#include <Graphics/Sprite.hpp>
-#include <Graphics/Text.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <iostream>
-#include <Lua.hpp>
+#include <Graphics/Drawable.hpp>
 #include <Input.hpp>
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>

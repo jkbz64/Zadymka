@@ -1,7 +1,4 @@
 #include <Graphics/Rectangle.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <Lua.hpp>
-#include <Graphics/Window.hpp>
 #include <Graphics/Renderer.hpp>
 
 void Rectangle::registerClass(sol::table module)
@@ -13,7 +10,8 @@ void Rectangle::registerClass(sol::table module)
                                             "getSize", &Rectangle::getSize,
                                             "setSize", [](Rectangle& rect, unsigned int w, unsigned int h) { rect.setSize(glm::vec2(w, h)); },
                                             "getColor", &Rectangle::getColor,
-                                            "setColor", &Rectangle::setColor
+                                            "setColor", &Rectangle::setColor,
+                                            sol::base_classes, sol::bases<Drawable>()
     );
 }
 

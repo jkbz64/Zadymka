@@ -4,8 +4,6 @@
 #include <Graphics/DefaultRenderer.hpp>
 #include <Graphics/Font.hpp>
 #include <Graphics/Text.hpp>
-#include <Graphics/Renderer.hpp>
-#include <iostream>
 
 RenderTarget::RenderTarget() :
     m_renderer(new DefaultRenderer(m_camera))
@@ -49,7 +47,7 @@ void RenderTarget::drawSprite(const std::string& textureName, float x, float y, 
         if(!texture.loadFromFile(textureName))
         {
             cachedTextures.erase(cachedTextures.find(textureName));
-            std::cerr << "Failed to load texture " << textureName << '\n';
+            std::puts(std::string("Failed to load texture " + textureName).c_str());
             return;
         }
     }
@@ -70,7 +68,7 @@ void RenderTarget::drawText(const std::string& str, float x, float y, const std:
         if(!font.loadFromFile(fontName))
         {
             cachedFonts.erase(cachedFonts.find(fontName));
-            std::cerr << "Failed to load font " + fontName << '\n';
+            std::puts(std::string("Failed to load font " + fontName).c_str());
             return;
         }
     }

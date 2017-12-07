@@ -1,6 +1,4 @@
 #include <Graphics/Sprite.hpp>
-#include <Lua.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 void Sprite::registerClass(sol::table module)
 {
@@ -11,7 +9,8 @@ void Sprite::registerClass(sol::table module)
                                          "getSize", &Sprite::getSize,
                                          "setSize", [](Sprite& sprite, unsigned int w, unsigned int h) { sprite.setSize(glm::vec2(w, h)); },
                                          "getTexture", &Sprite::getTexture,
-                                         "setTexture", &Sprite::setTexture
+                                         "setTexture", &Sprite::setTexture,
+                                         sol::base_classes, sol::bases<Drawable>()
     );
 }
 
