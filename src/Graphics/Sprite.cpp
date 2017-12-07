@@ -5,9 +5,9 @@ void Sprite::registerClass(sol::table module)
     module.new_usertype<Sprite>("Sprite",
                                          sol::constructors<Sprite()>(),
                                          "getPosition", &Sprite::getPosition,
-                                         "setPosition", [](Sprite& sprite, float x, float y) { sprite.setPosition(glm::vec2(x, y)); },
+                                         "setPosition", &Sprite::setPosition,
                                          "getSize", &Sprite::getSize,
-                                         "setSize", [](Sprite& sprite, unsigned int w, unsigned int h) { sprite.setSize(glm::vec2(w, h)); },
+                                         "setSize", &Sprite::setSize,
                                          "getTexture", &Sprite::getTexture,
                                          "setTexture", &Sprite::setTexture,
                                          sol::base_classes, sol::bases<Drawable>()

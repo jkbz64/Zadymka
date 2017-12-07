@@ -6,9 +6,9 @@ void Rectangle::registerClass(sol::table module)
     module.new_usertype<Rectangle>("Rectangle",
                                             sol::constructors<Rectangle(unsigned int, unsigned int)>(),
                                             "getPosition", &Rectangle::getPosition,
-                                            "setPosition", [](Rectangle& rect, float x, float y) { rect.setPosition(glm::vec2(x, y)); },
+                                            "setPosition", &Rectangle::setPosition,
                                             "getSize", &Rectangle::getSize,
-                                            "setSize", [](Rectangle& rect, unsigned int w, unsigned int h) { rect.setSize(glm::vec2(w, h)); },
+                                            "setSize", &Rectangle::setSize,
                                             "getColor", &Rectangle::getColor,
                                             "setColor", &Rectangle::setColor,
                                             sol::base_classes, sol::bases<Drawable>()

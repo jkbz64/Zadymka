@@ -2,6 +2,9 @@
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <freetype2/ft2build.h>
+#include FT_FREETYPE_H
+
 void Font::registerClass(sol::table module)
 {
     module.new_usertype<Font>("Font",

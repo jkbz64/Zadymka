@@ -1,7 +1,5 @@
 #ifndef FONT_HPP
 #define FONT_HPP
-#include <freetype2/ft2build.h>
-#include FT_FREETYPE_H
 #include <Graphics/Glyph.hpp>
 #include <sol/table.hpp>
 #include <map>
