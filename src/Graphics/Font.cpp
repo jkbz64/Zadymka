@@ -5,14 +5,6 @@
 #include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
 
-void Font::registerClass(sol::table module)
-{
-    module.new_usertype<Font>("Font",
-                                       sol::constructors<Font(), Font(const std::string&)>(),
-                                       "loadFromFile", &Font::loadFromFile
-                                       );
-}
-
 Font::Font() :
     m_id(0)
 {

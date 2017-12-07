@@ -1,19 +1,6 @@
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Renderer.hpp>
-
-void Rectangle::registerClass(sol::table module)
-{
-    module.new_usertype<Rectangle>("Rectangle",
-                                            sol::constructors<Rectangle(unsigned int, unsigned int)>(),
-                                            "getPosition", &Rectangle::getPosition,
-                                            "setPosition", &Rectangle::setPosition,
-                                            "getSize", &Rectangle::getSize,
-                                            "setSize", &Rectangle::setSize,
-                                            "getColor", &Rectangle::getColor,
-                                            "setColor", &Rectangle::setColor,
-                                            sol::base_classes, sol::bases<Drawable>()
-    );
-}
+#include <utility>
 
 Rectangle::Rectangle()
 {

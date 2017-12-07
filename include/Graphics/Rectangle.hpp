@@ -3,12 +3,10 @@
 #include <Graphics/Drawable.hpp>
 #include <Graphics/Color.hpp>
 #include <Graphics/Transformable.hpp>
-#include <sol/table.hpp>
 
 class Rectangle : public Drawable, public Transformable
 {
 public:
-    static void registerClass(sol::table);
     Rectangle();
     Rectangle(unsigned, unsigned);
     Rectangle(const Rectangle&);

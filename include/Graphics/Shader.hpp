@@ -1,7 +1,6 @@
 #ifndef SHADER_HPP
 #define SHADER_HPP
 #include <string>
-#include <sol/table.hpp>
 #include <glm/fwd.hpp>
 
 using GLuint = unsigned int;
@@ -13,7 +12,6 @@ using GLint = int;
 class Shader
 {
 public:
-    static void registerClass(sol::table);
     Shader();
     Shader(const std::string&, const std::string&, const std::string& = std::string(""));
     ~Shader();

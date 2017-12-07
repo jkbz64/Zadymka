@@ -3,15 +3,13 @@
 #include <Graphics/Drawable.hpp>
 #include <Graphics/Transformable.hpp>
 #include <Graphics/Color.hpp>
-#include <freetype2/ft2build.h>
-#include <sol/table.hpp>
+#include <string>
 
 class Font;
 
 class Text : public Drawable, public Transformable
 {
 public:
-    static void registerClass(sol::table);
     Text();
     Text(Font&);
     Text(const Text&) = default;

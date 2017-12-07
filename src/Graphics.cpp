@@ -20,18 +20,150 @@ sol::table Graphics::createModule(sol::this_state L)
     sol::table module = lua.create_table();
     module["init"] = &Graphics::init;
     module["deinit"] = &Graphics::deinit;
-    Window::registerClass(module);
-    Camera::registerClass(module);
-    Texture::registerClass(module);
-    Shader::registerClass(module);
-    Color::registerClass(module);
+    module.new_usertype<Camera>("Camera",
+                                sol::constructors<Camera(), Camera(const Camera&)>(),
+                                "setCenter", &Camera::setCenter,
+                                "getCenter", &Camera::getCenter,
+                                "setSize", &Camera::setSize,
+                                "getSize", &Camera::getSize,
+                                "move", &Camera::move
+    );
+    struct StyleEntry {
+        char const *name;
+        Window::Style style;
+    };
+    constexpr StyleEntry styles[]= { {"Windowed", Window::Style::Windowed},
+                                     {"Fullscreen", Window::Style::Fullscreen},
+                                     {"FullscreenWindowed", Window::Style::FullscreenWindowed} };
+    module["WindowStyle"] = std::ref(styles);
+    module.new_usertype<Window>("Window", sol::constructors<Window()>(),
+                                "create", [](Window& window, unsigned int width, unsigned int height, const std::string& title, int style)
+                                {
+                                    window.create(width, height, title, static_cast<Window::Style>(style));
+                                },
+                                "isOpen", &Window::isOpen,
+                                "close", &Window::close,
+                                "setTitle", &Window::setTitle,
+                                "getSize", &Window::getSize,
+                                "setSize", &Window::setSize,
+                                "getCamera", &Window::getCamera,
+                                "setCamera", &Window::setCamera,
+                                "draw", sol::overload(
+                                static_cast<void(Window::*)(Drawable&)>(&Window::draw),
+                                static_cast<void(Window::*)(Drawable&, const Shader&)>(&Window::draw)
+                                ),
+                                "drawRect", &Window::drawRect,
+                                "drawText", &Window::drawText,
+                                "drawSprite", &Window::drawSprite,
+                                "clear", &Window::clear,
+                                "display", &Window::display
+    );
+    module.new_usertype<Texture>("Texture",
+                                 sol::constructors<Texture(), Texture(const Texture&)>(),
+                                 "create", &Texture::create,
+                                 "getID", &Texture::getID,
+                                 "bind", &Texture::bind,
+                                 "loadFromFile", &Texture::loadFromFile,
+                                 "loadFromMemory", &Texture::loadFromMemory,
+                                 "getSize", &Texture::getSize
+    );
+    module.new_usertype<Shader>("Shader", sol::constructors<Shader(), Shader(const std::string&, const std::string&)>(),
+                                "use", &Shader::use,
+                                "getID", &Shader::getID,
+                                "isLoaded", &Shader::isLoaded,
+                                "loadFromFile", sol::overload
+                                        (
+                                                static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromFile),
+                                                [](Shader& shader, const std::string& vs, const std::string& fs)
+                                                {
+                                                    return shader.loadFromFile(vs, fs);
+                                                }
+                                        ),
+                                "loadFromMemory", sol::overload(
+                    static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromMemory),
+                    [](Shader& shader, const std::string& vs, const std::string& fs)
+                    {
+                        return shader.loadFromMemory(vs, fs);
+                    }
+            ),
+                                "setFloat", &Shader::setFloat,
+                                "setInteger", &Shader::setInteger,
+                                "setVector2f", &Shader::setVector2f,
+                                "setVector3f", &Shader::setVector3f,
+                                "setMatrix4", &Shader::setMatrix4
+    );
+    module.new_usertype<Color>("Color", sol::constructors<Color(), Color(unsigned int, unsigned int, unsigned int, unsigned int), Color(const Color&)>(),
+                               "r", &Color::m_r,
+                               "g", &Color::m_g,
+                               "b", &Color::m_b,
+                               "a", &Color::m_a,
+                               "normalized", &Color::normalized
+    );
     module.new_usertype<Drawable>("Drawable", "new", sol::no_constructor);
-    Rectangle::registerClass(module);
-    Sprite::registerClass(module);
-    Font::registerClass(module);
-    Text::registerClass(module);
-    RenderTexture::registerClass(module);
-    VertexArray::registerClass(module);
+    module.new_usertype<Rectangle>("Rectangle",
+                                   sol::constructors<Rectangle(unsigned int, unsigned int)>(),
+                                   "getPosition", &Rectangle::getPosition,
+                                   "setPosition", &Rectangle::setPosition,
+                                   "getSize", &Rectangle::getSize,
+                                   "setSize", &Rectangle::setSize,
+                                   "getColor", &Rectangle::getColor,
+                                   "setColor", &Rectangle::setColor,
+                                   sol::base_classes, sol::bases<Drawable>()
+    );
+    module.new_usertype<Sprite>("Sprite",
+                                sol::constructors<Sprite()>(),
+                                "getPosition", &Sprite::getPosition,
+                                "setPosition", &Sprite::setPosition,
+                                "getSize", &Sprite::getSize,
+                                "setSize", &Sprite::setSize,
+                                "getTexture", &Sprite::getTexture,
+                                "setTexture", &Sprite::setTexture,
+                                sol::base_classes, sol::bases<Drawable>()
+    );
+    module.new_usertype<Font>("Font",
+                              sol::constructors<Font(), Font(const std::string&)>(),
+                              "loadFromFile", &Font::loadFromFile
+    );
+    module.new_usertype<Text>("Text",
+                              sol::constructors<Text(), Text(Font&)>(),
+                              "setPosition", &Text::setPosition,
+                              "getPosition", &Text::getPosition,
+                              "setString", &Text::setString,
+                              "getString", &Text::getString,
+                              "setFont", &Text::setFont,
+                              "setCharacterSize", &Text::setCharacterSize,
+                              "getCharacterSize", &Text::getCharacterSize,
+                              "setColor", &Text::setColor,
+                              "getColor", &Text::getColor,
+                              sol::base_classes, sol::bases<Drawable>()
+    );
+    module.new_usertype<RenderTexture>("RenderTexture",
+                                       sol::constructors<RenderTexture()>(),
+                                       "create", &RenderTexture::create,
+                                       "getTexture", &RenderTexture::getTexture,
+                                       "draw", sol::overload(
+                    static_cast<void(RenderTexture::*)(Drawable&)>(&RenderTexture::draw),
+                    static_cast<void(RenderTexture::*)(Drawable&, const Shader&)>(&RenderTexture::draw)
+            ),
+                                       "drawRect", &RenderTexture::drawRect,
+                                       "drawSprite", &RenderTexture::drawSprite,
+                                       "drawText", &RenderTexture::drawText,
+                                       "clear", &RenderTexture::clear,
+                                       "display", &RenderTexture::display
+    );
+    module.new_usertype<Vertex>("Vertex",
+                                "position", &Vertex::m_position,
+                                "texCoords", &Vertex::m_texCoords
+            //"color", &Vertex::m_color
+    );
+    
+    module.new_usertype<VertexArray>("VertexArray",
+                                     sol::constructors<VertexArray(const PrimitiveType&)>(),
+                                     "resize", &VertexArray::resize,
+                                     "setTexture", &VertexArray::setTexture,
+                                     "getVertexes", &VertexArray::getVertexes,
+                                     sol::base_classes, sol::bases<Drawable>()
+    );
     return module;
 }
 

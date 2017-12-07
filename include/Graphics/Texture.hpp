@@ -1,6 +1,7 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
-#include <sol/table.hpp>
+#include <memory>
+#include <string>
 #include <glm/vec2.hpp>
 
 using GLuint = unsigned int;
@@ -8,7 +9,6 @@ using GLuint = unsigned int;
 class Texture
 {
 public:
-    static void registerClass(sol::table);
     Texture();
     Texture(const Texture&) = default;
     Texture& operator=(const Texture&) = default;

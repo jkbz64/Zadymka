@@ -1,17 +1,6 @@
 #include <Graphics/Camera.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-void Camera::registerClass(sol::table module)
-{
-    module.new_usertype<Camera>("Camera",
-                                         sol::constructors<Camera(), Camera(const Camera&)>(),
-                                         "setCenter", &Camera::setCenter,
-                                         "getCenter", &Camera::getCenter,
-                                         "setSize", &Camera::setSize,
-                                         "getSize", &Camera::getSize,
-                                         "move", &Camera::move
-   );
-}
+#include <utility>
 
 Camera::Camera() :
     m_size(800.f, 600.f),

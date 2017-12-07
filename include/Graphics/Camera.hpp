@@ -1,12 +1,10 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
-#include <sol/table.hpp>
 #include <glm/mat4x4.hpp>
 
 class Camera
 {
 public:
-    static void registerClass(sol::table);
     Camera();
     Camera(const Camera&);
     Camera(Camera&&);

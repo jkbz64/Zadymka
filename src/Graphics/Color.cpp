@@ -10,17 +10,6 @@ namespace
     }
 }
 
-void Color::registerClass(sol::table module)
-{
-    module.new_usertype<Color>("Color", sol::constructors<Color(), Color(unsigned int, unsigned int, unsigned int, unsigned int), Color(const Color&)>(),
-                               "r", &Color::m_r,
-                               "g", &Color::m_g,
-                               "b", &Color::m_b,
-                               "a", &Color::m_a,
-                               "normalized", &Color::normalized
-    );
-}
-
 Color::Color() :
     Color(0, 0, 0, 255)
 {

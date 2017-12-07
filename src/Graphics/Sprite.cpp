@@ -1,19 +1,5 @@
 #include <Graphics/Sprite.hpp>
 
-void Sprite::registerClass(sol::table module)
-{
-    module.new_usertype<Sprite>("Sprite",
-                                         sol::constructors<Sprite()>(),
-                                         "getPosition", &Sprite::getPosition,
-                                         "setPosition", &Sprite::setPosition,
-                                         "getSize", &Sprite::getSize,
-                                         "setSize", &Sprite::setSize,
-                                         "getTexture", &Sprite::getTexture,
-                                         "setTexture", &Sprite::setTexture,
-                                         sol::base_classes, sol::bases<Drawable>()
-    );
-}
-
 Sprite::Sprite()
 {
     m_color = Color(255, 255, 255, 255);

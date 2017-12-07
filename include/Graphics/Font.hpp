@@ -1,7 +1,6 @@
 #ifndef FONT_HPP
 #define FONT_HPP
 #include <Graphics/Glyph.hpp>
-#include <sol/table.hpp>
 #include <map>
 #include <string>
 
@@ -10,7 +9,6 @@ using GLchar = char;
 class Font
 {
 public:
-    static void registerClass(sol::table);
     Font();
     Font(const std::string&);
     Font(const Font&) = delete;

@@ -1,6 +1,7 @@
 #ifndef RENDERTARGET_HPP
 #define RENDERTARGET_HPP
 #include <Graphics/Camera.hpp>
+#include <bits/unique_ptr.h>
 
 class Drawable;
 class Shader;

@@ -13,19 +13,6 @@ struct TextureDeleter
     }
 };
 
-void Texture::registerClass(sol::table module)
-{
-    module.new_usertype<Texture>("Texture",
-                                          sol::constructors<Texture(), Texture(const Texture&)>(),
-                                          "create", &Texture::create,
-                                          "getID", &Texture::getID,
-                                          "bind", &Texture::bind,
-                                          "loadFromFile", &Texture::loadFromFile,
-                                          "loadFromMemory", &Texture::loadFromMemory,
-                                          "getSize", &Texture::getSize
-    );
-}
-
 Texture::Texture() :
     m_ID(nullptr),
     m_size(0, 0),

@@ -4,6 +4,7 @@
 #include <Graphics/DefaultRenderer.hpp>
 #include <Graphics/Font.hpp>
 #include <Graphics/Text.hpp>
+#include <unordered_map>
 
 RenderTarget::RenderTarget() :
     m_renderer(new DefaultRenderer(m_camera))

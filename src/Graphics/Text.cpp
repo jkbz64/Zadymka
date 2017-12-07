@@ -3,23 +3,6 @@
 #include <Graphics/Font.hpp>
 #include <Graphics/Renderer.hpp>
 
-void Text::registerClass(sol::table module)
-{
-    module.new_usertype<Text>("Text",
-                                       sol::constructors<Text(), Text(Font&)>(),
-                                       "setPosition", &Text::setPosition,
-                                       "getPosition", &Text::getPosition,
-                                       "setString", &Text::setString,
-                                       "getString", &Text::getString,
-                                       "setFont", &Text::setFont,
-                                       "setCharacterSize", &Text::setCharacterSize,
-                                       "getCharacterSize", &Text::getCharacterSize,
-                                       "setColor", &Text::setColor,
-                                       "getColor", &Text::getColor,
-                                       sol::base_classes, sol::bases<Drawable>()
-                                       );
-}
-
 Text::Text() :
     Drawable()
 {

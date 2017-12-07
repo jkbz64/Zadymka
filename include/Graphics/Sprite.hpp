@@ -6,7 +6,6 @@
 class Sprite : public Rectangle
 {
 public:
-    static void registerClass(sol::table);
     Sprite();
     Sprite(const Sprite&);
     Sprite& operator=(const Sprite&);

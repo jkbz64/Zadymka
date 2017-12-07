@@ -3,23 +3,6 @@
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
 
-void VertexArray::registerClass(sol::table module)
-{
-    module.new_usertype<Vertex>("Vertex",
-                                         "position", &Vertex::m_position,
-                                         "texCoords", &Vertex::m_texCoords
-                                         //"color", &Vertex::m_color
-                                         );
-
-    module.new_usertype<VertexArray>("VertexArray",
-                                              sol::constructors<VertexArray(const PrimitiveType&)>(),
-                                              "resize", &VertexArray::resize,
-                                              "setTexture", &VertexArray::setTexture,
-                                              "getVertexes", &VertexArray::getVertexes,
-                                              sol::base_classes, sol::bases<Drawable>()
-    );
-}
-
 VertexArray::VertexArray(const PrimitiveType &type) :
     Drawable(),
     std::vector<Vertex>(),

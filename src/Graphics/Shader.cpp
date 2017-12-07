@@ -1,37 +1,9 @@
 #include <Graphics/Shader.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <fstream>
+#include <sstream>
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
-
-void Shader::registerClass(sol::table module)
-{
-    module.new_usertype<Shader>("Shader", sol::constructors<Shader(), Shader(const std::string&, const std::string&)>(),
-                                         "use", &Shader::use,
-                                         "getID", &Shader::getID,
-                                         "isLoaded", &Shader::isLoaded,
-                                         "loadFromFile", sol::overload
-                                         (
-                                             static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromFile),
-                                             [](Shader& shader, const std::string& vs, const std::string& fs)
-                                             {
-                                                 return shader.loadFromFile(vs, fs);
-                                             }
-                                         ),
-                                         "loadFromMemory", sol::overload(
-                                             static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromMemory),
-                                             [](Shader& shader, const std::string& vs, const std::string& fs)
-                                             {
-                                                 return shader.loadFromMemory(vs, fs);
-                                             }
-                                         ),
-                                         "setFloat", &Shader::setFloat,
-                                         "setInteger", &Shader::setInteger,
-                                         "setVector2f", &Shader::setVector2f,
-                                         "setVector3f", &Shader::setVector3f,
-                                         "setMatrix4", &Shader::setMatrix4
-    );
-}
 
 Shader::Shader() :
         m_isLoaded(false),

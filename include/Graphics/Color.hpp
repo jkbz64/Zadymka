@@ -1,12 +1,10 @@
 #ifndef COLOR_HPP
 #define COLOR_HPP
-#include <sol/table.hpp>
 #include <glm/fwd.hpp>
 
 class Color
 {
 public:
-    static void registerClass(sol::table);
     Color();
     Color(int, int, int, int);
     Color(const Color&) = default;
@@ -29,6 +27,7 @@ public:
     static const Color Blue;
     static const Color Transparent;
 private:
+    friend class Graphics;
     int m_r;
     int m_g;
     int m_b;

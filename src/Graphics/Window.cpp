@@ -14,44 +14,6 @@ namespace
     }
 }
 
-void Window::registerClass(sol::table module)
-{
-    struct StyleEntry {
-        char const *name;
-        Style style;
-    };
-    constexpr StyleEntry styles[]= { {"Windowed", Style::Windowed},
-                                     {"Fullscreen", Style::Fullscreen},
-                                     {"FullscreenWindowed", Style::FullscreenWindowed} };
-    module["WindowStyle"] = std::ref(styles);
-    module.new_usertype<Window>("Window", sol::constructors<Window()>(),
-                             "create", [](Window& window, unsigned int width, unsigned int height, const std::string& title, int style)
-                             {
-                                 window.create(width, height, title, static_cast<Window::Style>(style));
-                             },
-                             "isOpen", &Window::isOpen,
-                             "close", &Window::close,
-                             "setTitle", &Window::setTitle,
-                             "getSize", &Window::getSize,
-                             "setSize", &Window::setSize,
-                             "onOpen", &Window::m_onOpen,
-                             "onResize", &Window::m_onResize,
-                             "onClose", &Window::m_onClose,
-                             "getCamera", &Window::getCamera,
-                             "setCamera", &Window::setCamera,
-                             //Draw
-                             "draw", sol::overload(
-                             static_cast<void(Window::*)(Drawable&)>(&Window::draw),
-                             static_cast<void(Window::*)(Drawable&, const Shader&)>(&Window::draw)
-                             ),
-                             "drawRect", &Window::drawRect,
-                             "drawText", &Window::drawText,
-                             "drawSprite", &Window::drawSprite,
-                             "clear", &Window::clear,
-                             "display", &Window::display
-    );
-}
-
 Window::Window() :
     RenderTarget(),
     m_window(nullptr),
@@ -113,13 +75,8 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
     glfwSetFramebufferSizeCallback(getNativeWindow(), [](GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
-        auto w = (Window*)glfwGetWindowUserPointer(window);
-        if(w->m_onResize.valid())
-            w->m_onResize.call(width, height);
     });
     Input::setWindow(getNativeWindow());
-    if(m_onOpen.valid())
-        m_onOpen.call();
 }
 
 bool Window::isOpen()
@@ -149,11 +106,7 @@ void Window::display()
 void Window::close()
 {
     if(m_isOpen)
-    {
-        if(m_onClose.valid())
-            m_onClose.call();
         m_isOpen = false;
-    }
 }
 
 void Window::setTitle(const std::string& title)
@@ -162,7 +115,6 @@ void Window::setTitle(const std::string& title)
     if(m_isOpen)
         glfwSetWindowTitle(getNativeWindow(), m_title.c_str());
 }
-
 
 void Window::setSize(unsigned int width, unsigned int height)
 {

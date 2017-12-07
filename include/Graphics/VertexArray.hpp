@@ -2,9 +2,9 @@
 #define VERTEXARRAY_HPP
 #include <Graphics/Drawable.hpp>
 #include <Graphics/Vertex.hpp>
-#include <vector>
 #include <Graphics/Texture.hpp>
 #include <Graphics/Transformable.hpp>
+#include <vector>
 
 enum class PrimitiveType
 {
@@ -16,7 +16,6 @@ enum class PrimitiveType
 class VertexArray : public Drawable, private std::vector<Vertex>, public Transformable
 {
 public:
-    static void registerClass(sol::table);
     VertexArray(const PrimitiveType& type);
     ~VertexArray() = default;
     void resize(std::size_t);

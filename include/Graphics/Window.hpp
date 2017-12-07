@@ -7,7 +7,6 @@ struct GLFWwindow;
 class Window : public RenderTarget
 {
 public:
-    static void registerClass(sol::table);
     enum class Style
     {
         Windowed,
@@ -34,10 +33,6 @@ protected:
     glm::uvec2 m_size;
     std::string m_title;
     Style m_style;
-    //Callbacks
-    sol::function m_onOpen;
-    sol::function m_onResize;
-    sol::function m_onClose;
 };
 
 #endif

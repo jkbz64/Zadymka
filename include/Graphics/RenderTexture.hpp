@@ -6,7 +6,6 @@
 class RenderTexture : public RenderTarget
 {
 public:
-    static void registerClass(sol::table);
     RenderTexture() = default;
     RenderTexture(const RenderTexture&) = delete;
     RenderTexture(RenderTexture&&) = delete;

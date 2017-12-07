@@ -14,24 +14,6 @@ namespace
     }
 }
 
-void RenderTexture::registerClass(sol::table module)
-{
-    module.new_usertype<RenderTexture>("RenderTexture",
-                                                sol::constructors<RenderTexture()>(),
-                                                "create", &RenderTexture::create,
-                                                "getTexture", &RenderTexture::getTexture,
-                                                "draw", sol::overload(
-                                                static_cast<void(RenderTexture::*)(Drawable&)>(&RenderTexture::draw),
-                                                static_cast<void(RenderTexture::*)(Drawable&, const Shader&)>(&RenderTexture::draw)
-                                                ),
-                                                "drawRect", &RenderTexture::drawRect,
-                                                "drawSprite", &RenderTexture::drawSprite,
-                                                "drawText", &RenderTexture::drawText,
-                                                "clear", &RenderTexture::clear,
-                                                "display", &RenderTexture::display
-    );
-}
-
 void RenderTexture::create(unsigned int w, unsigned int h)
 {
     glGenFramebuffers(1, &m_framebuffer);
