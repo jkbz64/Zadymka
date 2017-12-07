@@ -3,13 +3,6 @@
 #include <AL/alc.h>
 #include <Audio/stb_vorbis/stb_vorbis.hpp>
 
-void AudioBuffer::registerClass(sol::table module)
-{
-    module.new_usertype<AudioBuffer>("AudioBuffer", sol::constructors<AudioBuffer()>(),
-                                              "loadFromFile", &AudioBuffer::loadFromFile
-    );
-}
-
 AudioBuffer::AudioBuffer()
 {
     alGenBuffers(1, &m_buffer);

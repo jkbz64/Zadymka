@@ -20,8 +20,17 @@ sol::table Audio::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
     sol::table module = lua.create_table();
-    AudioBuffer::registerClass(module);
-    Sound::registerClass(module);
+    module.new_usertype<AudioBuffer>("AudioBuffer", sol::constructors<AudioBuffer()>(),
+                                     "loadFromFile", &AudioBuffer::loadFromFile
+    );
+    module.new_usertype<Sound>("Sound", sol::constructors<Sound()>(),
+                               "getPosition", &Sound::getPosition,
+                               "setPosition", &Sound::setPosition,
+                               "setBuffer", &Sound::setBuffer,
+                               "play", &Sound::play,
+                               "pause", &Sound::pause,
+                               "stop", &Sound::stop
+    );
     return module;
 }
 
