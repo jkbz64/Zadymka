@@ -27,8 +27,6 @@ dt = 1.0 / 20.0
 local currentTime = Timer.getTime()
 local accumulator = 0.0
 
-local vertexArray
-
 while(window:isOpen()) do
 	local newTime = Timer.getTime()
 	local frameTime = newTime - currentTime

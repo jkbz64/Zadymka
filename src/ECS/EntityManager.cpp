@@ -1,77 +1,62 @@
 #include <ECS/EntityManager.hpp>
-#include <Lua.hpp>
+#include <sol/state_view.hpp>
 
-EntityManager::EntityManager(EventManager& manager) :
+std::unordered_map<std::string, sol::table> EntityManager::m_registeredEntities;
+std::unordered_map<std::string, sol::table> EntityManager::m_registeredComponents;
+
+void EntityManager::registerEntity(const std::string &name, sol::table entity)
+{
+    m_registeredEntities[name] = entity;
+}
+
+void EntityManager::registerComponent(const std::string &name, sol::table component)
+{
+    m_registeredComponents[name] = component;
+}
+
+EntityManager::EntityManager(sol::this_state L, EventManager& manager) :
+    m_lua(L),
     m_eventManager(manager),
-    m_nullEntity(nullptr, -1)
+    m_uniqueID(1),
+    m_nullEntity(nullptr, 0)
 {
-    m_magicMetatable = Lua::getState().script(R"(
-    memoizedFuncs = {}
-    local mt = {}
-    mt.__index = function(handle, key)
-        if not handle.isValid then
-            print(debug.traceback())
-            error("Error: handle is not valid!", 2)
-        end
 
-        local f = memoizedFuncs[key]
-        if not f then
-            f = function(handle, ...) return Entity[key](handle.cppRef, ...) end
-            memoizedFuncs[key] = f
-        end
-        return f
-    end
-    return mt
-    )");
-    m_handles = Lua::getState().create_table();
-    m_nullHandle = createHandle(m_nullEntity);
 }
 
-EntityManager::~EntityManager()
+Entity& EntityManager::createEntity(const std::string& entityName)
 {
-    Lua::scriptArgs(
-    R"(
-    for _, v in pairs(arg[1]) do
-        v.isValid = false
-    end
-    )", m_handles);
-}
-
-Entity& EntityManager::createEntity()
-{
-    const auto id = m_poolIndex++;
-    auto inserted = m_entities.emplace(std::piecewise_construct,
-                                       std::forward_as_tuple(id),
-                                       std::forward_as_tuple(this, id));
-    auto it = inserted.first;
-    auto& e = it->second;
-    m_eventManager.emit("EntityCreated", Lua::getState().create_table_with("entity", &e));
-    return e;
+    auto componentTable = m_registeredEntities[entityName];
+    if(componentTable.valid())
+        return createEntity(componentTable);
+    else
+    {
+        std::puts(std::string("Entity" + entityName + "hasn't been registered. Returning nill entity").c_str());
+        return m_nullEntity;
+    }
 }
 
 Entity& EntityManager::createEntity(sol::table componentTable)
 {
-    const auto id = m_poolIndex++;
+    const auto id = m_uniqueID++;
     auto inserted = m_entities.emplace(std::piecewise_construct,
                                        std::forward_as_tuple(id),
                                        std::forward_as_tuple(this, id));
     auto it = inserted.first;
     auto& e = it->second;
-
+    
     for(std::pair<sol::object, sol::table> pair : componentTable)
     {
         std::string componentName = pair.first.as<std::string>();
         e.addComponent(componentName, pair.second);
     }
-
-    m_eventManager.emit("EntityCreated", Lua::getState().create_table_with("entity", createHandle(e)));
+    m_eventManager.emit("EntityCreated", m_lua.create_table_with("entity", &e));
     return e;
 }
 
 void EntityManager::destroyEntity(std::size_t id)
 {
     auto& entity = m_entities.at(id);
-    m_eventManager.emit("EntityDestroyed", Lua::getState().create_table_with("entity", createHandle(entity)));
+    m_eventManager.emit("EntityDestroyed", m_lua.create_table_with("entity", &entity));
     m_entities.erase(id);
 }
 
@@ -83,44 +68,7 @@ Entity& EntityManager::getEntity(std::size_t id)
         return m_nullEntity;
 }
 
-sol::object EntityManager::createHandle(Entity& e)
-{
-    return Lua::scriptArgs(
-    R"(
-    function getWrappedSafeFunction(f)
-        return function(handle, ...)
-            if not handle.isValid then
-                print(debug.traceback())
-                    error("Error: handle is not valid!", 2)
-                end
-             return f(handle.cppRef, ...)
-        end
-    end
-
-    local handle = {
-        cppRef = arg[3],
-        isValid = true
-    }
-
-    -- speedy access without __index call
-    handle.getID = getWrappedSafeFunction(Entity.getID)
-
-    setmetatable(handle, arg[1])
-    arg[2][arg[3]:getID()] = handle
-    return handle
-    )", m_magicMetatable, m_handles, e);
-}
-
-std::vector<std::reference_wrapper<Entity>> EntityManager::getEntities()
-{
-    std::vector<std::reference_wrapper<Entity>> entities;
-    entities.reserve(m_entities.size());
-    for(auto& entity : m_entities)
-        entities.emplace_back(entity.second);
-    return entities;
-}
-
 sol::table EntityManager::getDefaultComponent(const std::string& componentName)
 {
-    return Lua::getState()["ECS"]["components"][componentName];
+    return m_registeredComponents[componentName];
 }

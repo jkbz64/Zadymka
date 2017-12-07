@@ -1,6 +1,6 @@
 #include <Input.hpp>
 #include <GLFW/glfw3.h>
-#include <Lua.hpp>
+#include <sol/state_view.hpp>
 
 namespace
 {

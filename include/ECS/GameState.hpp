@@ -9,8 +9,9 @@ class Window;
 class GameState
 {
 public:
-    GameState();
-    GameState(sol::table);
+    static void registerSystem(const std::string&, sol::table);
+    GameState(sol::this_state);
+    GameState(sol::this_state, sol::table);
     GameState(const GameState&) = delete;
     GameState& operator=(const GameState&) = delete;
     GameState(GameState&&) = delete;
@@ -29,6 +30,7 @@ public:
     void removeSystem(const std::string&);
     System& getSystem(const std::string&);
 protected:
+    sol::state_view m_lua;
     friend class ECS;
     sol::table m_table;
     std::function<void()> m_init;
@@ -41,12 +43,9 @@ protected:
     //ECS
     EventManager m_eventManager;
     EntityManager m_entityManager;
+    System m_nullSystem;
     std::unordered_map<std::string, System> m_systems;
+    static std::unordered_map<std::string, sol::table> m_registeredSystems;
 };
-
-inline const Camera& GameState::getCamera() const
-{
-    return m_camera;
-}
 
 #endif

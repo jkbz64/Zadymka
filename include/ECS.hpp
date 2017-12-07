@@ -11,11 +11,7 @@ struct ECS
     static bool init(sol::this_state);
     static void deinit();
     static void registerState(const std::string&, sol::table);
-    static std::unique_ptr<GameState> createState(const std::string&);
-    static void registerComponent(const std::string&, sol::table);
-    static void registerEntity(const std::string&, sol::table);
-    static void registerSystem(const std::string&, sol::table);
-    static sol::table getSystem(const std::string&);
+    static std::unique_ptr<GameState> createState(sol::this_state, const std::string&);
 };
 
 extern "C"

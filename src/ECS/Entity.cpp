@@ -1,20 +1,14 @@
 #include <ECS/Entity.hpp>
 #include <sol/state_view.hpp>
 
-#include <Lua.hpp>
 #include <ECS/EntityManager.hpp>
 #include <iostream>
 
-Entity::Entity(EntityManager* manager, int id) :
+Entity::Entity(EntityManager* manager, unsigned int id) :
     m_manager(manager),
     m_id(id)
 {
 
-}
-
-int Entity::getID()
-{
-    return m_id;
 }
 
 void Entity::addComponent(const std::string& componentName, sol::table table)
@@ -22,7 +16,8 @@ void Entity::addComponent(const std::string& componentName, sol::table table)
     auto defaultComponent = m_manager->getDefaultComponent(componentName);
     if(defaultComponent.valid())
     {
-        sol::table componentTable = m_components[componentName] = Lua::getState().create_table();
+        sol::state_view lua(table.lua_state());
+        sol::table componentTable = m_components[componentName] = lua.create_table();
         //First copy from given table
         for(std::pair<sol::object, sol::object> cVar : table)
         {
@@ -39,7 +34,9 @@ void Entity::addComponent(const std::string& componentName, sol::table table)
             }
             else if(type == sol::type::userdata) // Copy Userdata's by using copy constructor
             {
-                sol::object copied = Lua::scriptArgs("return getmetatable(arg[1]).new(arg[1])", value);
+                sol::userdata ud = value;
+                sol::table metatable = ud[sol::metatable_key];
+                sol::object copied = metatable["new"].call(value);
                 componentTable[key] = copied;
             }
             else if(type == sol::type::table) // TODO table copy
@@ -70,7 +67,9 @@ void Entity::addComponent(const std::string& componentName, sol::table table)
             }
             else if(type == sol::type::userdata) // Copy Userdata's by using copy constructor
             {
-                sol::object copied = Lua::scriptArgs("return getmetatable(arg[1]).new(arg[1])", value);
+                sol::userdata ud = value;
+                sol::table metatable = ud[sol::metatable_key];
+                sol::object copied = metatable["new"].call(value);
                 componentTable[key] = copied;
             }
             else if(type == sol::type::table) // TODO table copy

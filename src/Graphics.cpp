@@ -10,7 +10,6 @@
 #include <Graphics/Window.hpp>
 #include <sol/state_view.hpp>
 #include <GLFW/glfw3.h>
-#include <Lua.hpp>
 
 void draw(const Rectangle&);
 
@@ -28,14 +27,6 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "getSize", &Camera::getSize,
                                 "move", &Camera::move
     );
-    struct StyleEntry {
-        char const *name;
-        Window::Style style;
-    };
-    constexpr StyleEntry styles[]= { {"Windowed", Window::Style::Windowed},
-                                     {"Fullscreen", Window::Style::Fullscreen},
-                                     {"FullscreenWindowed", Window::Style::FullscreenWindowed} };
-    module["WindowStyle"] = std::ref(styles);
     module.new_usertype<Window>("Window", sol::constructors<Window()>(),
                                 "create", [](Window& window, unsigned int width, unsigned int height, const std::string& title, int style)
                                 {
@@ -49,8 +40,8 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "getCamera", &Window::getCamera,
                                 "setCamera", &Window::setCamera,
                                 "draw", sol::overload(
-                                static_cast<void(Window::*)(Drawable&)>(&Window::draw),
-                                static_cast<void(Window::*)(Drawable&, const Shader&)>(&Window::draw)
+                                    static_cast<void(Window::*)(Drawable&)>(&Window::draw),
+                                    static_cast<void(Window::*)(Drawable&, const Shader&)>(&Window::draw)
                                 ),
                                 "drawRect", &Window::drawRect,
                                 "drawText", &Window::drawText,
@@ -71,21 +62,20 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "use", &Shader::use,
                                 "getID", &Shader::getID,
                                 "isLoaded", &Shader::isLoaded,
-                                "loadFromFile", sol::overload
-                                        (
-                                                static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromFile),
-                                                [](Shader& shader, const std::string& vs, const std::string& fs)
-                                                {
-                                                    return shader.loadFromFile(vs, fs);
-                                                }
-                                        ),
+                                "loadFromFile", sol::overload(
+                                      static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromFile),
+                                      [](Shader& shader, const std::string& vs, const std::string& fs)
+                                      {
+                                          return shader.loadFromFile(vs, fs);
+                                      }
+                                ),
                                 "loadFromMemory", sol::overload(
-                    static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromMemory),
-                    [](Shader& shader, const std::string& vs, const std::string& fs)
-                    {
-                        return shader.loadFromMemory(vs, fs);
-                    }
-            ),
+                                    static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromMemory),
+                                    [](Shader& shader, const std::string& vs, const std::string& fs)
+                                    {
+                                        return shader.loadFromMemory(vs, fs);
+                                    }
+                                ),
                                 "setFloat", &Shader::setFloat,
                                 "setInteger", &Shader::setInteger,
                                 "setVector2f", &Shader::setVector2f,
@@ -142,9 +132,9 @@ sol::table Graphics::createModule(sol::this_state L)
                                        "create", &RenderTexture::create,
                                        "getTexture", &RenderTexture::getTexture,
                                        "draw", sol::overload(
-                    static_cast<void(RenderTexture::*)(Drawable&)>(&RenderTexture::draw),
-                    static_cast<void(RenderTexture::*)(Drawable&, const Shader&)>(&RenderTexture::draw)
-            ),
+                                           static_cast<void(RenderTexture::*)(Drawable&)>(&RenderTexture::draw),
+                                           static_cast<void(RenderTexture::*)(Drawable&, const Shader&)>(&RenderTexture::draw)
+                                       ),
                                        "drawRect", &RenderTexture::drawRect,
                                        "drawSprite", &RenderTexture::drawSprite,
                                        "drawText", &RenderTexture::drawText,

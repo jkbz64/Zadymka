@@ -5,11 +5,10 @@
 #include <ECS.hpp>
 #include <Timer.hpp>
 #include <Input.hpp>
-#include <Lua.hpp>
+#include <sol/state_view.hpp>
 
 sol::table Zadymka::createModule(sol::this_state L)
 {
-    Lua::setState(L);
     sol::state_view lua(L);
     sol::table module = lua.create_table();
     module["init"] = &Zadymka::init;
@@ -25,7 +24,6 @@ sol::table Zadymka::createModule(sol::this_state L)
 
 bool Zadymka::init(sol::this_state L)
 {
-    Lua::setState(L);
     return Graphics::init(L); /* && Audio::init() && */
 }
 

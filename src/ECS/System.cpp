@@ -1,14 +1,21 @@
 #include <ECS/System.hpp>
-#include <Lua.hpp>
 
-System::System()
+System::System() :
+    m_lua(nullptr)
 {
 
 }
 
-System::System(sol::table systemTable)
+System::System(sol::this_state L) :
+    m_lua(L)
 {
-    m_systemTable = Lua::getState().create_table();
+
+}
+
+System::System(sol::this_state L, sol::table systemTable) :
+    System(L)
+{
+    m_systemTable = m_lua.create_table();
     for(std::pair<sol::object, sol::object> p : systemTable)
     {
         std::string key = p.first.as<std::string>();

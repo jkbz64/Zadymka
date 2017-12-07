@@ -1,10 +1,10 @@
 #include <Math.hpp>
-#include <Lua.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/compatibility.hpp>
+#include <sol/state_view.hpp>
 
 namespace
 {
