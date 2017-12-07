@@ -9,7 +9,6 @@ class Window;
 class GameState
 {
 public:
-    static void registerClass(sol::table);
     GameState();
     GameState(sol::table);
     GameState(const GameState&) = delete;
@@ -30,6 +29,7 @@ public:
     void removeSystem(const std::string&);
     System& getSystem(const std::string&);
 protected:
+    friend class ECS;
     sol::table m_table;
     std::function<void()> m_init;
     std::function<void()> m_cleanup;

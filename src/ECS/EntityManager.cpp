@@ -1,31 +1,6 @@
 #include <ECS/EntityManager.hpp>
 #include <Lua.hpp>
 
-void EntityManager::registerClass(sol::table module)
-{
-    module.new_usertype<EntityManager>("EntityManager",
-                                                sol::constructors<EntityManager(EventManager&)>(),
-                                                "createEntity", sol::overload(
-                                                [](EntityManager& mgr, sol::table entityTable) -> sol::object
-                                                {
-                                                    return mgr.createHandle(mgr.createEntity(entityTable));
-                                                },
-                                                [](EntityManager& mgr) -> sol::object
-                                                {
-                                                    return mgr.createHandle(mgr.createEntity());
-                                                }),
-                                                "destroyEntity", &EntityManager::destroyEntity,
-                                                "getEntity", [](EntityManager& mgr, std::size_t id) -> sol::object
-                                                {
-                                                    if(mgr.m_entities.find(id) != mgr.m_entities.end())
-                                                        return mgr.m_handles[id];
-                                                    else
-                                                        return mgr.m_nullHandle;
-                                                },
-                                                "getEntities", &EntityManager::getEntities
-    );
-}
-
 EntityManager::EntityManager(EventManager& manager) :
     m_eventManager(manager),
     m_nullEntity(nullptr, -1)

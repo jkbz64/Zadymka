@@ -2,6 +2,7 @@
 #include <Lua.hpp>
 #include <ECS/GameState.hpp>
 #include <iostream>
+#include <Graphics/Window.hpp>
 
 namespace
 {
@@ -17,11 +18,71 @@ sol::table ECS::createModule(sol::this_state L)
     sol::table module = lua.create_table();
     module["init"] = &ECS::init;
     module["deinit"] = &ECS::deinit;
-    GameState::registerClass(module);
-    Entity::registerClass(module);
-    EntityManager::registerClass(module);
-    EventManager::registerClass(module);
-    System::registerClass(module);
+    module.new_usertype<GameState>("GameState", sol::constructors<GameState(), GameState(sol::table)>(),
+                                   "camera", &GameState::m_camera,
+                                   "eventManager", &GameState::m_eventManager,
+                                   "entityManager", &GameState::m_entityManager,
+                                   "addSystem", &GameState::addSystem,
+                                   "getSystem", &GameState::getSystem,
+                                   "removeSystem", &GameState::removeSystem,
+                                   sol::meta_function::index, [](GameState& state, const std::string& key)
+                                   {
+                                       return state.m_table[key];
+                                   },
+                                   sol::meta_function::new_index, [](GameState& state, const std::string& key, sol::object value)
+                                   {
+                                       state.m_table[key] =  value;
+                                   },
+                                   "init", &GameState::init,
+                                   "update", &GameState::update,
+                                   "fixedUpdate", &GameState::fixedUpdate,
+                                   "draw", &GameState::draw
+    );
+    module.new_usertype<Entity>("Entity",
+                                "new", sol::no_constructor,
+                                "getID", &Entity::getID,
+                                "addComponent", &Entity::addComponent,
+                                "get", [](Entity& e, const std::string& name) { return e.m_components[name]; },
+                                "getComponents", [](Entity& e) { return e.m_components; },
+                                "has", sol::overload(&Entity::hasComponent, &Entity::hasComponents),
+                                "components", &Entity::m_components
+    );
+    module.new_usertype<EntityManager>("EntityManager",
+                                       sol::constructors<EntityManager(EventManager&)>(),
+                                       "createEntity", sol::overload(
+                                        [](EntityManager& mgr, sol::table entityTable) -> sol::object
+                                        {
+                                            return mgr.createHandle(mgr.createEntity(entityTable));
+                                        },
+                                        [](EntityManager& mgr) -> sol::object
+                                        {
+                                            return mgr.createHandle(mgr.createEntity());
+                                        }),
+                                       "destroyEntity", &EntityManager::destroyEntity,
+                                       "getEntity", [](EntityManager& mgr, std::size_t id) -> sol::object
+                                       {
+                                           if(mgr.m_entities.find(id) != mgr.m_entities.end())
+                                               return mgr.m_handles[id];
+                                           else
+                                               return mgr.m_nullHandle;
+                                       },
+                                       "getEntities", &EntityManager::getEntities
+    );
+    module.new_usertype<EventManager>("EventManager",
+                                      sol::constructors<EventManager()>(),
+                                      "subscribe", &EventManager::subscribe,
+                                      "emit", &EventManager::emit
+    );
+    module.new_usertype<System>("System", "new", sol::no_constructor,
+                                sol::meta_function::index, [](System& system, const std::string& name)
+                                {
+                                    return system.m_systemTable[name];
+                                },
+                                sol::meta_function::new_index, [](System& system, const std::string& key, sol::object value)
+                                {
+                                    system.m_systemTable[key] = value;
+                                }
+    );
     
     module["registerState"] = &ECS::registerState;
     module["createState"] = &ECS::createState;

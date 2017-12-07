@@ -3,30 +3,6 @@
 #include <include/ECS.hpp>
 #include <Lua.hpp>
 
-void GameState::registerClass(sol::table module)
-{
-    module.new_usertype<GameState>("GameState", sol::constructors<GameState(), GameState(sol::table)>(),
-                                            "camera", &GameState::m_camera,
-                                            "eventManager", &GameState::m_eventManager,
-                                            "entityManager", &GameState::m_entityManager,
-                                            "addSystem", &GameState::addSystem,
-                                            "getSystem", &GameState::getSystem,
-                                            "removeSystem", &GameState::removeSystem,
-                                            sol::meta_function::index, [](GameState& state, const std::string& key)
-                                            {
-                                                return state.m_table[key];
-                                            },
-                                            sol::meta_function::new_index, [](GameState& state, const std::string& key, sol::object value)
-                                            {
-                                                state.m_table[key] =  value;
-                                            },
-                                            "init", &GameState::init,
-                                            "update", &GameState::update,
-                                            "fixedUpdate", &GameState::fixedUpdate,
-                                            "draw", &GameState::draw
-    );
-}
-
 GameState::GameState() :
     m_camera(),
     m_eventManager(),

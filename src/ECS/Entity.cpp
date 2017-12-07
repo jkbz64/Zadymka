@@ -1,22 +1,9 @@
 #include <ECS/Entity.hpp>
 #include <sol/state_view.hpp>
-#include <sol/table.hpp>
+
 #include <Lua.hpp>
 #include <ECS/EntityManager.hpp>
 #include <iostream>
-
-void Entity::registerClass(sol::table module)
-{
-    module.new_usertype<Entity>("Entity",
-                                         "new", sol::no_constructor,
-                                         "getID", &Entity::getID,
-                                         "addComponent", &Entity::addComponent,
-                                         "get", [](Entity& e, const std::string& name) { return e.m_components[name]; },
-                                         "getComponents", [](Entity& e) { return e.m_components; },
-                                         "has", sol::overload(&Entity::hasComponent, &Entity::hasComponents),
-                                         "components", &Entity::m_components
-    );
-}
 
 Entity::Entity(EntityManager* manager, int id) :
     m_manager(manager),

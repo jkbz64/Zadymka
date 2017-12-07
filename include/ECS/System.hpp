@@ -8,7 +8,6 @@ class EventManager;
 class System
 {
 public:
-    static void registerClass(sol::table);
     System();
     System(sol::table);
     System(const System&) = delete;
@@ -18,6 +17,7 @@ public:
     ~System() = default;
     sol::function init;
 protected:
+    friend class ECS;
     sol::table m_systemTable;
 };
 

@@ -1,14 +1,5 @@
 #include <ECS/EventManager.hpp>
 
-void EventManager::registerClass(sol::table module)
-{
-    module.new_usertype<EventManager>("EventManager",
-                                               sol::constructors<EventManager()>(),
-                                               "subscribe", &EventManager::subscribe,
-                                               "emit", &EventManager::emit
-                                               );
-}
-
 void EventManager::subscribe(const std::string& eventName, sol::object obj, sol::function f)
 {
     if(m_eventCallbacks.find(eventName) == std::end(m_eventCallbacks))

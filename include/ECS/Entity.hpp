@@ -2,14 +2,12 @@
 #define ENTITY_HPP
 #include <string>
 #include <sol/table.hpp>
-#include <sol/object.hpp>
 
 class EntityManager;
 
 class Entity
 {
 public:
-    static void registerClass(sol::table);
     Entity(EntityManager*, int);
     Entity(const Entity&) = delete;
     Entity(Entity&&) = delete;
@@ -21,6 +19,7 @@ public:
     bool hasComponent(const std::string&);
     bool hasComponents(const std::vector<std::string>&);
 private:
+    friend class ECS;
     friend class EntityManager;
     EntityManager* m_manager;
     int m_id;

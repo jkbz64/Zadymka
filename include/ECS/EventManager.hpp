@@ -6,7 +6,6 @@
 class EventManager
 {
 public:
-    static void registerClass(sol::table);
     EventManager() = default;
     EventManager(const EventManager&) = delete;
     EventManager(EventManager&&) = delete;
