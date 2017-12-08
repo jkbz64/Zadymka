@@ -6,7 +6,6 @@
 #include <Graphics/Font.hpp>
 #include <Graphics/Text.hpp>
 #include <Graphics/RenderTexture.hpp>
-#include <Graphics/VertexArray.hpp>
 #include <Graphics/Window.hpp>
 #include <sol/state_view.hpp>
 #include <GLFW/glfw3.h>
@@ -27,16 +26,14 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "getSize", &Camera::getSize,
                                 "move", &Camera::move
     );
-    module["WindowStyle"] = lua.create_table_with(
+    sol::table styles = lua.create_table_with(
             "Windowed", 0,
             "Fullscreen", 1,
             "FullscreenWindowed", 2
     );
     module.new_usertype<Window>("Window", sol::constructors<Window()>(),
-                                "create", [](Window& window, unsigned int width, unsigned int height, const std::string& title, int style)
-                                {
-                                    window.create(width, height, title, static_cast<Window::Style>(style));
-                                },
+                                "Style", sol::var(styles),
+                                "create", &Window::create,
                                 "isOpen", &Window::isOpen,
                                 "close", &Window::close,
                                 "setTitle", &Window::setTitle,
@@ -145,19 +142,6 @@ sol::table Graphics::createModule(sol::this_state L)
                                        "drawText", &RenderTexture::drawText,
                                        "clear", &RenderTexture::clear,
                                        "display", &RenderTexture::display
-    );
-    module.new_usertype<Vertex>("Vertex",
-                                "position", &Vertex::m_position,
-                                "texCoords", &Vertex::m_texCoords
-            //"color", &Vertex::m_color
-    );
-    
-    module.new_usertype<VertexArray>("VertexArray",
-                                     sol::constructors<VertexArray(const PrimitiveType&)>(),
-                                     "resize", &VertexArray::resize,
-                                     "setTexture", &VertexArray::setTexture,
-                                     "getVertexes", &VertexArray::getVertexes,
-                                     sol::base_classes, sol::bases<Drawable>()
     );
     return module;
 }

@@ -14,13 +14,20 @@ namespace
     }
 }
 
+RenderTexture::RenderTexture() :
+        m_framebuffer(0)
+{
+
+}
+
 void RenderTexture::create(unsigned int w, unsigned int h)
 {
+    if(m_framebuffer != 0)
+        glDeleteFramebuffers(1, &m_framebuffer);
     glGenFramebuffers(1, &m_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     m_texture.create(w, h);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.getID(), 0);
-
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         throw std::runtime_error("Framebuffer not completed");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -6,7 +6,7 @@
 class RenderTexture : public RenderTarget
 {
 public:
-    RenderTexture() = default;
+    RenderTexture();
     RenderTexture(const RenderTexture&) = delete;
     RenderTexture(RenderTexture&&) = delete;
     RenderTexture& operator=(const RenderTexture&) = delete;
