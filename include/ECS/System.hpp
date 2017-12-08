@@ -1,12 +1,11 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
-#include <sol/state_view.hpp>
-#include <sol/table.hpp>
+#include <ECS/Scriptable.hpp>
 
 class Window;
 class EventManager;
 
-class System
+class System : public Scriptable<System>
 {
 public:
     System();
@@ -18,10 +17,6 @@ public:
     System& operator=(System&&) = default;
     ~System() = default;
     sol::function init;
-protected:
-    sol::state_view m_lua;
-    friend class ECS;
-    sol::table m_systemTable;
 };
 
 #endif

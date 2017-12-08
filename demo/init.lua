@@ -43,7 +43,7 @@ while(window:isOpen()) do
     end
 	local alpha = accumulator / dt
 	window:setCamera(demoState.camera)
-	window:clear(0, 125, 125)
+	window:clear(0, 125, 125, 255)
 	demoState:draw(window, alpha)
 	window:display()
 	Timer.sleep(1)

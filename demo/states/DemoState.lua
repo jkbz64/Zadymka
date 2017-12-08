@@ -2,18 +2,18 @@
 ECS.registerState('DemoState', {
     -- You can specify 'starting' components
     systems = {'RenderingSystem', 'MovementSystem'},
-    init = function(self)
+    init = function()
         self.camera:setCenter(Math.Vec2f:new(400, 300))
         self.player = self.entityManager:createEntity(ECS.entities["Player"])
     end,
-    update = function(self, dt)
+    update = function(dt)
 
     end,
-    fixedUpdate = function(self, dt)
+    fixedUpdate = function(dt)
         self.systems['RenderingSystem']:fixedUpdate(dt)
         self.systems['MovementSystem']:fixedUpdate(dt)
     end,
-    draw = function(self, window, alpha)
+    draw = function(window, alpha)
         self.systems['RenderingSystem']:draw(window, alpha)
     end,
 });

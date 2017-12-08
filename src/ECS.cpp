@@ -2,6 +2,7 @@
 #include <ECS/GameState.hpp>
 #include <iostream>
 #include <Graphics/Window.hpp>
+#include <ECS/System.hpp>
 
 namespace
 {
@@ -14,6 +15,12 @@ sol::table ECS::createModule(sol::this_state L)
     sol::table module = lua.create_table();
     module["init"] = &ECS::init;
     module["deinit"] = &ECS::deinit;
+    module.new_usertype<BaseScriptable>("Scriptable", "new", sol::no_constructor,
+                                        sol::meta_function::index, [](BaseScriptable& scriptable, const std::string& key)
+                                        {
+                                            return scriptable.m_table[key];
+                                        }
+    );
     module.new_usertype<GameState>("GameState", sol::constructors<GameState(sol::this_state), GameState(sol::this_state, sol::table)>(),
                                    "camera", &GameState::m_camera,
                                    "eventManager", &GameState::m_eventManager,
@@ -27,12 +34,8 @@ sol::table ECS::createModule(sol::this_state L)
                                    },
                                    sol::meta_function::new_index, [](GameState& state, const std::string& key, sol::object value)
                                    {
-                                       state.m_table[key] =  value;
-                                   },
-                                   "init", &GameState::init,
-                                   "update", &GameState::update,
-                                   "fixedUpdate", &GameState::fixedUpdate,
-                                   "draw", &GameState::draw
+                                       state.m_table[key] = value;
+                                   }
     );
     module.new_usertype<Entity>("Entity",
                                 "new", sol::no_constructor,
@@ -61,14 +64,15 @@ sol::table ECS::createModule(sol::this_state L)
                                       "emit", &EventManager::emit
     );
     module.new_usertype<System>("System", "new", sol::no_constructor,
-                                sol::meta_function::index, [](System& system, const std::string& name)
+                                sol::meta_function::index, [](System& scriptable, const std::string& key)
                                 {
-                                    return system.m_systemTable[name];
+                                    return scriptable.m_table[key];
                                 },
-                                sol::meta_function::new_index, [](System& system, const std::string& key, sol::object value)
+                                sol::meta_function::new_index, [](System& scriptable, const std::string& key, sol::object val)
                                 {
-                                    system.m_systemTable[key] = value;
-                                }
+                                    scriptable.m_table[key] = val;
+                                },
+                                sol::base_classes, sol::bases<Scriptable<System>>()
     );
     
     module["registerState"] = &ECS::registerState;

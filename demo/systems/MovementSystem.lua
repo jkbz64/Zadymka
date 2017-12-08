@@ -2,14 +2,14 @@ Keyboard = Zadymka.Input["Keyboard"]
 Keys = Keyboard.Keys
 
 ECS.registerSystem('MovementSystem', {
-    init = function(self, ev, em)
+    init = function(ev, em)
         ev:subscribe('EntityCreated', self, self.onEntityCreated)
         self.player = nil
     end,
-    update = function(self, dt)
+    update = function(dt)
 
     end,
-    fixedUpdate = function(self, dt)
+    fixedUpdate = function(dt)
         if self.player ~= nil then
             local speed = 250
             if Keyboard.isKeyPressed(Keys["A"]) then
@@ -26,10 +26,10 @@ ECS.registerSystem('MovementSystem', {
             end
         end
     end,
-    draw = function(self, window, alpha)
+    draw = function(window, alpha)
 
     end,
-    onEntityCreated = function(self, event)
+    onEntityCreated = function(event)
         self.player = event.entity
     end
 })

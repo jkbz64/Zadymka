@@ -6,7 +6,7 @@
 
 class Window;
 
-class GameState
+class GameState : public Scriptable<GameState>
 {
 public:
     static void registerSystem(const std::string&, sol::table);
@@ -17,27 +17,14 @@ public:
     GameState(GameState&&) = delete;
     GameState& operator=(GameState&&) = delete;
     ~GameState();
-
-    void init() const;
-    void cleanup() const;
-    void update(double dt) const;
-    void fixedUpdate(double dt) const;
-    void draw(Window& window, double alpha) const;
-
+    
     const Camera& getCamera() const;
     
     System& addSystem(const std::string&);
     void removeSystem(const std::string&);
     System& getSystem(const std::string&);
 protected:
-    sol::state_view m_lua;
     friend class ECS;
-    sol::table m_table;
-    std::function<void()> m_init;
-    std::function<void()> m_cleanup;
-    std::function<void(double)> m_update;
-    std::function<void(double)> m_fixedUpdate;
-    std::function<void(Window&, double)> m_draw;
     //Camera
     Camera m_camera;
     //ECS

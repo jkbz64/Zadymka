@@ -15,7 +15,6 @@ public:
     virtual void render(Rectangle&) = 0;
     virtual void render(Sprite&) = 0;
     virtual void render(Text&) = 0;
-    virtual void render(VertexArray&) = 0;
 };
 
 #endif

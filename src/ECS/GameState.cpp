@@ -10,34 +10,23 @@ void GameState::registerSystem(const std::string& systemName, sol::table system)
 }
 
 GameState::GameState(sol::this_state L) :
-    m_lua(L),
+    Scriptable<GameState>(),
     m_camera(),
     m_eventManager(),
     m_entityManager(L, m_eventManager),
     m_nullSystem(L)
 {
-    m_table = m_lua.create_table();
-    m_init = [](){};
-    m_cleanup = [](){};
-    m_update = [](double){};
-    m_fixedUpdate = [](double){};
-    m_draw = [](Window&, double){};
-    m_table["systems"] = std::unordered_map<std::string, std::reference_wrapper<System>>();
+
 }
 
 GameState::GameState(sol::this_state L, sol::table state) :
-    GameState(L)
+        Scriptable<GameState>(L, state),
+        m_camera(),
+        m_eventManager(),
+        m_entityManager(L, m_eventManager),
+        m_nullSystem(L)
 {
-    if(state["init"].valid())
-        m_init = [state, this]() { state["init"].call(this); };
-    if(state["cleanup"].valid())
-        m_cleanup = [state, this]() { state["cleanup"].call(this); };
-    if(state["update"].valid())
-        m_update = [state, this](double dt) { state["update"].call(this, dt); };
-    if(state["fixedUpdate"].valid())
-        m_fixedUpdate = [state, this](double dt) { state["fixedUpdate"].call(this, dt); };
-    if(state["draw"].valid())
-        m_draw = [state, this](Window &window, double alpha) { state["draw"].call(this, window, alpha); };
+    m_table["systems"] = std::unordered_map<std::string, std::reference_wrapper<System>>();
     //Add systems if there were any specified
     sol::table systems = state["systems"];
     if(systems.valid())
@@ -47,37 +36,13 @@ GameState::GameState(sol::this_state L, sol::table state) :
             addedSystems.emplace(system.second.as<std::string>(), addSystem(system.second.as<std::string>()));
     }
     
-    init();
+    sol::function init = m_table["init"];
+    init.call(*this);
 }
 
 GameState::~GameState()
 {
-    cleanup();
-}
 
-void GameState::init() const
-{
-    m_init();
-}
-
-void GameState::cleanup() const
-{
-    m_cleanup();
-}
-
-void GameState::update(double dt) const
-{
-    m_update(dt);
-}
-
-void GameState::fixedUpdate(double dt) const
-{
-    m_fixedUpdate(dt);
-}
-
-void GameState::draw(Window &window, double alpha) const
-{
-    m_draw(window, alpha);
 }
 
 System& GameState::addSystem(const std::string& systemName)
