@@ -27,6 +27,11 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "getSize", &Camera::getSize,
                                 "move", &Camera::move
     );
+    module["WindowStyle"] = lua.create_table_with(
+            "Windowed", 0,
+            "Fullscreen", 1,
+            "FullscreenWindowed", 2
+    );
     module.new_usertype<Window>("Window", sol::constructors<Window()>(),
                                 "create", [](Window& window, unsigned int width, unsigned int height, const std::string& title, int style)
                                 {
@@ -164,14 +169,6 @@ bool Graphics::init(sol::this_state L)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
-    sol::state_view lua(L);
-    lua["WindowStyle"] = lua.create_table_with(
-            "Windowed", 0,
-            "Fullscreen", 1,
-            "FullscreenWindowed", 2
-    );
-    
     return true;
 }
 
