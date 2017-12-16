@@ -19,7 +19,6 @@ describe("Graphics module", function()
         assert.is_not_nil(Graphics.Sprite)
         assert.is_not_nil(Graphics.Font)
         assert.is_not_nil(Graphics.Text)
-        assert.is_not_nil(Graphics.VertexArray)
     end)
 
     describe("Window", function()
