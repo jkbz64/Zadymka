@@ -1,6 +1,6 @@
 #ifndef ZADYMKA_HPP
 #define ZADYMKA_HPP
-#include <sol/table.hpp>
+#include <sol/forward.hpp>
 
 struct Zadymka
 {

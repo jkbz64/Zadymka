@@ -1,6 +1,6 @@
 #ifndef AUDIO_HPP
 #define AUDIO_HPP
-#include <sol/table.hpp>
+#include <sol/forward.hpp>
 #include <glm/fwd.hpp>
 #include <vector>
 #include <string>

@@ -1,6 +1,6 @@
 #ifndef MATH_HPP
 #define MATH_HPP
-#include <sol/table.hpp>
+#include <sol/forward.hpp>
 
 struct Math
 {

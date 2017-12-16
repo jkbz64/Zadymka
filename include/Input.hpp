@@ -1,6 +1,6 @@
 #ifndef INPUT_HPP
 #define INPUT_HPP
-#include <sol/table.hpp>
+#include <sol/forward.hpp>
 
 class GLFWwindow;
 

@@ -1,6 +1,6 @@
 #ifndef GRAPHICS_HPP
 #define GRAPHICS_HPP
-#include <sol/table.hpp>
+#include <sol/forward.hpp>
 
 struct Graphics
 {

@@ -1,6 +1,6 @@
 #ifndef TIMER_HPP
 #define TIMER_HPP
-#include <sol/table.hpp>
+#include <sol/forward.hpp>
 
 struct Timer
 {

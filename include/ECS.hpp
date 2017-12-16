@@ -1,6 +1,6 @@
 #ifndef ECS_HPP
 #define ECS_HPP
-#include <sol/table.hpp>
+#include <sol/forward.hpp>
 #include <memory>
 
 class GameState;

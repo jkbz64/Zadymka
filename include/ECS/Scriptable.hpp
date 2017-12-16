@@ -39,15 +39,10 @@ public:
                 sol::function f = val.as<sol::function>();
                 m_table[key] = [&, f](T& system, sol::variadic_args args)
                 {
-                    sol::object oldSelf;
-                    if(m_lua["self"].valid())
-                        oldSelf = m_lua["self"];
+                    sol::object oldSelf = m_lua["self"];
                     m_lua.set("self", &system);
                     f.call(args);
-                    if(oldSelf.valid())
-                        m_lua.set("self", oldSelf);
-                    else
-                        m_lua.set("self", sol::nil);
+                    m_lua.set("self", oldSelf);
                 };
             }
             else
