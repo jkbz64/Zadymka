@@ -27,10 +27,12 @@ cd Zadymka
 mkdir build && cd build
 cmake .. //-DDEMO=ON to enable demo -DTESTS=ON to enable tests
 make -j4
-// Optionally run demo if enabled
-lua demo/init.lua
-// Or run tests
+// Run tests
 busted .
+// or Run demo
+cp Zadymka.so demo/Zadymka.so // copy lib to demo directory
+cd demo/
+lua init.lua //run demo
 ```
 
 ## Usage
