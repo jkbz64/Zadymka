@@ -48,6 +48,7 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "drawRect", &Window::drawRect,
                                 "drawText", &Window::drawText,
                                 "drawSprite", &Window::drawSprite,
+                                "drawTexture", &Window::drawTexture,
                                 "clear", &Window::clear,
                                 "display", &Window::display
     );
@@ -139,6 +140,7 @@ sol::table Graphics::createModule(sol::this_state L)
                                        ),
                                        "drawRect", &RenderTexture::drawRect,
                                        "drawSprite", &RenderTexture::drawSprite,
+                                       "drawTexture", &RenderTexture::drawTexture,
                                        "drawText", &RenderTexture::drawText,
                                        "clear", &RenderTexture::clear,
                                        "display", &RenderTexture::display

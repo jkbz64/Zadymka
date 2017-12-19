@@ -11,14 +11,15 @@ public:
     RenderTexture(RenderTexture&&) = delete;
     RenderTexture& operator=(const RenderTexture&) = delete;
     RenderTexture& operator=(RenderTexture&&) = delete;
-    ~RenderTexture() = default;
+    ~RenderTexture();
     void create(unsigned int w, unsigned int h);
     virtual void display() override;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int) override;
-    Texture& getTexture();
+    Texture getTexture();
 private:
     Texture m_texture;
     unsigned int m_framebuffer;
+    glm::ivec4 m_oldViewport;
 };
 
 #endif

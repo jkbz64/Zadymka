@@ -10,8 +10,8 @@ class VertexArray;
 class Renderer
 {
 public:
-    Renderer() = default;
-    virtual ~Renderer() = default;
+    Renderer() { };
+    virtual ~Renderer() { };
     virtual void render(Rectangle&) = 0;
     virtual void render(Sprite&) = 0;
     virtual void render(Text&) = 0;

@@ -4,6 +4,7 @@
 #include <Input.hpp>
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <Graphics/DefaultRenderer.hpp>
 
 namespace
 {
@@ -15,7 +16,7 @@ namespace
 }
 
 Window::Window() :
-    RenderTarget(),
+    RenderTarget(new DefaultRenderer(m_camera)),
     m_window(nullptr),
     m_isOpen(false),
     m_style(Window::Style::Windowed)

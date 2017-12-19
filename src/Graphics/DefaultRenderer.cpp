@@ -9,6 +9,8 @@ DefaultRenderer::DefaultRenderer(Camera& camera) :
 
 }
 
+DefaultRenderer::~DefaultRenderer() = default;
+
 #include <Graphics/Rectangle.hpp>
 
 void DefaultRenderer::render(Rectangle &rectangle)

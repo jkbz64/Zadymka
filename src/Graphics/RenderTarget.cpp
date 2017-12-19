@@ -6,8 +6,8 @@
 #include <Graphics/Text.hpp>
 #include <unordered_map>
 
-RenderTarget::RenderTarget() :
-    m_renderer(new DefaultRenderer(m_camera))
+RenderTarget::RenderTarget(Renderer* renderer) :
+    m_renderer(renderer)
 {
 
 }
@@ -16,7 +16,6 @@ RenderTarget::~RenderTarget() = default;
 
 void RenderTarget::draw(Drawable& drawable)
 {
-    m_renderer = std::make_unique<DefaultRenderer>(m_camera);
     drawable.draw(m_renderer.get());
 }
 
@@ -57,6 +56,14 @@ void RenderTarget::drawSprite(const std::string& textureName, float x, float y, 
     sprite.setTexture(texture);
     sprite.setPosition(glm::vec2(x, y));
     sprite.setSize(glm::vec2(w, h));
+    draw(sprite);
+}
+
+void RenderTarget::drawTexture(const Texture& texture, float x, float y)
+{
+    Sprite sprite;
+    sprite.setTexture(texture);
+    sprite.setPosition(glm::vec2(x, y));
     draw(sprite);
 }
 

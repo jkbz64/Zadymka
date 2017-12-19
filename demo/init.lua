@@ -1,33 +1,34 @@
 Zadymka = require("Zadymka")
+Zadymka.init()
 ECS = Zadymka.ECS
 Math = Zadymka.Math
 Entity = Zadymka.ECS.Entity
 Vec2f = Zadymka.Math.Vec2f
-
-Zadymka.init()
+Vec2u = Zadymka.Math.Vec2u
+class = require("lib.middleclass")
 
 -- Register our ECS stuff -- notice that these can be reloaded during runtime
 -- Components
-dofile('demo/components/Position.lua')
+dofile('components/Position.lua')
 -- Entities
-dofile('demo/entities/Player.lua')
+dofile('entities/Player.lua')
 -- Systems
-dofile('demo/systems/RenderingSystem.lua')
-dofile('demo/systems/MovementSystem.lua')
+dofile('systems/RenderingSystem.lua')
+dofile('systems/MovementSystem.lua')
 -- States
-dofile('demo/states/DemoState.lua')
-
-local demoState = ECS.createState('DemoState')
+dofile('states/DemoState.lua')
 
 local window = Zadymka.Graphics.Window:new()
 window:create(800, 600, 'Zadymka', 0)
+
+local demoState = ECS.createState('DemoState')
 
 local Timer = Zadymka.Timer
 dt = 1.0 / 20.0
 local currentTime = Timer.getTime()
 local accumulator = 0.0
 
-while(window:isOpen()) do
+while window:isOpen() do
 	local newTime = Timer.getTime()
 	local frameTime = newTime - currentTime
 	if frameTime > 0.25 then
@@ -37,7 +38,7 @@ while(window:isOpen()) do
     accumulator = accumulator + frameTime
 
     demoState:update(dt)
-    while(accumulator >= dt) do
+    while accumulator >= dt do
         demoState:fixedUpdate(dt)
         accumulator = accumulator - dt
     end

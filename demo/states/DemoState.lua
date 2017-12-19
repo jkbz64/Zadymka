@@ -5,6 +5,7 @@ ECS.registerState('DemoState', {
     init = function()
         self.camera:setCenter(Math.Vec2f:new(400, 300))
         self.player = self.entityManager:createEntity(ECS.entities["Player"])
+        self.systems['RenderingSystem']:onTileMapSet({ tilemap = dofile('maps/testmap.lua') })
     end,
     update = function(dt)
 

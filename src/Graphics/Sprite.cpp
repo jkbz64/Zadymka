@@ -1,4 +1,5 @@
 #include <Graphics/Sprite.hpp>
+#include <Graphics/Renderer.hpp>
 
 Sprite::Sprite()
 {
@@ -40,7 +41,7 @@ Sprite& Sprite::operator =(Sprite&& other)
 void Sprite::setTexture(const Texture &texture)
 {
     m_texture = texture;
-    if(getSize() == glm::vec2(0, 0))
+    if(getSize().x == 0 && getSize().y == 0)
         setSize(m_texture.getSize());
 }
 
@@ -67,4 +68,9 @@ void Sprite::setSize(const glm::vec2& size)
 const glm::vec2& Sprite::getSize() const
 {
     return m_scale;
+}
+
+void Sprite::draw(Renderer* renderer)
+{
+    renderer->render(*this);
 }

@@ -6,11 +6,12 @@
 class Drawable;
 class Shader;
 class Renderer;
+class Texture;
 
 class RenderTarget
 {
 public:
-    RenderTarget();
+    RenderTarget(Renderer*);
     virtual ~RenderTarget();
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int = 255u) = 0;
     virtual void display() = 0;
@@ -21,6 +22,7 @@ public:
     void drawRect(float, float, int, int, int, int, int, int);
     void drawText(const std::string&, float, float, const std::string&, unsigned int);
     void drawSprite(const std::string&, float, float, int, int);
+    void drawTexture(const Texture&, float, float);
 
     const Camera& getCamera();
     void setCamera(const Camera&);

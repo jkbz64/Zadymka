@@ -9,7 +9,7 @@ class DefaultRenderer : public Renderer
 {
 public:
     DefaultRenderer(Camera& camera);
-    virtual ~DefaultRenderer() = default;
+    ~DefaultRenderer();
     void render(Rectangle&) override;
     void render(Sprite&) override;
     void render(Text&) override;
