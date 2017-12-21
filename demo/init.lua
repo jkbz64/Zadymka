@@ -21,12 +21,18 @@ dofile('states/DemoState.lua')
 local window = Zadymka.Graphics.Window:new()
 window:create(800, 600, 'Zadymka', 0)
 
-local demoState = ECS.createState('DemoState')
+--local demoState = ECS.createState('DemoState')
 
 local Timer = Zadymka.Timer
 dt = 1.0 / 20.0
 local currentTime = Timer.getTime()
 local accumulator = 0.0
+
+
+local texture = Zadymka.Graphics.Texture:new()
+texture:loadFromFile('tileset.png')
+local tilemap = Zadymka.Graphics.Tilemap:new(texture, Vec2u:new(32, 32))
+local layer = tilemap:appendLayer(Vec2u:new(10, 10))
 
 while window:isOpen() do
 	local newTime = Timer.getTime()
@@ -37,15 +43,16 @@ while window:isOpen() do
 	currentTime = newTime
     accumulator = accumulator + frameTime
 
-    demoState:update(dt)
+    --demoState:update(dt)
     while accumulator >= dt do
-        demoState:fixedUpdate(dt)
+        --demoState:fixedUpdate(dt)
         accumulator = accumulator - dt
     end
 	local alpha = accumulator / dt
-	window:setCamera(demoState.camera)
+	--window:setCamera(demoState.camera)
 	window:clear(0, 125, 125, 255)
-	demoState:draw(window, alpha)
+	--demoState:draw(window, alpha)
+    window:draw(tilemap)
 	window:display()
 	Timer.sleep(1)
 end

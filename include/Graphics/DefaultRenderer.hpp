@@ -13,6 +13,7 @@ public:
     void render(Rectangle&) override;
     void render(Sprite&) override;
     void render(Text&) override;
+    void render(Tilemap&) override;
 private:
     Camera& m_camera;
 };

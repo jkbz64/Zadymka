@@ -49,7 +49,7 @@ void Texture::create(unsigned int width, unsigned int height)
     m_size = glm::uvec2(width, height);
     glGenTextures(1, m_ID.get());
     bind();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_filterMin);
@@ -72,7 +72,7 @@ bool Texture::loadFromFile(const std::string &filename)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_filterMin);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_filterMax);
-        GLenum format = GL_RGB;
+        GLenum format = GL_RGBA;
         if (nrChannels == 1)
             format = GL_RED;
         else if (nrChannels == 3)

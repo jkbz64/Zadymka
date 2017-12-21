@@ -16,9 +16,11 @@ public:
     virtual void display() override;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int) override;
     Texture getTexture();
+    unsigned int getID() const;
 private:
-    Texture m_texture;
     unsigned int m_framebuffer;
+    Texture m_texture;
+    int m_oldFramebuffer;
     glm::ivec4 m_oldViewport;
 };
 

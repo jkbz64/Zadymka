@@ -10,14 +10,29 @@ function Tilemap:initialize(data)
         local tileset = data.tilesets[i]
         if tileset.imagewidth > maxWidth then maxWidth = tileset.imagewidth end
         maxHeight = maxHeight + tileset.imageheight
+
     end
-    combinedTileset:create(768, 448)
+    combinedTileset:create(maxWidth, maxHeight)
     combinedTileset:clear(255, 255, 255, 255)
+    local nextHeight = 0
+    local nextTile = 1
+    self.tileCoords = {}
     for i = 1, #data.tilesets do
         local tileset = data.tilesets[i]
         local tempTexture = Zadymka.Graphics.Texture.new()
         tempTexture:loadFromFile(tileset.image)
-        combinedTileset:drawTexture(tempTexture, 0, 0, 768, 448)
+        combinedTileset:drawTexture(tempTexture, 0, nextHeight, 768, 448)
+        for c = 0, tileset.imageheight / self.tileSize.y do
+            for r = 0, tileset.imagewidth / self.tileSize.x do
+                self.tileCoords[nextTile] = {
+                    x = r * self.tileSize.x,
+                    y = nextHeight + c * self.tileSize.y
+                }
+                print(nextTile .. ' - ' .. 'x = ' .. self.tileCoords[nextTile].x .. ' y = ' .. self.tileCoords[nextTile].y)
+                nextTile = nextTile + 1
+            end
+        end
+        nextHeight = nextHeight + tempTexture:getSize().y
     end
     combinedTileset:display()
     self.combinedTexture = combinedTileset:getTexture()
