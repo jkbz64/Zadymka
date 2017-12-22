@@ -5,6 +5,7 @@
 #include <glm/vec2.hpp>
 #include <Graphics/Texture.hpp>
 #include <Graphics/Transformable.hpp>
+#include <map>
 
 struct Layer
 {
@@ -15,7 +16,13 @@ struct Layer
     Texture m_texture;
 };
 
-using TileCoord = glm::ivec2;
+struct Tileset
+{
+    Tileset(const Texture& t);
+    Texture m_texture;
+    std::map<unsigned int, Texture> m_tiles;
+    bool m_needUpdate;
+};
 
 class Tilemap : public Drawable, protected Transformable
 {
@@ -23,16 +30,14 @@ public:
     Tilemap(const Texture&, const glm::uvec2&);
     ~Tilemap();
     const glm::uvec2& getTileSize() const;
-    Texture& getTileset();
+    Tileset& getTileset();
     Layer& appendLayer(const glm::uvec2&);
     Layer& prependLayer(const glm::uvec2&);
     std::vector<Layer>& getLayers();
-    const glm::ivec2& getCoord(unsigned int);
 protected:
     void draw(Renderer*) override;
-    Texture m_tileset;
+    Tileset m_tileset;
     glm::uvec2 m_tileSize;
-    std::vector<TileCoord> m_tileCoords;
     std::vector<Layer> m_layers;
 };
 

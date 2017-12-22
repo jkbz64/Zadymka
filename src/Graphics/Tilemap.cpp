@@ -3,6 +3,13 @@
 #include <Graphics/Renderer.hpp>
 #include <iostream>
 
+Tileset::Tileset(const Texture &texture) :
+    m_texture(texture),
+    m_needUpdate(true)
+{
+
+}
+
 Tilemap::Tilemap(const Texture& texture, const glm::uvec2 &tileSize) :
     m_tileset(texture),
     m_tileSize(tileSize)
@@ -45,12 +52,7 @@ const glm::uvec2& Tilemap::getTileSize() const
     return m_tileSize;
 }
 
-const glm::ivec2& Tilemap::getCoord(unsigned int id)
-{
-    return m_tileCoords[id];
-}
-
-Texture& Tilemap::getTileset()
+Tileset& Tilemap::getTileset()
 {
     return m_tileset;
 }

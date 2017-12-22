@@ -147,11 +147,15 @@ sol::table Graphics::createModule(sol::this_state L)
                                        "display", &RenderTexture::display
     );
     module.new_usertype<Layer>("Layer",
+                               "visible", &Layer::m_visible,
+                               "size", &Layer::m_size,
                                "data", &Layer::m_data
     );
     module.new_usertype<Tilemap>("Tilemap",
                                  sol::constructors<Tilemap(const Texture&, const glm::uvec2&)>(),
                                  "appendLayer", &Tilemap::appendLayer,
+                                 "prependLayer", &Tilemap::prependLayer,
+                                 "getLayers", &Tilemap::getLayers,
                                  sol::base_classes, sol::bases<Drawable>()
     );
     return module;

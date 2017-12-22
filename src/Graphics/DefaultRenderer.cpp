@@ -237,18 +237,50 @@ void DefaultRenderer::render(Text &text)
 
 void DefaultRenderer::render(Tilemap &tilemap)
 {
+    if(tilemap.getTileset().m_needUpdate)
+    {
+        auto& tileset = tilemap.getTileset();
+        auto& tilesetTexture = tileset.m_texture;
+        const auto& tileSize = tilemap.getTileSize();
+        auto& tiles = tileset.m_tiles;
+        tiles.clear();
+        
+        RenderTexture tilesetFramebuffer;
+        tilesetFramebuffer.create(tilesetTexture.getSize().x, tilesetTexture.getSize().y);
+        tilesetFramebuffer.clear(255, 255, 255, 0);
+        tilesetFramebuffer.drawTexture(tilemap.getTileset().m_texture, 0, 0);
+        tilesetFramebuffer.display();
+        
+        const auto rows = (tilesetTexture.getSize().y / tileSize.y);
+        const auto columns = (tilesetTexture.getSize().x / tileSize.x);
+        auto tileID = 1u;
+        for(auto row = 0u; row < rows; row++)
+        {
+            for(auto column = 0u; column < columns; column++)
+            {
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, tilesetFramebuffer.getID());
+                Texture tileTexture;
+                tileTexture.create(tileSize.x, tileSize.y);
+                tileTexture.bind();
+                glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                                 column * tileSize.x,
+                                 (tilesetTexture.getSize().y - tileSize.y) - row * tileSize.y,
+                                 tileSize.x, tileSize.y, 0);
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+                tiles[tileID++] = std::move(tileTexture);
+            }
+        }
+        tileset.m_needUpdate = false;
+        for(auto& layer : tilemap.getLayers())
+            layer.m_needUpdate = true;
+    }
+    
     for(auto& layer : tilemap.getLayers())
     {
-        std::map<unsigned int, Texture> cachedTiles;
         if(layer.m_needUpdate)
         {
-            auto& tileset = tilemap.getTileset();
             const auto& tileSize = tilemap.getTileSize();
-            RenderTexture tilesetFramebuffer;
-            tilesetFramebuffer.create(tileset.getSize().x, tileset.getSize().y);
-            tilesetFramebuffer.clear(255, 255, 255, 0);
-            tilesetFramebuffer.drawTexture(tilemap.getTileset(), 0, 0);
-            tilesetFramebuffer.display();
+            auto& tiles = tilemap.getTileset().m_tiles;
             RenderTexture layerTexture;
             layerTexture.create(layer.m_size.x * tileSize.x, layer.m_size.y * tileSize.y);
             layerTexture.clear(255, 255, 255, 0);
@@ -261,33 +293,23 @@ void DefaultRenderer::render(Tilemap &tilemap)
                     const auto& tileID = layer.m_data[tileN];
                     if(tileID != 0)
                     {
-                        if(cachedTiles.find(tileID) == std::end(cachedTiles))
-                        {
-                            glBindFramebuffer(GL_READ_FRAMEBUFFER, tilesetFramebuffer.getID());
-                            Texture tileTexture;
-                            tileTexture.create(tileSize.x, tileSize.y);
-                            tileTexture.bind();
-                            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                                             column * tileSize.x,
-                                             (tileset.getSize().y - tileSize.y) - row * tileSize.y,
-                                             tileSize.x, tileSize.y, 0);
-                            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-                            cachedTiles[tileID] = std::move(tileTexture);
-                        }
-                        layerTexture.drawTexture(cachedTiles[tileID],
+                        layerTexture.drawTexture(tiles[tileID],
                                                  column * tileSize.x,
                                                  row * tileSize.y);
                     }
                 }
             }
-            
             layerTexture.display();
             // Make layer texture render texture
             layer.m_texture = layerTexture.getTexture();
             layer.m_needUpdate = false;
         }
-        Sprite layerSprite;
-        layerSprite.setTexture(layer.m_texture);
-        render(layerSprite);
+        
+        if(layer.m_visible)
+        {
+            Sprite layerSprite;
+            layerSprite.setTexture(layer.m_texture);
+            render(layerSprite);
+        }
     }
 }

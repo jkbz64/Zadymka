@@ -25,7 +25,6 @@ private:
     friend class Window;
     friend class RenderTexture;
     std::shared_ptr<GLuint> m_ID;
-    //Texture dimensions
     glm::uvec2 m_size;
     //Format
     GLuint m_internalFormat;

@@ -1,47 +1,3 @@
-local Tilemap = class('Tilemap')
-
-function Tilemap:initialize(data)
-    self.mapSize = Vec2u.new(data.width or 0, data.height or 0)
-    self.tileSize = Vec2u.new(data.tilewidth or 0, data.tileheight or 0)
-    local combinedTileset = Zadymka.Graphics.RenderTexture.new()
-    local maxWidth = 0
-    local maxHeight = 0
-    for i = 1, #data.tilesets do
-        local tileset = data.tilesets[i]
-        if tileset.imagewidth > maxWidth then maxWidth = tileset.imagewidth end
-        maxHeight = maxHeight + tileset.imageheight
-
-    end
-    combinedTileset:create(maxWidth, maxHeight)
-    combinedTileset:clear(255, 255, 255, 255)
-    local nextHeight = 0
-    local nextTile = 1
-    self.tileCoords = {}
-    for i = 1, #data.tilesets do
-        local tileset = data.tilesets[i]
-        local tempTexture = Zadymka.Graphics.Texture.new()
-        tempTexture:loadFromFile(tileset.image)
-        combinedTileset:drawTexture(tempTexture, 0, nextHeight, 768, 448)
-        for c = 0, tileset.imageheight / self.tileSize.y do
-            for r = 0, tileset.imagewidth / self.tileSize.x do
-                self.tileCoords[nextTile] = {
-                    x = r * self.tileSize.x,
-                    y = nextHeight + c * self.tileSize.y
-                }
-                print(nextTile .. ' - ' .. 'x = ' .. self.tileCoords[nextTile].x .. ' y = ' .. self.tileCoords[nextTile].y)
-                nextTile = nextTile + 1
-            end
-        end
-        nextHeight = nextHeight + tempTexture:getSize().y
-    end
-    combinedTileset:display()
-    self.combinedTexture = combinedTileset:getTexture()
-end
-
-function Tilemap:draw(window)
-    window:drawTexture(self.combinedTexture, 0, 0)
-end
-
 ECS.registerSystem('RenderingSystem', {
     init = function(ev, em)
         ev:subscribe('EntityCreated', self, self.onEntityCreated)
@@ -59,7 +15,7 @@ ECS.registerSystem('RenderingSystem', {
             window:drawRect(position.x, position.y, 100, 100, 255, 0, 0, 255)
         end
         if self.currentMap ~= nil then
-            self.currentMap:draw(window)
+            window:draw(self.currentMap)
         end
     end,
     onEntityCreated = function(event)
@@ -68,6 +24,17 @@ ECS.registerSystem('RenderingSystem', {
         end
     end,
     onTileMapSet = function(event)
-        self.currentMap = Tilemap:new(event.tilemap)
+        local map = event.map
+        local tileset = Zadymka.Graphics.Texture:new()
+        if tileset:loadFromFile(map.tileset.image) == false then
+            print('Failed to load tileset')
+        end
+        self.currentMap = Zadymka.Graphics.Tilemap:new(tileset, Vec2u:new(map.tilewidth, map.tileheight))
+        for l = 1, #map.layers do
+            local layer = self.currentMap:appendLayer(Vec2u:new(map.layers[l].width, map.layers[l].height))
+            for i = 1, #map.layers[l].data do
+                layer.data[i] = map.layers[l].data[i]
+            end
+        end
     end
 })
