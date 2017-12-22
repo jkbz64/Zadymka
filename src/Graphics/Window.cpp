@@ -5,6 +5,7 @@
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Graphics/DefaultRenderer.hpp>
+#include <ImGui.hpp>
 
 namespace
 {
@@ -78,6 +79,7 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
         glViewport(0, 0, width, height);
     });
     Input::setWindow(getNativeWindow());
+    ImGUI::setWindow(getNativeWindow());
 }
 
 bool Window::isOpen()

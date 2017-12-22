@@ -8,12 +8,12 @@ struct Graphics
     static bool init(sol::this_state);
     static void deinit();
 };
-
+    
 extern "C"
 {
     struct lua_State;
 }
-
-extern "C" int luaopen_Zadymka_Graphics(lua_State*);
+    
+extern "C" int luaopen_Zadymka_Graphics(lua_State *);
 
 #endif

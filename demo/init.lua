@@ -41,11 +41,14 @@ while window:isOpen() do
     while accumulator >= dt do
         demoState:fixedUpdate(dt)
         accumulator = accumulator - dt
-    end
+	end
+	Zadymka.ImGui.NewFrame()
 	local alpha = accumulator / dt
 	window:setCamera(demoState.camera)
 	window:clear(0, 125, 125, 255)
 	demoState:draw(window, alpha)
+	Zadymka.ImGui.Text('Test')
+	Zadymka.ImGui.Render()
 	window:display()
 	Timer.sleep(1)
 end

@@ -11,8 +11,6 @@
 #include <GLFW/glfw3.h>
 #include <Graphics/Tilemap.hpp>
 
-void draw(const Rectangle&);
-
 sol::table Graphics::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
@@ -20,7 +18,7 @@ sol::table Graphics::createModule(sol::this_state L)
     module["init"] = &Graphics::init;
     module["deinit"] = &Graphics::deinit;
     module.new_usertype<Camera>("Camera",
-                                sol::constructors<Camera(), Camera(const Camera&)>(),
+                                sol::constructors<Camera(), Camera(const Camera &)>(),
                                 "setCenter", &Camera::setCenter,
                                 "getCenter", &Camera::getCenter,
                                 "setSize", &Camera::setSize,
@@ -43,9 +41,9 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "getCamera", &Window::getCamera,
                                 "setCamera", &Window::setCamera,
                                 "draw", sol::overload(
-                                    static_cast<void(Window::*)(Drawable&)>(&Window::draw),
-                                    static_cast<void(Window::*)(Drawable&, const Shader&)>(&Window::draw)
-                                ),
+                    static_cast<void (Window::*)(Drawable &)>(&Window::draw),
+                    static_cast<void (Window::*)(Drawable &, const Shader &)>(&Window::draw)
+            ),
                                 "drawRect", &Window::drawRect,
                                 "drawText", &Window::drawText,
                                 "drawSprite", &Window::drawSprite,
@@ -54,7 +52,7 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "display", &Window::display
     );
     module.new_usertype<Texture>("Texture",
-                                 sol::constructors<Texture(), Texture(const Texture&)>(),
+                                 sol::constructors<Texture(), Texture(const Texture &)>(),
                                  "create", &Texture::create,
                                  "getID", &Texture::getID,
                                  "bind", &Texture::bind,
@@ -62,31 +60,35 @@ sol::table Graphics::createModule(sol::this_state L)
                                  "loadFromMemory", &Texture::loadFromMemory,
                                  "getSize", &Texture::getSize
     );
-    module.new_usertype<Shader>("Shader", sol::constructors<Shader(), Shader(const std::string&, const std::string&)>(),
+    module.new_usertype<Shader>("Shader",
+                                sol::constructors<Shader(), Shader(const std::string &, const std::string &)>(),
                                 "use", &Shader::use,
                                 "getID", &Shader::getID,
                                 "isLoaded", &Shader::isLoaded,
                                 "loadFromFile", sol::overload(
-                                      static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromFile),
-                                      [](Shader& shader, const std::string& vs, const std::string& fs)
-                                      {
-                                          return shader.loadFromFile(vs, fs);
-                                      }
-                                ),
+                    static_cast<bool (Shader::*)(const std::string &, const std::string &,
+                                                 const std::string &)>(&Shader::loadFromFile),
+                    [](Shader &shader, const std::string &vs, const std::string &fs)
+                    {
+                        return shader.loadFromFile(vs, fs);
+                    }
+            ),
                                 "loadFromMemory", sol::overload(
-                                    static_cast<bool(Shader::*)(const std::string&, const std::string&, const std::string&)>(&Shader::loadFromMemory),
-                                    [](Shader& shader, const std::string& vs, const std::string& fs)
-                                    {
-                                        return shader.loadFromMemory(vs, fs);
-                                    }
-                                ),
+                    static_cast<bool (Shader::*)(const std::string &, const std::string &,
+                                                 const std::string &)>(&Shader::loadFromMemory),
+                    [](Shader &shader, const std::string &vs, const std::string &fs)
+                    {
+                        return shader.loadFromMemory(vs, fs);
+                    }
+            ),
                                 "setFloat", &Shader::setFloat,
                                 "setInteger", &Shader::setInteger,
                                 "setVector2f", &Shader::setVector2f,
                                 "setVector3f", &Shader::setVector3f,
                                 "setMatrix4", &Shader::setMatrix4
     );
-    module.new_usertype<Color>("Color", sol::constructors<Color(), Color(unsigned int, unsigned int, unsigned int, unsigned int), Color(const Color&)>(),
+    module.new_usertype<Color>("Color", sol::constructors<Color(), Color(unsigned int, unsigned int, unsigned int,
+                                                                         unsigned int), Color(const Color &)>(),
                                "r", &Color::m_r,
                                "g", &Color::m_g,
                                "b", &Color::m_b,
@@ -115,11 +117,11 @@ sol::table Graphics::createModule(sol::this_state L)
                                 sol::base_classes, sol::bases<Drawable>()
     );
     module.new_usertype<Font>("Font",
-                              sol::constructors<Font(), Font(const std::string&)>(),
+                              sol::constructors<Font(), Font(const std::string &)>(),
                               "loadFromFile", &Font::loadFromFile
     );
     module.new_usertype<Text>("Text",
-                              sol::constructors<Text(), Text(Font&)>(),
+                              sol::constructors<Text(), Text(Font &)>(),
                               "setPosition", &Text::setPosition,
                               "getPosition", &Text::getPosition,
                               "setString", &Text::setString,
@@ -136,9 +138,9 @@ sol::table Graphics::createModule(sol::this_state L)
                                        "create", &RenderTexture::create,
                                        "getTexture", &RenderTexture::getTexture,
                                        "draw", sol::overload(
-                                           static_cast<void(RenderTexture::*)(Drawable&)>(&RenderTexture::draw),
-                                           static_cast<void(RenderTexture::*)(Drawable&, const Shader&)>(&RenderTexture::draw)
-                                       ),
+                    static_cast<void (RenderTexture::*)(Drawable &)>(&RenderTexture::draw),
+                    static_cast<void (RenderTexture::*)(Drawable &, const Shader &)>(&RenderTexture::draw)
+            ),
                                        "drawRect", &RenderTexture::drawRect,
                                        "drawSprite", &RenderTexture::drawSprite,
                                        "drawTexture", &RenderTexture::drawTexture,
@@ -152,7 +154,7 @@ sol::table Graphics::createModule(sol::this_state L)
                                "data", &Layer::m_data
     );
     module.new_usertype<Tilemap>("Tilemap",
-                                 sol::constructors<Tilemap(const Texture&, const glm::uvec2&)>(),
+                                 sol::constructors<Tilemap(const Texture &, const glm::uvec2 &)>(),
                                  "appendLayer", &Tilemap::appendLayer,
                                  "prependLayer", &Tilemap::prependLayer,
                                  "getLayers", &Tilemap::getLayers,
@@ -176,7 +178,7 @@ void Graphics::deinit()
     glfwTerminate();
 }
 
-extern "C" int luaopen_Zadymka_Graphics(lua_State* L)
+extern "C" int luaopen_Zadymka_Graphics(lua_State *L)
 {
     return sol::stack::call_lua(L, 1, Graphics::createModule);
 }

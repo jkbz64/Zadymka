@@ -6,6 +6,7 @@
 #include <Timer.hpp>
 #include <Input.hpp>
 #include <sol/state_view.hpp>
+#include <ImGui.hpp>
 
 sol::table Zadymka::createModule(sol::this_state L)
 {
@@ -18,6 +19,7 @@ sol::table Zadymka::createModule(sol::this_state L)
     module["ECS"] = ECS::createModule(L);
     module["Timer"] = Timer::createModule(L);
     module["Input"] = Input::createModule(L);
+    module["ImGui"] = ImGUI::createModule(L);
     //module["Audio"] = Audio::createModule(L);
     return module;
 }
