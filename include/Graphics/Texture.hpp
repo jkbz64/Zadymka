@@ -18,7 +18,7 @@ public:
     GLuint getID() const;
     void bind() const;
     void create(unsigned int, unsigned int);
-    bool loadFromFile(const std::string&);
+    bool loadFromFile(const std::string&, bool = false);
     bool loadFromMemory(const std::string&);
     const glm::uvec2& getSize() const;
 private:

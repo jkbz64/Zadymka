@@ -31,6 +31,9 @@ local accumulator = 0.0
 local buf = Zadymka.ImGui.StringBuffer:new('test')
 local floatb = Zadymka.ImGui.FloatBuffer:new(0.0)
 
+local texture = Zadymka.Graphics.Texture:new()
+texture:loadFromFile('tileset.png', true)
+
 while window:isOpen() do
 	local newTime = Timer.getTime()
 	local frameTime = newTime - currentTime
@@ -52,6 +55,7 @@ while window:isOpen() do
 	demoState:draw(window, alpha)
 	Zadymka.ImGui.InputText('string', buf)
     Zadymka.ImGui.SliderFloat('elo', floatb, -0.5, 10.0)
+	Zadymka.ImGui.Image(texture, Vec2u:new(200, 200))
 	Zadymka.ImGui.Render()
 	window:display()
 	Timer.sleep(1)

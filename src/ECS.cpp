@@ -47,14 +47,15 @@ sol::table ECS::createModule(sol::this_state L)
                                 "components", &Entity::m_components
     );
     module.new_usertype<EntityManager>("EntityManager", "new", sol::no_constructor,
-                                       "createEntity", sol::overload(
-                                            [](EntityManager& mgr) -> Entity&
-                                            {
-                                                return mgr.createEntity();
-                                            },
-                                            static_cast<Entity&(EntityManager::*)(const std::string&)>(&EntityManager::createEntity),
-                                            static_cast<Entity&(EntityManager::*)(sol::table)>(&EntityManager::createEntity)
-                                        ),
+                                       "createEntity",
+                                       sol::overload(
+                                               [](EntityManager& mgr) -> Entity&
+                                               {
+                                                   return mgr.createEntity();
+                                               },
+                                               static_cast<Entity&(EntityManager::*)(const std::string&)>(&EntityManager::createEntity),
+                                               static_cast<Entity&(EntityManager::*)(sol::table)>(&EntityManager::createEntity)
+                                       ),
                                        "destroyEntity", &EntityManager::destroyEntity,
                                        "getEntity", &EntityManager::getEntity
     );

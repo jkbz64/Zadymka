@@ -57,9 +57,12 @@ void Texture::create(unsigned int width, unsigned int height)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-bool Texture::loadFromFile(const std::string &filename)
+bool Texture::loadFromFile(const std::string &filename, bool flip)
 {
     stbi_set_flip_vertically_on_load(true);
+    if(flip)
+        stbi_set_flip_vertically_on_load(false);
+    
     int width, height, nrChannels;
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
     if(data)

@@ -40,10 +40,11 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "setSize", &Window::setSize,
                                 "getCamera", &Window::getCamera,
                                 "setCamera", &Window::setCamera,
-                                "draw", sol::overload(
-                    static_cast<void (Window::*)(Drawable &)>(&Window::draw),
-                    static_cast<void (Window::*)(Drawable &, const Shader &)>(&Window::draw)
-            ),
+                                "draw",
+                                sol::overload(
+                                        static_cast<void (Window::*)(Drawable &)>(&Window::draw),
+                                        static_cast<void (Window::*)(Drawable &, const Shader &)>(&Window::draw)
+                                ),
                                 "drawRect", &Window::drawRect,
                                 "drawText", &Window::drawText,
                                 "drawSprite", &Window::drawSprite,
@@ -56,8 +57,15 @@ sol::table Graphics::createModule(sol::this_state L)
                                  "create", &Texture::create,
                                  "getID", &Texture::getID,
                                  "bind", &Texture::bind,
-                                 "loadFromFile", &Texture::loadFromFile,
                                  "loadFromMemory", &Texture::loadFromMemory,
+                                 "loadFromFile",
+                                 sol::overload(
+                                         [](Texture& texture, const std::string& filename)
+                                         {
+                                             return texture.loadFromFile(filename);
+                                         },
+                                         &Texture::loadFromFile
+                                 ),
                                  "getSize", &Texture::getSize
     );
     module.new_usertype<Shader>("Shader",
@@ -65,22 +73,24 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "use", &Shader::use,
                                 "getID", &Shader::getID,
                                 "isLoaded", &Shader::isLoaded,
-                                "loadFromFile", sol::overload(
-                    static_cast<bool (Shader::*)(const std::string &, const std::string &,
-                                                 const std::string &)>(&Shader::loadFromFile),
-                    [](Shader &shader, const std::string &vs, const std::string &fs)
-                    {
-                        return shader.loadFromFile(vs, fs);
-                    }
-            ),
-                                "loadFromMemory", sol::overload(
-                    static_cast<bool (Shader::*)(const std::string &, const std::string &,
-                                                 const std::string &)>(&Shader::loadFromMemory),
-                    [](Shader &shader, const std::string &vs, const std::string &fs)
-                    {
-                        return shader.loadFromMemory(vs, fs);
-                    }
-            ),
+                                "loadFromFile",
+                                sol::overload(
+                                        static_cast<bool (Shader::*)(const std::string &, const std::string &,
+                                                                     const std::string &)>(&Shader::loadFromFile),
+                                        [](Shader &shader, const std::string &vs, const std::string &fs)
+                                        {
+                                            return shader.loadFromFile(vs, fs);
+                                        }
+                                ),
+                                "loadFromMemory",
+                                sol::overload(
+                                        static_cast<bool (Shader::*)(const std::string &, const std::string &,
+                                                                     const std::string &)>(&Shader::loadFromMemory),
+                                        [](Shader &shader, const std::string &vs, const std::string &fs)
+                                        {
+                                            return shader.loadFromMemory(vs, fs);
+                                        }
+                                ),
                                 "setFloat", &Shader::setFloat,
                                 "setInteger", &Shader::setInteger,
                                 "setVector2f", &Shader::setVector2f,
@@ -137,10 +147,11 @@ sol::table Graphics::createModule(sol::this_state L)
                                        sol::constructors<RenderTexture()>(),
                                        "create", &RenderTexture::create,
                                        "getTexture", &RenderTexture::getTexture,
-                                       "draw", sol::overload(
-                    static_cast<void (RenderTexture::*)(Drawable &)>(&RenderTexture::draw),
-                    static_cast<void (RenderTexture::*)(Drawable &, const Shader &)>(&RenderTexture::draw)
-            ),
+                                       "draw",
+                                       sol::overload(
+                                               static_cast<void (RenderTexture::*)(Drawable &)>(&RenderTexture::draw),
+                                               static_cast<void (RenderTexture::*)(Drawable &, const Shader &)>(&RenderTexture::draw)
+                                       ),
                                        "drawRect", &RenderTexture::drawRect,
                                        "drawSprite", &RenderTexture::drawSprite,
                                        "drawTexture", &RenderTexture::drawTexture,

@@ -27,6 +27,8 @@ Window::Window() :
 
 Window::~Window()
 {
+    Input::setWindow(nullptr);
+    ImGUI::setWindow(nullptr);
     if(m_window)
         glfwDestroyWindow(getNativeWindow());
 }
