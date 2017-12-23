@@ -28,6 +28,9 @@ dt = 1.0 / 20.0
 local currentTime = Timer.getTime()
 local accumulator = 0.0
 
+local buf = Zadymka.ImGui.StringBuffer:new('test')
+local floatb = Zadymka.ImGui.FloatBuffer:new(0.0)
+
 while window:isOpen() do
 	local newTime = Timer.getTime()
 	local frameTime = newTime - currentTime
@@ -47,7 +50,8 @@ while window:isOpen() do
 	window:setCamera(demoState.camera)
 	window:clear(0, 125, 125, 255)
 	demoState:draw(window, alpha)
-	Zadymka.ImGui.Text('Test')
+	Zadymka.ImGui.InputText('string', buf)
+    Zadymka.ImGui.SliderFloat('elo', floatb, -0.5, 10.0)
 	Zadymka.ImGui.Render()
 	window:display()
 	Timer.sleep(1)
