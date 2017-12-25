@@ -1,7 +1,7 @@
 local ImGui = Zadymka.ImGui
 
 text = ImGui.MakeBuffer('omegalul')
-print(text)
+print(ImGui.Get(text))
 
 
 ECS.registerSystem('GUISystem', {
@@ -11,7 +11,6 @@ ECS.registerSystem('GUISystem', {
         self.widgets = {
             test = function()
                 ImGui.InputText('test', text)
-                print(text:get())
             end
         }
     end,

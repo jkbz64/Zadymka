@@ -10,6 +10,7 @@
 namespace
 {
     GLFWwindow* m_window = nullptr;
+    
     template<class T>
     using Buffer = std::shared_ptr<T>;
 }
@@ -43,9 +44,34 @@ sol::table ImGUI::createModule(sol::this_state L)
                 buffer->reserve(256);
                 return buffer;
             },
+            [](const std::string& string, std::size_t size)
+            {
+                auto buffer = std::make_shared<std::string>(string);
+                buffer->reserve(size);
+                return buffer;
+            },
             [](bool boolean)
             {
                 return std::make_shared<bool>(boolean);
+            }
+    );
+    
+    module["Get"] = sol::overload(
+            [](std::shared_ptr<int> value)
+            {
+                return *value.get();
+            },
+            [](std::shared_ptr<float> value)
+            {
+                return *value.get();
+            },
+            [](std::shared_ptr<std::string> value)
+            {
+                return *value.get();
+            },
+            [](std::shared_ptr<bool> value)
+            {
+                return *value.get();
             }
     );
     
@@ -60,15 +86,15 @@ sol::table ImGUI::createModule(sol::this_state L)
     module["Button"] = [](const std::string& text) { ImGui::Button(text.c_str()); };
     module["InputText"] = [](const std::string& name, Buffer<std::string> buffer)
     {
-        ImGui::InputText(name.c_str(), &(*buffer.get())[0], 256);
+        ImGui::InputText(name.c_str(), &(*buffer.get())[0], buffer->capacity());
     };
     module["InputTextMultiline"] = [](const std::string& name, Buffer<std::string>& buffer)
     {
         ImGui::InputText(name.c_str(), &(*buffer.get())[0], buffer->capacity());
     };
-    module["SliderFloat"] = [](const std::string& name, Buffer<float> f, float min, float max)
+    module["SliderFloat"] = [](const std::string& name, Buffer<float>& buffer, float min, float max)
     {
-        ImGui::SliderFloat(name.c_str(), &*f.get(), min, max);
+        ImGui::SliderFloat(name.c_str(), &*buffer.get(), min, max);
     };
     module["Separator"] = &ImGui::Separator;
     module["SameLine"] = &ImGui::SameLine;
@@ -92,7 +118,7 @@ sol::table ImGUI::createModule(sol::this_state L)
     module["Combo"] = [](const std::string& name, Buffer<int>& currentItem, const std::string& items)
     {
         auto comboItems = items;
-        std::replace_if(comboItems.begin(), comboItems.end(), [](char& c){ return std::isspace(c); }, '\0');
+        std::replace_if(comboItems.begin(), comboItems.end(), [](const char& c){ return std::isspace(c); }, '\0');
         comboItems += "\0";
         return ImGui::Combo(name.c_str(), &*currentItem.get(), comboItems.c_str());
     };
