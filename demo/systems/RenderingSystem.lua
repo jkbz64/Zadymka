@@ -1,6 +1,8 @@
 ECS.registerSystem('RenderingSystem', {
     init = function(ev, em)
         ev:subscribe('EntityCreated', self, self.onEntityCreated)
+        ev:subscribe('MapSet', self, self.onMapSet)
+
         self.currentMap = nil
         self.renderables = {}
     end,
@@ -23,7 +25,7 @@ ECS.registerSystem('RenderingSystem', {
             table.insert(self.renderables, event.entity)
         end
     end,
-    onTileMapSet = function(event)
+    onMapSet = function(event)
         local map = event.map
         local tileset = Zadymka.Graphics.Texture:new()
         if tileset:loadFromFile(map.tileset.image) == false then

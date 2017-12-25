@@ -11,7 +11,6 @@ void GameState::registerSystem(const std::string& systemName, sol::table system)
 
 GameState::GameState(sol::this_state L) :
     Scriptable<GameState>(),
-    m_camera(),
     m_eventManager(),
     m_entityManager(L, m_eventManager),
     m_nullSystem(L)
@@ -21,7 +20,6 @@ GameState::GameState(sol::this_state L) :
 
 GameState::GameState(sol::this_state L, sol::table state) :
         Scriptable<GameState>(L, state),
-        m_camera(),
         m_eventManager(),
         m_entityManager(L, m_eventManager),
         m_nullSystem(L)
@@ -77,9 +75,4 @@ System& GameState::getSystem(const std::string& systemName)
     if(m_systems.find(systemName) != std::end(m_systems))
         return m_systems[systemName];
     return m_nullSystem;
-}
-
-const Camera& GameState::getCamera() const
-{
-    return m_camera;
 }

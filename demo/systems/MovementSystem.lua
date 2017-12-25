@@ -26,9 +26,6 @@ ECS.registerSystem('MovementSystem', {
             end
         end
     end,
-    draw = function(window, alpha)
-
-    end,
     onEntityCreated = function(event)
         self.player = event.entity
     end

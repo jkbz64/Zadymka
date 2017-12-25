@@ -1,5 +1,6 @@
 Zadymka = require("Zadymka")
 Zadymka.init()
+
 ECS = Zadymka.ECS
 Math = Zadymka.Math
 Entity = Zadymka.ECS.Entity
@@ -15,6 +16,7 @@ dofile('entities/Player.lua')
 -- Systems
 dofile('systems/RenderingSystem.lua')
 dofile('systems/MovementSystem.lua')
+dofile('systems/GUISystem.lua')
 -- States
 dofile('states/DemoState.lua')
 
@@ -27,9 +29,6 @@ local Timer = Zadymka.Timer
 dt = 1.0 / 20.0
 local currentTime = Timer.getTime()
 local accumulator = 0.0
-
-local buf = Zadymka.ImGui.IntBuffer:new(1)
-
 
 while window:isOpen() do
 	local newTime = Timer.getTime()
@@ -45,13 +44,10 @@ while window:isOpen() do
         demoState:fixedUpdate(dt)
         accumulator = accumulator - dt
 	end
-	Zadymka.ImGui.NewFrame()
 	local alpha = accumulator / dt
-	window:setCamera(demoState.camera)
-	window:clear(0, 125, 125, 255)
+    window:clear(0, 125, 125, 255)
+    window:setCamera(demoState.camera)
 	demoState:draw(window, alpha)
-    Zadymka.ImGui.Combo('combo', buf, 'siema elo hehe')
-	Zadymka.ImGui.Render()
 	window:display()
 	Timer.sleep(1)
 end

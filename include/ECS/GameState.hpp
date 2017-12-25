@@ -18,15 +18,11 @@ public:
     GameState& operator=(GameState&&) = delete;
     ~GameState();
     
-    const Camera& getCamera() const;
-    
     System& addSystem(const std::string&);
     void removeSystem(const std::string&);
     System& getSystem(const std::string&);
 protected:
     friend class ECS;
-    //Camera
-    Camera m_camera;
     //ECS
     EventManager m_eventManager;
     EntityManager m_entityManager;

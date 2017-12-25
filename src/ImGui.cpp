@@ -10,50 +10,8 @@
 namespace
 {
     GLFWwindow* m_window = nullptr;
-    
-    template<class T, class V = T>
-    struct Buffer
-    {
-        Buffer() = default;
-        V& get()
-        {
-            return value;
-        }
-        V value;
-    };
-    
-    
-    struct StringBuffer : public Buffer<std::string, char[256]>
-    {
-        StringBuffer(const std::string& v)
-        {
-            strncpy(value, v.c_str(), v.size());
-        }
-    };
-    
-    struct FloatBuffer : public Buffer<float>
-    {
-        FloatBuffer(float f)
-        {
-            value = f;
-        }
-    };
-    
-    struct IntBuffer : public Buffer<int>
-    {
-        IntBuffer(int v)
-        {
-            value = v;
-        }
-    };
-    
-    struct BoolBuffer : public Buffer<bool>
-    {
-        BoolBuffer(bool v)
-        {
-            value = v;
-        }
-    };
+    template<class T>
+    using Buffer = std::shared_ptr<T>;
 }
 
 void ImGUI::setWindow(GLFWwindow *window)
@@ -70,10 +28,26 @@ sol::table ImGUI::createModule(sol::this_state L)
     sol::state_view lua(L);
     sol::table module = lua.create_table();
     
-    module.new_usertype<StringBuffer>("StringBuffer", sol::constructors<StringBuffer(const std::string&)>(), "get", &StringBuffer::get);
-    module.new_usertype<FloatBuffer>("FloatBuffer", sol::constructors<FloatBuffer(float)>(), "get", &FloatBuffer::get);
-    module.new_usertype<IntBuffer>("IntBuffer", sol::constructors<IntBuffer(int)>(), "get", &IntBuffer::get);
-    module.new_usertype<BoolBuffer>("BoolBuffer", sol::constructors<BoolBuffer(bool)>(), "get", &BoolBuffer::get);
+    module["MakeBuffer"] = sol::overload(
+            [](const int& integer)
+            {
+                return std::make_shared<int>(integer);
+            },
+            [](const float& f)
+            {
+                return std::make_shared<float>(f);
+            },
+            [](const std::string& string)
+            {
+                auto buffer = std::make_shared<std::string>(string);
+                buffer->reserve(256);
+                return buffer;
+            },
+            [](bool boolean)
+            {
+                return std::make_shared<bool>(boolean);
+            }
+    );
     
     module["Render"] = &ImGui::Render;
     module["NewFrame"] = &ImGui_ImplGlfwGL3_NewFrame;
@@ -84,17 +58,17 @@ sol::table ImGUI::createModule(sol::this_state L)
     module["End"] = &ImGui::End;
     module["Text"] = [](const std::string& text) { ImGui::Text(text.c_str()); };
     module["Button"] = [](const std::string& text) { ImGui::Button(text.c_str()); };
-    module["InputText"] = [](const std::string& name, StringBuffer& buffer)
+    module["InputText"] = [](const std::string& name, Buffer<std::string> buffer)
     {
-        ImGui::InputText(name.c_str(), &buffer.value[0], 256);
+        ImGui::InputText(name.c_str(), &(*buffer.get())[0], 256);
     };
-    module["InputTextMultiline"] = [](const std::string& name, StringBuffer& buffer)
+    module["InputTextMultiline"] = [](const std::string& name, Buffer<std::string>& buffer)
     {
-        ImGui::InputText(name.c_str(), &buffer.value[0], 256);
+        ImGui::InputText(name.c_str(), &(*buffer.get())[0], buffer->capacity());
     };
-    module["SliderFloat"] = [](const std::string& name, FloatBuffer& buffer, float min, float max)
+    module["SliderFloat"] = [](const std::string& name, Buffer<float> f, float min, float max)
     {
-        ImGui::SliderFloat(name.c_str(), &buffer.value, min, max);
+        ImGui::SliderFloat(name.c_str(), &*f.get(), min, max);
     };
     module["Separator"] = &ImGui::Separator;
     module["SameLine"] = &ImGui::SameLine;
@@ -107,20 +81,20 @@ sol::table ImGUI::createModule(sol::this_state L)
     {
         return ImGui::ImageButton((void*)texture.getID(), ImVec2(size.x, size.y));
     };
-    module["CheckBox"] = [](const std::string& name, BoolBuffer& buffer)
+    module["CheckBox"] = [](const std::string& name, Buffer<bool>& buffer)
     {
-        ImGui::Checkbox(name.c_str(), &buffer.value);
+        ImGui::Checkbox(name.c_str(), &*buffer.get());
     };
     module["BeginCombo"] = [](const std::string& name, const std::string& preview)
     {
         return ImGui::BeginCombo(name.c_str(), preview.c_str());
     };
-    module["Combo"] = [](const std::string& name, IntBuffer& currentItem, const std::string& items)
+    module["Combo"] = [](const std::string& name, Buffer<int>& currentItem, const std::string& items)
     {
         auto comboItems = items;
         std::replace_if(comboItems.begin(), comboItems.end(), [](char& c){ return std::isspace(c); }, '\0');
         comboItems += "\0";
-        return ImGui::Combo(name.c_str(), &currentItem.value, comboItems.c_str());
+        return ImGui::Combo(name.c_str(), &*currentItem.get(), comboItems.c_str());
     };
     module["EndCombo"] = &ImGui::EndCombo;
     //TODO MORE

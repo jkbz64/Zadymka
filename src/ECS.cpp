@@ -22,7 +22,6 @@ sol::table ECS::createModule(sol::this_state L)
                                         }
     );
     module.new_usertype<GameState>("GameState", sol::constructors<GameState(sol::this_state), GameState(sol::this_state, sol::table)>(),
-                                   "camera", &GameState::m_camera,
                                    "eventManager", &GameState::m_eventManager,
                                    "entityManager", &GameState::m_entityManager,
                                    "addSystem", &GameState::addSystem,
