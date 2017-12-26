@@ -21,6 +21,10 @@ public:
     bool loadFromFile(const std::string&, bool = false);
     bool loadFromMemory(const std::string&);
     const glm::uvec2& getSize() const;
+    void setFilter(const GLuint&, const GLuint&);
+    const glm::uvec2 getFilter();
+    void setWrap(const GLuint&, const GLuint&);
+    const glm::uvec2 getWrap();
 private:
     friend class Window;
     friend class RenderTexture;

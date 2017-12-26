@@ -20,8 +20,8 @@ Texture::Texture() :
     m_imageFormat(GL_RGBA),
     m_wrapS(GL_REPEAT),
     m_wrapT(GL_REPEAT),
-    m_filterMin(GL_LINEAR),
-    m_filterMax(GL_LINEAR)
+    m_filterMin(GL_NEAREST),
+    m_filterMax(GL_NEAREST)
 {
 
 }
@@ -131,4 +131,40 @@ bool Texture::loadFromMemory(const std::string& str)
         m_size = glm::vec2(0, 0);
         return false;
     }
+}
+
+void Texture::setFilter(const GLuint& min, const GLuint& max)
+{
+    if(m_ID)
+    {
+        bind();
+        m_filterMin = min;
+        m_filterMax = max;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_filterMin);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_filterMax);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+}
+
+const glm::uvec2 Texture::getFilter()
+{
+    return glm::uvec2(m_filterMin, m_filterMax);
+}
+
+void Texture::setWrap(const GLuint& wrapS, const GLuint& wrapT)
+{
+    if(m_ID)
+    {
+        bind();
+        m_wrapS = wrapS;
+        m_wrapT = wrapT;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+}
+
+const glm::uvec2 Texture::getWrap()
+{
+    return glm::uvec2(m_wrapS, m_wrapT);
 }

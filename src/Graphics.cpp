@@ -54,6 +54,10 @@ sol::table Graphics::createModule(sol::this_state L)
     );
     module.new_usertype<Texture>("Texture",
                                  sol::constructors<Texture(), Texture(const Texture &)>(),
+                                 "LINEAR", sol::var(GL_LINEAR),
+                                 "NEAREST", sol::var(GL_NEAREST),
+                                 "CLAMP", sol::var(GL_CLAMP),
+                                 "REPEAT", sol::var(GL_REPEAT),
                                  "create", &Texture::create,
                                  "getID", &Texture::getID,
                                  "bind", &Texture::bind,
@@ -66,7 +70,17 @@ sol::table Graphics::createModule(sol::this_state L)
                                          },
                                          &Texture::loadFromFile
                                  ),
-                                 "getSize", &Texture::getSize
+                                 "getSize", &Texture::getSize,
+                                 "setFilter", &Texture::setFilter,
+                                 "getFilter", [](const glm::uvec2 filter)
+                                 {
+                                     return std::make_tuple(filter.x, filter.y);
+                                 },
+                                 "setWrap", &Texture::setWrap,
+                                 "getWrap", [](const glm::uvec2 wrap)
+                                 {
+                                     return std::make_tuple(wrap.x, wrap.y);
+                                 }
     );
     module.new_usertype<Shader>("Shader",
                                 sol::constructors<Shader(), Shader(const std::string &, const std::string &)>(),
