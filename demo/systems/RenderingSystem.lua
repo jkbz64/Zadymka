@@ -12,12 +12,14 @@ ECS.registerSystem('RenderingSystem', {
         end
     end,
     draw = function(window, alpha)
-        for _, k in pairs(self.renderables) do
-            local position = Math.Lerp(k:get('Position')._position, k:get('Position').position, alpha)
-            window:drawRect(position.x, position.y, 100, 100, 255, 0, 0, 255)
-        end
         if self.currentMap ~= nil then
             window:draw(self.currentMap)
+        end
+
+        for _, k in pairs(self.renderables) do
+            local position = Math.Lerp(k:get('Position')._position, k:get('Position').position, alpha)
+            local size = k:getSize()
+            window:drawRect(position.x, position.y, size.x, size.y, 255, 0, 0, 255)
         end
     end,
     onEntityCreated = function(event)

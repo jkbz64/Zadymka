@@ -4,8 +4,9 @@
 #include <ECS/EntityManager.hpp>
 #include <iostream>
 
-Entity::Entity(EntityManager* manager, unsigned int id) :
+Entity::Entity(EntityManager* manager, EventManager* eventManager, unsigned int id) :
     m_manager(manager),
+    m_eventManager(eventManager),
     m_id(id)
 {
 
@@ -100,4 +101,11 @@ bool Entity::hasComponents(const std::vector<std::string>& names)
             has = has && hasComponent(name);
     }
     return has;
+}
+
+sol::table Entity::getComponent(const std::string &componentName)
+{
+    if(m_components.find(componentName) != m_components.end())
+        return m_components[componentName];
+    return sol::table{};
 }

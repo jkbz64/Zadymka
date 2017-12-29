@@ -39,6 +39,7 @@ sol::table ECS::createModule(sol::this_state L)
     module.new_usertype<Entity>("Entity",
                                 "new", sol::no_constructor,
                                 "id", sol::readonly(&Entity::m_id),
+                                "events", &Entity::m_eventManager,
                                 "addComponent", &Entity::addComponent,
                                 "get", [](Entity& e, const std::string& name) { return e.m_components[name]; },
                                 "getComponents", [](Entity& e) { return e.m_components; },
@@ -53,6 +54,7 @@ sol::table ECS::createModule(sol::this_state L)
                                                    return mgr.createEntity();
                                                },
                                                static_cast<Entity&(EntityManager::*)(const std::string&)>(&EntityManager::createEntity),
+                                               static_cast<Entity&(EntityManager::*)(const std::string&, sol::table)>(&EntityManager::createEntity),
                                                static_cast<Entity&(EntityManager::*)(sol::table)>(&EntityManager::createEntity)
                                        ),
                                        "destroyEntity", &EntityManager::destroyEntity,

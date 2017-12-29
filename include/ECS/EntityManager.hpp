@@ -20,6 +20,7 @@ public:
     EntityManager& operator=(EntityManager&&) = delete;
     ~EntityManager() = default;
     Entity& createEntity(const std::string&);
+    Entity& createEntity(const std::string&, sol::table = sol::table());
     Entity& createEntity(sol::table = sol::table());
     void destroyEntity(std::size_t);
     Entity& getEntity(std::size_t);
@@ -29,6 +30,7 @@ private:
     EventManager& m_eventManager;
     std::size_t m_uniqueID{0};
     Entity m_nullEntity;
+    Entity& generateEntity();
     std::unordered_map<std::size_t, Entity> m_entities;
     static std::unordered_map<std::string, sol::table> m_registeredComponents;
     static std::unordered_map<std::string, sol::table> m_registeredEntities;

@@ -11,12 +11,15 @@ class = require("lib.middleclass")
 -- Register our ECS stuff -- notice that these can be reloaded during runtime
 -- Components
 dofile('components/Position.lua')
+dofile('components/Movable.lua')
+dofile('components/Physics.lua')
 -- Entities
 dofile('entities/Player.lua')
+dofile('entities/Ground.lua')
 -- Systems
 dofile('systems/RenderingSystem.lua')
 dofile('systems/MovementSystem.lua')
-dofile('systems/GUISystem.lua')
+dofile('systems/PhysicsSystem.lua')
 -- States
 dofile('states/DemoState.lua')
 

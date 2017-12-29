@@ -7,6 +7,7 @@ function ECS.Entity:getPosition()
     if self:has('Position') then
         return Vec2f:new(self:get('Position').position)
     end
+    return Vec2f:new(0, 0)
 end
 
 function ECS.Entity:setPosition(x, y)
