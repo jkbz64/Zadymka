@@ -78,6 +78,9 @@ void Window::create(unsigned int w, unsigned int h, const std::string& title, co
     glfwSetWindowUserPointer(getNativeWindow(), this);
     glfwSetFramebufferSizeCallback(getNativeWindow(), [](GLFWwindow* window, int width, int height)
     {
+        auto w = static_cast<Window*>(glfwGetWindowUserPointer(window));
+        w->m_size.x = width;
+        w->m_size.y = height;
         glViewport(0, 0, width, height);
     });
     Input::setWindow(getNativeWindow());

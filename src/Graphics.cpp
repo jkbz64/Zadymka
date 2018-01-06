@@ -9,7 +9,6 @@
 #include <Graphics/Window.hpp>
 #include <sol/state_view.hpp>
 #include <GLFW/glfw3.h>
-#include <Graphics/Tilemap.hpp>
 
 sol::table Graphics::createModule(sol::this_state L)
 {
@@ -62,14 +61,7 @@ sol::table Graphics::createModule(sol::this_state L)
                                  "getID", &Texture::getID,
                                  "bind", &Texture::bind,
                                  "loadFromMemory", &Texture::loadFromMemory,
-                                 "loadFromFile",
-                                 sol::overload(
-                                         [](Texture& texture, const std::string& filename)
-                                         {
-                                             return texture.loadFromFile(filename);
-                                         },
-                                         &Texture::loadFromFile
-                                 ),
+                                 "loadFromFile", &Texture::loadFromFile,
                                  "getSize", &Texture::getSize,
                                  "setFilter", &Texture::setFilter,
                                  "getFilter", [](const glm::uvec2 filter)
@@ -80,7 +72,8 @@ sol::table Graphics::createModule(sol::this_state L)
                                  "getWrap", [](const glm::uvec2 wrap)
                                  {
                                      return std::make_tuple(wrap.x, wrap.y);
-                                 }
+                                 },
+                                 "copySubimage", &Texture::copySubimage
     );
     module.new_usertype<Shader>("Shader",
                                 sol::constructors<Shader(), Shader(const std::string &, const std::string &)>(),
@@ -172,18 +165,6 @@ sol::table Graphics::createModule(sol::this_state L)
                                        "drawText", &RenderTexture::drawText,
                                        "clear", &RenderTexture::clear,
                                        "display", &RenderTexture::display
-    );
-    module.new_usertype<Layer>("Layer",
-                               "visible", &Layer::m_visible,
-                               "size", &Layer::m_size,
-                               "data", &Layer::m_data
-    );
-    module.new_usertype<Tilemap>("Tilemap",
-                                 sol::constructors<Tilemap(const Texture &, const glm::uvec2 &)>(),
-                                 "appendLayer", &Tilemap::appendLayer,
-                                 "prependLayer", &Tilemap::prependLayer,
-                                 "getLayers", &Tilemap::getLayers,
-                                 sol::base_classes, sol::bases<Drawable>()
     );
     return module;
 }

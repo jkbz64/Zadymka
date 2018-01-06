@@ -69,7 +69,7 @@ target_link_libraries(Zadymka
 )
 
 if(DEMO)
-	file(COPY demo/ DESTINATION ${CMAKE_BINARY_DIR}/demo/)
+	file(COPY demo/ DESTINATION ${CMAKE_BINARY_DIR}/)
 endif()
 
 if(TESTS)

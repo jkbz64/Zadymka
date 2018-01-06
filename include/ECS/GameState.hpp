@@ -23,7 +23,6 @@ public:
     System& getSystem(const std::string&);
 protected:
     friend class ECS;
-    //ECS
     EventManager m_eventManager;
     EntityManager m_entityManager;
     System m_nullSystem;

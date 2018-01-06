@@ -13,16 +13,19 @@ ECS.registerState('DemoState', {
 
         -- Game logic stuff
         --Create some kind of ground
-        local ground = self.entityManager:createEntity("Ground", {
+        self.entityManager:createEntity("Ground", {
             Position = { position = Vec2f:new(0.0, 10.0) },
             Physics = { size = Vec2u:new(400, 10) }
         })
         -- Create player
-        self.entityManager:createEntity("Player")
+        self.entityManager:createEntity("Player", {
+            Position = { position = Vec2f:new(100.0, 100.0) }
+        })
 
         self.eventManager:emit('MapSet', { map = dofile('maps/testmap.lua') })
     end,
-update = function(dt)
+    update = function(dt)
+
     end,
     fixedUpdate = function(dt)
         self.systems['RenderingSystem']:fixedUpdate(dt)

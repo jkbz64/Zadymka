@@ -18,7 +18,7 @@ public:
     EntityManager(EntityManager&&) = delete;
     EntityManager& operator=(const EntityManager&) = delete;
     EntityManager& operator=(EntityManager&&) = delete;
-    ~EntityManager() = default;
+    ~EntityManager();
     Entity& createEntity(const std::string&);
     Entity& createEntity(const std::string&, sol::table = sol::table());
     Entity& createEntity(sol::table = sol::table());

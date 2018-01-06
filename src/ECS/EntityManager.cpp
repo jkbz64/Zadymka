@@ -23,6 +23,14 @@ EntityManager::EntityManager(sol::this_state L, EventManager& manager) :
 
 }
 
+EntityManager::~EntityManager()
+{
+    for(auto it = m_entities.cbegin(); it != m_entities.cend(); ++it)
+    {
+        destroyEntity(it->first);
+    }
+}
+
 Entity& EntityManager::createEntity(const std::string& entityName)
 {
     auto componentTable = m_registeredEntities[entityName];

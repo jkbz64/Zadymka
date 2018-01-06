@@ -4,3 +4,7 @@ build
 *.autosave
 .vscode*
 .idea
+demo/editor.lua
+demo/Editor/*
+demo/Editor
+demo/Editor*

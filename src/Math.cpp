@@ -25,6 +25,28 @@ sol::table Math::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
     sol::table module = lua.create_table();
+    module.set_function("Vec2", sol::overload(
+            [](float a, float b)
+            {
+                return glm::vec2(a, b);
+            },
+            [](int a, int b)
+            {
+                return glm::ivec2(a, b);
+            },
+            [](const glm::vec2& a)
+            {
+                return glm::vec2(a);
+            },
+            [](const glm::uvec2& a)
+            {
+                return glm::uvec2(a);
+            },
+            [](const glm::ivec2& a)
+            {
+                return glm::ivec2(a);
+            }
+    ));
     module.new_usertype<glm::vec2>("Vec2f",
                                    sol::constructors<glm::vec2(), glm::vec2(float, float), glm::vec2(const glm::vec2&), glm::vec2(const glm::uvec2&), glm::vec2(const glm::ivec2&)>(),
                                    "x", &glm::vec2::x,

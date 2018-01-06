@@ -2,6 +2,7 @@
 #include <stb_image.h>
 #include <Graphics/glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <Graphics/RenderTexture.hpp>
 
 struct TextureDeleter
 {
@@ -57,12 +58,9 @@ void Texture::create(unsigned int width, unsigned int height)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-bool Texture::loadFromFile(const std::string &filename, bool flip)
+bool Texture::loadFromFile(const std::string &filename)
 {
     stbi_set_flip_vertically_on_load(true);
-    if(flip)
-        stbi_set_flip_vertically_on_load(false);
-    
     int width, height, nrChannels;
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
     if(data)
@@ -167,4 +165,24 @@ void Texture::setWrap(const GLuint& wrapS, const GLuint& wrapT)
 const glm::uvec2 Texture::getWrap()
 {
     return glm::uvec2(m_wrapS, m_wrapT);
+}
+
+Texture Texture::copySubimage(const glm::ivec2 &offset, const glm::ivec2 &size)
+{
+    Texture subimage;
+    subimage.create(size.x, size.y);
+    
+    RenderTexture subFramebuffer;
+    subFramebuffer.create(m_size.x, m_size.y);
+    subFramebuffer.clear(255, 255, 255, 0);
+    subFramebuffer.drawTexture(*this, 0, 0);
+    subFramebuffer.display();
+    
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, subFramebuffer.getID());
+    subimage.bind();
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                     offset.x, (m_size.y - size.y) - offset.y, size.x, size.y, 0);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return subimage;
 }
