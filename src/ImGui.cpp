@@ -159,6 +159,10 @@ sol::table ImGUI::createModule(sol::this_state L)
     module["SetWindowFontScale"] = &ImGui::SetWindowFontScale;
     
     module["SetNextWindowPos"] = sol::overload(
+            [](float x, float y)
+            {
+                ImGui::SetNextWindowPos(ImVec2(x, y));
+            },
             [](const ImVec2& pos)
             {
                 ImGui::SetNextWindowPos(pos);
@@ -170,6 +174,10 @@ sol::table ImGUI::createModule(sol::this_state L)
             &ImGui::SetNextWindowPos
     );
     module["SetNextWindowSize"] = sol::overload(
+            [](float w, float h)
+            {
+                ImGui::SetNextWindowSize(ImVec2(w, h));
+            },
             [](const ImVec2& size)
             {
                 ImGui::SetNextWindowSize(size);
@@ -349,13 +357,19 @@ sol::table ImGUI::createModule(sol::this_state L)
     {
         ImGui::InputText(name.c_str(), &(*buffer)[0], buffer->capacity());
     };
-    module["SliderInt"] = [](const char* label, Buffer<int>& buffer, int min, int max)
+    module["SliderInt"] = [](sol::this_state L, const char* label, sol::object buffer, int min, int max)
     {
-        return ImGui::SliderInt(label, &*buffer, min, max);
+        if(buffer.is<Buffer<float>&>())
+        {
+            auto val = *buffer.as<Buffer<float>>().get();
+            buffer = sol::make_object(L, std::make_unique<int>(val));
+        }
+        auto& buff = buffer.as<Buffer<int>>();
+        return ImGui::SliderInt(label, &*buff, min, max);
     };
-    module["SliderFloat"] = [](const std::string& name, Buffer<float>& buffer, float min, float max)
+    module["SliderFloat"] = [](const char* label, Buffer<float>& buffer, float min, float max)
     {
-        ImGui::SliderFloat(name.c_str(), &*buffer, min, max);
+        ImGui::SliderFloat(label, &*buffer, min, max);
     };
     
     // Trees

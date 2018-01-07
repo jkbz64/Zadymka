@@ -221,6 +221,13 @@ sol::table Math::createModule(sol::this_state L)
                                     }
     );
     
+    module.new_usertype<glm::vec4>("Vec4f", sol::constructors<glm::vec4(), glm::vec4(float, float, float, float)>(),
+                                  "x", &glm::vec4::x,
+                                  "y", &glm::vec4::y,
+                                  "z", &glm::vec4::z,
+                                  "w", &glm::vec4::w
+    );
+    
     module.new_usertype<glm::mat4>("Matrix4", sol::constructors<glm::mat4(), glm::mat4(const glm::mat4&)>(),
                                    sol::meta_function::addition, [](const glm::mat4& a, const glm::mat4& b)
                                    {

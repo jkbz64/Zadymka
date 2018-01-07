@@ -5,30 +5,6 @@
 namespace
 {
     GLFWwindow* window{nullptr};
-    
-    bool isKeyPressed(int key)
-    {
-        int state = glfwGetKey(window, key);
-        return state == GLFW_PRESS;
-    }
-    
-    bool isKeyReleased(int key)
-    {
-        int state = glfwGetKey(window, key);
-        return state == GLFW_RELEASE;
-    }
-    
-    bool isButtonPressed(int key)
-    {
-        int state = glfwGetMouseButton(window, key);
-        return state == GLFW_PRESS;
-    }
-    
-    bool isButtonReleased(int key)
-    {
-        int state = glfwGetMouseButton(window, key);
-        return state == GLFW_RELEASE;
-    }
 }
 
 void Input::setWindow(GLFWwindow *w)
@@ -41,20 +17,48 @@ sol::table Input::createModule(sol::this_state L)
     sol::state_view lua(L);
     sol::table module = lua.create_table();
     sol::table buttons = lua.create_table_with(
-            "Left", GLFW_MOUSE_BUTTON_LEFT,
-            "Right", GLFW_MOUSE_BUTTON_RIGHT,
-            "Middle", GLFW_MOUSE_BUTTON_MIDDLE,
+            "LEFT", GLFW_MOUSE_BUTTON_LEFT,
+            "RIGHT", GLFW_MOUSE_BUTTON_RIGHT,
+            "MIDDLE", GLFW_MOUSE_BUTTON_MIDDLE,
             4, GLFW_MOUSE_BUTTON_4,
             5, GLFW_MOUSE_BUTTON_5,
             6, GLFW_MOUSE_BUTTON_6,
             7, GLFW_MOUSE_BUTTON_7,
             8, GLFW_MOUSE_BUTTON_8,
-            "Last", GLFW_MOUSE_BUTTON_LAST
+            "LAST", GLFW_MOUSE_BUTTON_LAST
     );
     module["Mouse"] = lua.create_table_with(
-            "Buttons", buttons,
-            "isButtonPressed", &isButtonPressed,
-            "isButtonReleased", &isButtonReleased
+            "getPosition", []()
+            {
+                double x, y;
+                glfwGetCursorPos(window, &x, &y);
+                return std::make_tuple(x, y);
+            }
+    );
+    module["Button"] = buttons;
+    module["isButtonPressed"] = sol::overload(
+            [](int button)
+            {
+                int state = glfwGetMouseButton(window, button);
+                return state == GLFW_PRESS;
+            },
+            [buttons](const char* button)
+            {
+                int state = glfwGetMouseButton(window, buttons[button]);
+                return state == GLFW_PRESS;
+            }
+    );
+    module["isButtonReleased"] = sol::overload(
+            [](int button)
+            {
+                int state = glfwGetMouseButton(window, button);
+                return state == GLFW_RELEASE;
+            },
+            [buttons](const char* button)
+            {
+                int state = glfwGetMouseButton(window, buttons[button]);
+                return state == GLFW_RELEASE;
+            }
     );
     sol::table keys = lua.create_table();
     keys["UNKNOWN"] = GLFW_KEY_UNKNOWN;
@@ -178,10 +182,30 @@ sol::table Input::createModule(sol::this_state L)
     keys["RIGHT_ALT"] = GLFW_KEY_RIGHT_ALT;
     keys["RIGHT_SUPER"] = GLFW_KEY_RIGHT_SUPER;
     keys["MENU"] = GLFW_KEY_MENU;
-    module["Keyboard"] = lua.create_table_with(
-            "Keys", keys,
-            "isKeyPressed", &isKeyPressed,
-            "isKeyReleased", &isKeyReleased
+    module["Key"] = keys;
+    module["isKeyPressed"] = sol::overload(
+            [](int key)
+            {
+                int state = glfwGetKey(window, key);
+                return state == GLFW_PRESS;
+            },
+            [keys](const char* key)
+            {
+                int state = glfwGetKey(window, keys[key]);
+                return state == GLFW_PRESS;
+            }
+    );
+    module["isKeyReleased"] = sol::overload(
+            [](int key)
+            {
+                int state = glfwGetKey(window, key);
+                return state == GLFW_RELEASE;
+            },
+            [keys](const char* key)
+            {
+                int state = glfwGetKey(window, keys[key]);
+                return state == GLFW_RELEASE;
+            }
     );
     return module;
 }

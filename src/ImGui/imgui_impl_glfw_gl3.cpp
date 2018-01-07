@@ -10,10 +10,12 @@
 
 #include <imgui.h>
 #include <ImGui/imgui_impl_glfw_gl3.h>
+//#include <Input.hpp>
 
 // GL3W/GLFW
 #include <Graphics/glad/glad.h>    // This example is using gl3w to access OpenGL functions (because it is small). You may use glew/glad/glLoadGen/etc. whatever already works for you.
 #include <GLFW/glfw3.h>
+#include <Input.hpp>
 #ifdef _WIN32
 #undef APIENTRY
 #define GLFW_EXPOSE_NATIVE_WIN32

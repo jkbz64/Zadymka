@@ -49,7 +49,15 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "drawSprite", &Window::drawSprite,
                                 "drawTexture", &Window::drawTexture,
                                 "clear", &Window::clear,
-                                "display", &Window::display
+                                "display", &Window::display,
+                                "mapToWorld", sol::overload(
+                                            [](Window& window, float x, float y)
+                                            {
+                                                const auto pos = window.mapToWorld(glm::vec2(x, y));
+                                                return std::make_tuple(pos.x, pos.y);
+                                            },
+                                            &Window::mapToWorld
+    )
     );
     module.new_usertype<Texture>("Texture",
                                  sol::constructors<Texture(), Texture(const Texture &)>(),
@@ -152,7 +160,12 @@ sol::table Graphics::createModule(sol::this_state L)
     );
     module.new_usertype<RenderTexture>("RenderTexture",
                                        sol::constructors<RenderTexture()>(),
-                                       "create", &RenderTexture::create,
+                                       "create", [](RenderTexture& rt, sol::object w, sol::object h)
+                                       {
+                                           if(w.get_type() != sol::type::number || h.get_type() != sol::type::number)
+                                               throw sol::error("expected number");
+                                           rt.create(w.as<unsigned int>(), h.as<unsigned int>());
+                                       },
                                        "getTexture", &RenderTexture::getTexture,
                                        "draw",
                                        sol::overload(

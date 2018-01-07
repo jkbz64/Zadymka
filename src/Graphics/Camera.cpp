@@ -84,6 +84,12 @@ const glm::mat4& Camera::getProjection() const
     return m_projection;
 }
 
+void Camera::zoom(float f)
+{
+    m_size *= f;
+    update();
+}
+
 void Camera::update()
 {
     m_projection = glm::ortho(0.f, m_size.x, m_size.y, 0.f, 0.1f, 100.f);

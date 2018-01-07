@@ -18,7 +18,9 @@ public:
     void move(float, float);
     const glm::mat4& getProjection() const;
     const glm::mat4& getView() const;
+    void zoom(float);
 private:
+    friend class Graphics;
     friend class RenderTarget;
     void update();
     glm::vec2 m_size;

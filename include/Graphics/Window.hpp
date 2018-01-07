@@ -25,6 +25,7 @@ public:
     void setTitle(const std::string&);
     void setSize(unsigned int, unsigned int);
     const glm::uvec2& getSize();
+    glm::vec2 mapToWorld(const glm::vec2&);
 protected:
     //Window
     GLFWwindow* m_window;

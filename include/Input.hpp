@@ -1,8 +1,10 @@
 #ifndef INPUT_HPP
 #define INPUT_HPP
 #include <sol/forward.hpp>
+#include <functional>
 
 class GLFWwindow;
+
 
 struct Input
 {
