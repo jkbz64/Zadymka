@@ -38,15 +38,15 @@ GLFWwindow* Window::getNativeWindow()
     return m_window;
 }
 
-void Window::create(unsigned int w, unsigned int h, const std::string& title, const Style& style = Window::Style::Windowed)
+void Window::create(const glm::uvec2& size, const std::string& title, const Style& style)
 {
-    if(w == 0 || h == 0)
+    if(size.x == 0 || size.y == 0)
     {
         m_isOpen = false;
-        throw std::logic_error("Window width nor height cannot be 0");
+        throw std::runtime_error("Window size must be > 0");
     }
 
-    m_size = glm::uvec2(w, h);
+    m_size = size;
     m_title = title;
     m_style = style;
     
@@ -117,6 +117,11 @@ void Window::close()
         m_isOpen = false;
 }
 
+const std::string& Window::title() const
+{
+    return m_title;
+}
+
 void Window::setTitle(const std::string& title)
 {
     m_title = title;
@@ -124,17 +129,16 @@ void Window::setTitle(const std::string& title)
         glfwSetWindowTitle(getNativeWindow(), m_title.c_str());
 }
 
-void Window::setSize(unsigned int width, unsigned int height)
+void Window::resize(const glm::uvec2& size)
 {
-    if(width == 0 || height == 0)
+    if(size.x == 0 || size.y == 0)
         return;
-
-    m_size = glm::uvec2(width, height);
+    m_size = size;
     if(m_isOpen)
         glfwSetWindowSize(getNativeWindow(), m_size.x, m_size.y);
 }
 
-const glm::uvec2& Window::getSize()
+const glm::uvec2& Window::size()
 {
     return m_size;
 }
@@ -142,10 +146,10 @@ const glm::uvec2& Window::getSize()
 glm::vec2 Window::mapToWorld(const glm::vec2 &pos)
 {
     auto& camera = m_camera;
-    const auto cameraSize = camera.getSize();
+    const auto cameraSize = camera.size();
     auto halfSize = cameraSize;
     halfSize /= 2.f;
-    const auto& cameraCenter = camera.getCenter();
+    const auto& cameraCenter = camera.center();
     const glm::vec2 factor = glm::vec2(pos.x / m_size.x, pos.y / m_size.y);
     return (cameraCenter - halfSize) + cameraSize * factor;
 }

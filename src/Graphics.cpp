@@ -10,6 +10,63 @@
 #include <sol/state_view.hpp>
 #include <GLFW/glfw3.h>
 
+namespace
+{
+    template<class T>
+    struct get_class;
+    
+    template<class T, class R>
+    struct get_class<R T::*> { using type = T; };
+    
+    template<class T>
+    struct get_argument_type;
+    
+    template<class R, class Arg, class T>   // Strip argument type to non-const, non-reference
+    struct get_argument_type<R (T::*)(Arg)> { using argument_type = std::remove_const_t        <
+                                                                    std::remove_reference_t    <
+                                                                            Arg                >>; };
+}
+
+namespace sol
+{
+    template<typename F>
+    auto readonly_getter(F f)
+    {
+        using C = typename get_class<F>::type;
+        return sol::property([f](C& c)
+        {
+            return (c.*f)();
+        });
+    }
+    
+    template<typename F,
+            typename VecType = typename get_argument_type<F>::argument_type,
+            typename Val = typename VecType::value_type
+    >
+    auto vec_as_Ts(F f)
+    {
+        using C = typename get_class<F>::type;
+        return [f](C& c, Val a, Val b)
+        {
+            return (c.*f)(VecType(a, b));
+        };
+    }
+    
+    template<typename F,
+            typename VecType = typename get_argument_type<F>::argument_type,
+            typename Val = typename VecType::value_type,
+            typename std::enable_if_t<std::is_unsigned<Val>::value>
+    > // Lua doesn't know about unsigned integers :(
+    auto vec_as_Ts(F f)
+    {
+        using C = typename get_class<F>::type;
+        return [f](C& c, int a, int b)
+        {
+            return (c.*f)(VecType(a, b));
+        };
+    }
+}
+
 sol::table Graphics::createModule(sol::this_state L)
 {
     sol::state_view lua(L);
@@ -18,11 +75,11 @@ sol::table Graphics::createModule(sol::this_state L)
     module["deinit"] = &Graphics::deinit;
     module.new_usertype<Camera>("Camera",
                                 sol::constructors<Camera(), Camera(const Camera &)>(),
-                                "setCenter", &Camera::setCenter,
-                                "getCenter", &Camera::getCenter,
-                                "setSize", &Camera::setSize,
-                                "getSize", &Camera::getSize,
-                                "move", &Camera::move
+                                "center", sol::readonly_getter(&Camera::center),
+                                "size", sol::readonly_getter(&Camera::size),
+                                "setCenter", sol::vec_as_Ts(&Camera::setCenter),
+                                "setSize", sol::vec_as_Ts(&Camera::setSize),
+                                "move", sol::vec_as_Ts(&Camera::move)
     );
     sol::table styles = lua.create_table_with(
             "Windowed", 0,
@@ -31,14 +88,24 @@ sol::table Graphics::createModule(sol::this_state L)
     );
     module.new_usertype<Window>("Window", sol::constructors<Window()>(),
                                 "Style", sol::var(styles),
-                                "create", &Window::create,
+                                "title", sol::readonly_getter(&Window::title),
+                                "size", sol::readonly_getter(&Window::size),
+                                "camera", &Window::m_camera,
+                                "create",
+                                sol::overload(
+                                        [](Window& window, int w, int h, const std::string& t)
+                                        {
+                                            window.create(glm::uvec2(w, h), t);
+                                        },
+                                        [](Window& window, int w, int h, const std::string& t, const Window::Style& style)
+                                        {
+                                            window.create(glm::uvec2(w, h), t, style);
+                                        }
+                                ),
                                 "isOpen", &Window::isOpen,
                                 "close", &Window::close,
                                 "setTitle", &Window::setTitle,
-                                "getSize", &Window::getSize,
-                                "setSize", &Window::setSize,
-                                "getCamera", &Window::getCamera,
-                                "setCamera", &Window::setCamera,
+                                "resize", sol::vec_as_Ts(&Window::resize),
                                 "draw",
                                 sol::overload(
                                         static_cast<void (Window::*)(Drawable &)>(&Window::draw),
@@ -50,14 +117,11 @@ sol::table Graphics::createModule(sol::this_state L)
                                 "drawTexture", &Window::drawTexture,
                                 "clear", &Window::clear,
                                 "display", &Window::display,
-                                "mapToWorld", sol::overload(
-                                            [](Window& window, float x, float y)
-                                            {
-                                                const auto pos = window.mapToWorld(glm::vec2(x, y));
-                                                return std::make_tuple(pos.x, pos.y);
-                                            },
-                                            &Window::mapToWorld
-    )
+                                "mapToWorld",
+                                sol::overload(
+                                        sol::vec_as_Ts(&Window::mapToWorld),
+                                        &Window::mapToWorld
+                                )
     );
     module.new_usertype<Texture>("Texture",
                                  sol::constructors<Texture(), Texture(const Texture &)>(),
@@ -65,23 +129,17 @@ sol::table Graphics::createModule(sol::this_state L)
                                  "NEAREST", sol::var(GL_NEAREST),
                                  "CLAMP", sol::var(GL_CLAMP),
                                  "REPEAT", sol::var(GL_REPEAT),
+                                 "ID", sol::property(&Texture::getID),
+                                 "size", sol::readonly_getter(&Texture::size),
                                  "create", &Texture::create,
-                                 "getID", &Texture::getID,
                                  "bind", &Texture::bind,
                                  "loadFromMemory", &Texture::loadFromMemory,
                                  "loadFromFile", &Texture::loadFromFile,
-                                 "getSize", &Texture::getSize,
                                  "setFilter", &Texture::setFilter,
-                                 "getFilter", [](const glm::uvec2 filter)
-                                 {
-                                     return std::make_tuple(filter.x, filter.y);
-                                 },
+                                 "getFilter", [](const Texture& texture) { return std::make_tuple(texture.m_filterMin, texture.m_filterMax); },
                                  "setWrap", &Texture::setWrap,
-                                 "getWrap", [](const glm::uvec2 wrap)
-                                 {
-                                     return std::make_tuple(wrap.x, wrap.y);
-                                 },
-                                 "copySubimage", &Texture::copySubimage
+                                 "getWrap", [](const Texture& texture) { return std::make_tuple(texture.m_wrapS, texture.m_wrapT); },
+                                 "subimage", [](Texture& texture, float x, float y, int w, int h) { return texture.subimage(glm::ivec2(x, y), glm::uvec2(w, h)); }
     );
     module.new_usertype<Shader>("Shader",
                                 sol::constructors<Shader(), Shader(const std::string &, const std::string &)>(),
@@ -123,22 +181,20 @@ sol::table Graphics::createModule(sol::this_state L)
     module.new_usertype<Drawable>("Drawable", "new", sol::no_constructor);
     module.new_usertype<Rectangle>("Rectangle",
                                    sol::constructors<Rectangle(unsigned int, unsigned int)>(),
-                                   "getPosition", &Rectangle::getPosition,
-                                   "setPosition", &Rectangle::setPosition,
-                                   "getSize", &Rectangle::getSize,
-                                   "setSize", &Rectangle::setSize,
-                                   "getColor", &Rectangle::getColor,
-                                   "setColor", &Rectangle::setColor,
+                                   "position", sol::readonly_getter(&Rectangle::position),
+                                   "size", sol::readonly_getter(&Rectangle::size),
+                                   "color", sol::property(&Rectangle::m_color, &Rectangle::setColor),
+                                   "setPosition", sol::vec_as_Ts(&Rectangle::setPosition),
+                                   "setSize", sol::vec_as_Ts(&Rectangle::setSize),
                                    sol::base_classes, sol::bases<Drawable>()
     );
     module.new_usertype<Sprite>("Sprite",
                                 sol::constructors<Sprite()>(),
-                                "getPosition", &Sprite::getPosition,
+                                "position", sol::readonly_getter(&Sprite::position),
+                                "size", sol::readonly_getter(&Sprite::size),
+                                "texture", sol::property(&Sprite::m_texture, &Sprite::setTexture),
                                 "setPosition", &Sprite::setPosition,
-                                "getSize", &Sprite::getSize,
                                 "setSize", &Sprite::setSize,
-                                "getTexture", &Sprite::getTexture,
-                                "setTexture", &Sprite::setTexture,
                                 sol::base_classes, sol::bases<Drawable>()
     );
     module.new_usertype<Font>("Font",
@@ -147,15 +203,16 @@ sol::table Graphics::createModule(sol::this_state L)
     );
     module.new_usertype<Text>("Text",
                               sol::constructors<Text(), Text(Font &)>(),
+                              "position", sol::readonly_getter(&Text::position),
+                              "string", sol::readonly_getter(&Text::string),
+                              "characterSize", sol::readonly_getter(&Text::characterSize),
+                              "font", sol::readonly_getter(&Text::font),
+                              "color", sol::readonly_getter(&Text::color),
                               "setPosition", &Text::setPosition,
-                              "getPosition", &Text::getPosition,
                               "setString", &Text::setString,
-                              "getString", &Text::getString,
                               "setFont", &Text::setFont,
                               "setCharacterSize", &Text::setCharacterSize,
-                              "getCharacterSize", &Text::getCharacterSize,
                               "setColor", &Text::setColor,
-                              "getColor", &Text::getColor,
                               sol::base_classes, sol::bases<Drawable>()
     );
     module.new_usertype<RenderTexture>("RenderTexture",
@@ -166,7 +223,7 @@ sol::table Graphics::createModule(sol::this_state L)
                                                throw sol::error("expected number");
                                            rt.create(w.as<unsigned int>(), h.as<unsigned int>());
                                        },
-                                       "getTexture", &RenderTexture::getTexture,
+                                       "texture", &RenderTexture::texture,
                                        "draw",
                                        sol::overload(
                                                static_cast<void (RenderTexture::*)(Drawable &)>(&RenderTexture::draw),

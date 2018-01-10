@@ -45,18 +45,18 @@ Camera& Camera::operator=(Camera&& other)
     return *this;
 }
 
-const glm::vec2& Camera::getSize() const
+const glm::vec2& Camera::size() const
 {
     return m_size;
 }
 
-void Camera::setSize(const glm::vec2 &size)
+void Camera::setSize(const glm::uvec2 &size)
 {
     m_size = size;
     update();
 }
 
-const glm::vec2& Camera::getCenter() const
+const glm::vec2& Camera::center() const
 {
     return m_center;
 }
@@ -67,10 +67,9 @@ void Camera::setCenter(const glm::vec2 &center)
     update();
 }
 
-void Camera::move(float dx, float dy)
+void Camera::move(const glm::vec2& d)
 {
-    m_center.x += dx;
-    m_center.y += dy;
+    m_center += d;
     update();
 }
 
@@ -92,7 +91,7 @@ void Camera::zoom(float f)
 
 void Camera::update()
 {
-    m_projection = glm::ortho(0.f, m_size.x, m_size.y, 0.f, 0.1f, 100.f);
+    m_projection = glm::ortho(0.f, static_cast<float>(m_size.x), static_cast<float>(m_size.y), 0.f, 0.1f, 100.f);
     m_view = glm::lookAt(glm::vec3(m_center.x - m_size.x / 2.f, m_center.y - m_size.y / 2.f, 1.f),
                          glm::vec3(m_center.x - m_size.x / 2.f, m_center.y - m_size.y / 2.f, 0.f),
                          glm::vec3(0.f, 1.f, 0.f));

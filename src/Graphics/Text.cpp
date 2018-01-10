@@ -16,19 +16,29 @@ Text::Text(Font &font) :
     m_font = &font;
 }
 
-void Text::setFont(Font *font)
-{
-    m_font = font;
-}
-
-void Text::setString(const std::string& str)
-{
-    m_text = str;
-}
-
-const std::string& Text::getString() const
+const std::string& Text::string() const
 {
     return m_text;
+}
+
+const glm::vec2& Text::position() const
+{
+    return m_translation;
+}
+
+unsigned int Text::characterSize() const
+{
+    return m_characterSize;
+}
+
+const Color& Text::color() const
+{
+    return m_color;
+}
+
+Font* Text::font() const
+{
+    return m_font;
 }
 
 void Text::setPosition(const glm::vec2& pos)
@@ -36,25 +46,9 @@ void Text::setPosition(const glm::vec2& pos)
     translate(glm::vec2(pos.x, pos.y));
 }
 
-const glm::vec2& Text::getPosition() const
+void Text::setString(const std::string& str)
 {
-    return m_translation;
-}
-
-void Text::setCharacterSize(unsigned int charSize)
-{
-    m_characterSize = charSize;
-    scale(1.f, static_cast<float>(m_characterSize) / 48.f);
-}
-
-unsigned int Text::getCharacterSize() const
-{
-    return m_characterSize;
-}
-
-const Color& Text::getColor() const
-{
-    return m_color;
+    m_text = str;
 }
 
 void Text::setColor(const Color& color)
@@ -62,9 +56,15 @@ void Text::setColor(const Color& color)
     m_color = color;
 }
 
-Font* Text::getFont() const
+void Text::setFont(Font *font)
 {
-    return m_font;
+    m_font = font;
+}
+
+void Text::setCharacterSize(unsigned int charSize)
+{
+    m_characterSize = charSize;
+    scale(1.f, static_cast<float>(m_characterSize) / 48.f);
 }
 
 void Text::draw(Renderer *renderer)

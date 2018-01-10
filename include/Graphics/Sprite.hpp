@@ -12,13 +12,16 @@ public:
     Sprite(Sprite&&);
     Sprite& operator=(Sprite&&);
     virtual ~Sprite() = default;
+    
+    const Texture& texture() const;
+    const glm::vec2& position() const;
+    const glm::vec2& size() const;
+    
     void setTexture(const Texture&);
-    const Texture& getTexture() const;
     void setPosition(const glm::vec2&);
-    const glm::vec2& getPosition() const;
     void setSize(const glm::vec2&);
-    const glm::vec2& getSize() const;
 protected:
+    friend class Graphics;
     void draw(Renderer*) override;
     Texture m_texture;
 };

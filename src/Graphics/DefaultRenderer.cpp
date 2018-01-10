@@ -38,7 +38,7 @@ void DefaultRenderer::render(Rectangle &rectangle)
     shader.setMatrix4("projection", m_camera.getProjection());
     shader.setMatrix4("view", m_camera.getView());
     shader.setMatrix4("model", rectangle.getModel());
-    shader.setVector4f("color", rectangle.getColor().normalized());
+    shader.setVector4f("color", rectangle.color().normalized());
     
     static GLuint vao = 0;
     if(vao == 0)
@@ -103,10 +103,10 @@ void DefaultRenderer::render(Sprite &sprite)
     shader.setMatrix4("projection", m_camera.getProjection());
     shader.setMatrix4("view", m_camera.getView());
     shader.setMatrix4("model", sprite.getModel());
-    shader.setVector4f("color", sprite.getColor().normalized());
+    shader.setVector4f("color", sprite.color().normalized());
     
     glActiveTexture(GL_TEXTURE0);
-    sprite.getTexture().bind();
+    sprite.texture().bind();
     
     static GLuint vao = 0;
     if(vao == 0)
@@ -176,7 +176,7 @@ void DefaultRenderer::render(Text &text)
     shader.setInteger("texture1", 0);
     shader.setMatrix4("projection", m_camera.getProjection());
     shader.setMatrix4("view", m_camera.getView());
-    shader.setVector4f("color", text.getColor().normalized());
+    shader.setVector4f("color", text.color().normalized());
     
     static GLuint vao = 0;
     static GLuint vbo = 0;
@@ -194,16 +194,16 @@ void DefaultRenderer::render(Text &text)
         glBindVertexArray(0);
     }
     
-    if(text.getFont())
+    if(text.font())
     {
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(vao);
         
-        glm::vec2 m_pos = text.getPosition();
-        auto font = text.getFont();
-        auto scale = static_cast<float>(text.getCharacterSize());
+        glm::vec2 m_pos = text.position();
+        auto font = text.font();
+        auto scale = static_cast<float>(text.characterSize());
         std::string::const_iterator c;
-        for (c = text.getString().begin(); c != text.getString().end(); ++c)
+        for (c = text.string().cbegin(); c != text.string().cend(); ++c)
         {
             Glyph ch = font->getGlyph(*c);
             GLfloat xpos = m_pos.x + ch.m_bearing.x * scale;

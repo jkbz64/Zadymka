@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include <sol/state_view.hpp>
 
+extern bool ImGui_ImplGlfwGL3_Init(GLFWwindow* window, bool install_callbacks);
+
 namespace
 {
     GLFWwindow* window{nullptr};

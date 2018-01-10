@@ -24,7 +24,7 @@ dofile('systems/PhysicsSystem.lua')
 dofile('states/DemoState.lua')
 
 local window = Zadymka.Graphics.Window:new()
-window:create(800, 600, 'Zadymka', 0)
+window:create(Vec2(800, 600), 'Zadymka', 0)
 
 local demoState = ECS.createState('DemoState')
 

@@ -1,7 +1,7 @@
 # Zadymka
 **Work in progress**
 
-Zadymka is a 2D game framework lua module.
+Zadymka is a simple 2D graphics and input Lua module.
 
 | Language    | C++14 + Lua   |
 |-----------	|-------------	|
@@ -9,29 +9,29 @@ Zadymka is a 2D game framework lua module.
 
 | Module    	| Technology    |
 |-----------	|-------------	|
-| Window / Context |  GLFW 3    |
-| Input       | GLFW 3       |
+| Window / Context / Input |  GLFW 3    |
 | Rendering 	| OpenGL 3.3  	|
 | OpenGL extensions | GLAD    |
-| Audio     	| OpenAL      	|
 | Math        | glm           |
-| Scripting 	| Lua 5.3       |
-
-Other libraries - sol2, freetype2, stb_image, stb_vorbis
+| Lua Binding 	| sol2       |
+| Other - freetype2, stb_image, ImGui
 
 ##  Building
-Before building install GLFW3 / Freetype2 / Lua53 / OpenAL libraries. Header libraries will be cloned recursively, so you don't have to ship them yourself.
+Before building install GLFW3 / Freetype2 / Lua53 libraries. Header libraries will be cloned recursively, so you don't have to ship them yourself.
 ```
 git clone --recursive https://github.com/jkbz64/Zadymka.git
 cd Zadymka
 mkdir build && cd build
 cmake .. //-DDEMO=ON to enable demo -DTESTS=ON to enable tests
 make -j4
-// Run tests
+
+// Optional
+
+// run tests
 busted .
-// or Run demo
-cp Zadymka.so demo/Zadymka.so // copy lib to demo directory
-cd demo/
+
+// or run demo
+cp Zadymka.so demo/Zadymka.so && cd demo/
 lua init.lua //run demo
 ```
 

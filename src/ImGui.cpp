@@ -316,7 +316,7 @@ sol::table ImGUI::createModule(sol::this_state L)
     module["Image"] = sol::overload(
             [](const Texture& texture)
             {
-              ImGui::Image((void*)texture.getID(), ImVec2(texture.getSize().x, texture.getSize().y), ImVec2(0, 1), ImVec2(1, 0));
+              ImGui::Image((void*)texture.getID(), ImVec2(texture.size().x, texture.size().y), ImVec2(0, 1), ImVec2(1, 0));
             },
             [](const Texture& texture, const glm::uvec2& size)
             {
@@ -474,9 +474,9 @@ sol::table ImGUI::createModule(sol::this_state L)
             {
                 return ImGui::IsItemClicked();
             },
-            [](int flags)
+            [](int button)
             {
-                return ImGui::IsItemClicked(flags);
+                return ImGui::IsItemClicked(button);
             }
     );
     module["IsItemVisible"] = &ImGui::IsItemVisible;

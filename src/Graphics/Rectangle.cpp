@@ -39,29 +39,29 @@ Rectangle& Rectangle::operator =(Rectangle&& other)
     return *this;
 }
 
+const glm::vec2& Rectangle::position()
+{
+    return m_translation;
+}
+
+const glm::vec2& Rectangle::size()
+{
+    return m_scale;
+}
+
+const Color& Rectangle::color() const
+{
+    return m_color;
+}
+
 void Rectangle::setPosition(const glm::vec2 &position)
 {
     translate(glm::vec2(position.x, position.y));
 }
 
-const glm::vec2& Rectangle::getPosition()
-{
-    return m_translation;
-}
-
 void Rectangle::setSize(const glm::vec2 &size)
 {
     scale(size.x, size.y);
-}
-
-const glm::vec2& Rectangle::getSize()
-{
-    return m_scale;
-}
-
-const Color& Rectangle::getColor() const
-{
-    return m_color;
 }
 
 void Rectangle::setColor(const Color& color)

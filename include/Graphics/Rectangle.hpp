@@ -14,13 +14,16 @@ public:
     Rectangle(Rectangle&&);
     Rectangle& operator=(Rectangle&&);
     ~Rectangle() = default;
+    
+    const glm::vec2& position();
+    const glm::vec2& size();
+    const Color& color() const;
+    
     void setPosition(const glm::vec2&);
-    const glm::vec2& getPosition();
     void setSize(const glm::vec2&);
-    const glm::vec2& getSize();
-    const Color& getColor() const;
     void setColor(const Color&);
 protected:
+    friend class Graphics;
     void draw(Renderer*) override;
     Color m_color;
 };

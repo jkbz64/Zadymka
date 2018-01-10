@@ -18,6 +18,7 @@ public:
     void rotate(float);
     const glm::mat4& getModel() const;
 protected:
+    friend class Graphics;
     glm::vec2 m_translation;
     glm::vec2 m_scale;
     float m_rotation;

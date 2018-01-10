@@ -53,7 +53,7 @@ void RenderTexture::clear(unsigned int r, unsigned int g, unsigned int b, unsign
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     m_oldViewport = glm::vec4(viewport[0], viewport[1], viewport[2], viewport[3]);
-    glViewport(0, 0, m_texture.getSize().x, m_texture.getSize().y);
+    glViewport(0, 0, m_texture.size().x, m_texture.size().y);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(normalize(r), normalize(g), normalize(b), normalize(a));
@@ -66,7 +66,7 @@ void RenderTexture::display()
     glViewport(m_oldViewport.x, m_oldViewport.y, m_oldViewport.z, m_oldViewport.w);
 }
 
-Texture RenderTexture::getTexture()
+Texture RenderTexture::texture() const
 {
     return m_texture;
 }

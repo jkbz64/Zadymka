@@ -38,16 +38,26 @@ Sprite& Sprite::operator =(Sprite&& other)
     return *this;
 }
 
+const Texture& Sprite::texture() const
+{
+    return m_texture;
+}
+
 void Sprite::setTexture(const Texture &texture)
 {
     m_texture = texture;
-    if(getSize().x == 0 && getSize().y == 0)
-        setSize(m_texture.getSize());
+    if(size().x == 0 && size().y == 0)
+        setSize(m_texture.size());
 }
 
-const Texture& Sprite::getTexture() const
+const glm::vec2& Sprite::position() const
 {
-    return m_texture;
+    return m_translation;
+}
+
+const glm::vec2& Sprite::size() const
+{
+    return m_scale;
 }
 
 void Sprite::setPosition(const glm::vec2& position)
@@ -55,19 +65,9 @@ void Sprite::setPosition(const glm::vec2& position)
     translate(position);
 }
 
-const glm::vec2& Sprite::getPosition() const
-{
-    return m_translation;
-}
-
 void Sprite::setSize(const glm::vec2& size)
 {
     scale(size.x, size.y);
-}
-
-const glm::vec2& Sprite::getSize() const
-{
-    return m_scale;
 }
 
 void Sprite::draw(Renderer* renderer)

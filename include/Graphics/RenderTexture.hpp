@@ -15,13 +15,12 @@ public:
     void create(unsigned int w, unsigned int h);
     virtual void display() override;
     virtual void clear(unsigned int, unsigned int, unsigned int, unsigned int) override;
-    Texture getTexture();
+    Texture texture() const;
     unsigned int getID() const;
 private:
     unsigned int m_framebuffer;
-    Texture m_texture;
-    int m_oldFramebuffer;
     glm::ivec4 m_oldViewport;
+    Texture m_texture;
 };
 
 #endif

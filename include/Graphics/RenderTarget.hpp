@@ -23,10 +23,8 @@ public:
     void drawText(const std::string&, float, float, const std::string&, unsigned int);
     void drawSprite(const std::string&, float, float, int, int);
     void drawTexture(const Texture&, float, float);
-
-    const Camera& getCamera();
-    void setCamera(const Camera&);
 protected:
+    friend class Graphics;
     std::unique_ptr<Renderer> m_renderer;
     Camera m_camera;
 };

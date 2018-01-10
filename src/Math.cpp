@@ -252,7 +252,8 @@ sol::table Math::createModule(sol::this_state L)
     
     module["Lerp"] = sol::overload(&lerp<glm::vec2>,
                                    &lerp<glm::uvec2>,
-                                   &lerp<glm::ivec2>);
+                                   &lerp<glm::ivec2>,
+                                   &lerp<float>);
     module["Normalize"] = &normalize<glm::vec2>;
     
     return module;

@@ -11,11 +11,11 @@ public:
     Camera& operator=(const Camera&);
     Camera& operator=(Camera&&);
     ~Camera() = default;
-    const glm::vec2& getSize() const;
-    void setSize(const glm::vec2&);
-    const glm::vec2& getCenter() const;
+    const glm::vec2& size() const;
+    const glm::vec2& center() const;
     void setCenter(const glm::vec2&);
-    void move(float, float);
+    void setSize(const glm::uvec2&);
+    void move(const glm::vec2&);
     const glm::mat4& getProjection() const;
     const glm::mat4& getView() const;
     void zoom(float);
@@ -23,7 +23,7 @@ private:
     friend class Graphics;
     friend class RenderTarget;
     void update();
-    glm::vec2 m_size;
+    glm::uvec2 m_size;
     glm::vec2 m_center;
     glm::mat4 m_projection;
     glm::mat4 m_view;

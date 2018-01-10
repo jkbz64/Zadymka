@@ -39,7 +39,7 @@ void Texture::bind() const
     glBindTexture(GL_TEXTURE_2D, getID());
 }
 
-const glm::uvec2& Texture::getSize() const
+const glm::uvec2& Texture::size() const
 {
     return m_size;
 }
@@ -98,7 +98,7 @@ bool Texture::loadFromMemory(const std::string& str)
 {
     stbi_set_flip_vertically_on_load(true);
     int width, height, nrChannels;
-    const unsigned char* strData = reinterpret_cast<const unsigned char*>(str.c_str());
+    auto strData = reinterpret_cast<const unsigned char*>(str.c_str());
     unsigned char *data = stbi_load_from_memory(strData, str.size(), &width, &height, &nrChannels, 0);
     if(data)
     {
@@ -144,11 +144,6 @@ void Texture::setFilter(const GLuint& min, const GLuint& max)
     }
 }
 
-const glm::uvec2 Texture::getFilter()
-{
-    return glm::uvec2(m_filterMin, m_filterMax);
-}
-
 void Texture::setWrap(const GLuint& wrapS, const GLuint& wrapT)
 {
     if(m_ID)
@@ -162,12 +157,7 @@ void Texture::setWrap(const GLuint& wrapS, const GLuint& wrapT)
     }
 }
 
-const glm::uvec2 Texture::getWrap()
-{
-    return glm::uvec2(m_wrapS, m_wrapT);
-}
-
-Texture Texture::copySubimage(const glm::ivec2 &offset, const glm::ivec2 &size)
+Texture Texture::subimage(const glm::ivec2 &offset, const glm::uvec2 &size)
 {
     Texture subimage;
     subimage.create(size.x, size.y);

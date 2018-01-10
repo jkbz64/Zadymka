@@ -88,13 +88,3 @@ void RenderTarget::drawText(const std::string& str, float x, float y, const std:
     text.setCharacterSize(charSize);
     draw(text);
 }
-
-void RenderTarget::setCamera(const Camera& camera)
-{
-    m_camera = camera;
-}
-
-const Camera& RenderTarget::getCamera()
-{
-    return m_camera;
-}

@@ -1,7 +1,6 @@
 #include <Zadymka.hpp>
 #include <Math.hpp>
 #include <Graphics.hpp>
-#include <Audio.hpp>
 #include <ECS.hpp>
 #include <Timer.hpp>
 #include <Input.hpp>
@@ -20,19 +19,17 @@ sol::table Zadymka::createModule(sol::this_state L)
     module["Timer"] = Timer::createModule(L);
     module["Input"] = Input::createModule(L);
     module["ImGui"] = ImGUI::createModule(L);
-    //module["Audio"] = Audio::createModule(L);
     return module;
 }
 
 bool Zadymka::init(sol::this_state L)
 {
-    return Graphics::init(L); /* && Audio::init() && */
+    return Graphics::init(L);
 }
 
 void Zadymka::deinit(sol::this_state)
 {
     Graphics::deinit();
-    //Audio::deinit();
     ECS::deinit();
 }
 

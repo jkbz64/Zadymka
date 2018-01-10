@@ -18,20 +18,18 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
 option(DEMO "Build demo?" OFF)
-option(TESTS "Build tests?" OFF)
+option(TESTS "Build tests?" ON)
 
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(Freetype2 REQUIRED)
 find_package(Lua53 REQUIRED)
-find_package(OpenAL REQUIRED)
 
 file(GLOB_RECURSE HDRS include/*.hpp)
 file(GLOB_RECURSE SRCS src/*.cpp)
 
 set(GLAD_C ${CMAKE_SOURCE_DIR}/src/Graphics/glad/glad.c)
 set(STB_IMAGE_CPP ${CMAKE_SOURCE_DIR}/src/Graphics/stb_image/stb_image.cpp)
-set(STB_VORBIS_C ${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c)
 set(IMGUI_ROOT ${CMAKE_SOURCE_DIR}/lib/imgui/)
 set(IMGUI_CPPS ${IMGUI_ROOT}/imgui.cpp
                ${IMGUI_ROOT}/imgui_draw.cpp)
@@ -41,7 +39,6 @@ add_library(Zadymka SHARED
 		${SRCS}
 		${GLAD_C}
 		${STB_IMAGE_CPP}
-		${STB_VORBIS_C}
         ${IMGUI_CPPS}
 )
 
@@ -57,7 +54,6 @@ target_include_directories(Zadymka PUBLIC
 						${OPENGL_INCLUDE_DIR}
 						${GLFW_INCLUDE_DIR}
 						${FREETYPE2_ROOT_INCLUDE_DIR}
-						${OPENAL_INCLUDE_DIR}
 )
 
 target_link_libraries(Zadymka
@@ -65,7 +61,6 @@ target_link_libraries(Zadymka
 					${GLFW_LIBRARIES}
 					${FREETYPE2_LIBRARIES}
 					${LUA53_LIBRARIES}
-					${OPENAL_LIBRARIES}
 )
 
 if(DEMO)
