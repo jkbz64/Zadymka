@@ -5,6 +5,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/compatibility.hpp>
 #include <sol/state_view.hpp>
+#include <cstddef>
 
 namespace
 {
@@ -18,6 +19,168 @@ namespace
     T normalize(const T& a)
     {
         return glm::normalize(a);
+    }
+    
+    template<class T>
+    float distance(const T& a, const T& b)
+    {
+        return glm::distance(a, b);
+    }
+    
+    template<class T>
+    float dot(const T& a, const T& b)
+    {
+        return glm::dot(a, b);
+    }
+    
+    template<class T>
+    float length(const T& a)
+    {
+        return glm::length(a);
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec2<V>>::value>>
+    constexpr auto unpack()
+    {
+        return [](const T& vec) { return std::make_tuple(vec.x, vec.y); };
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec3<V>>::value>,
+            typename = void>
+    constexpr auto unpack()
+    {
+        return [](const T& vec) { return std::make_tuple(vec.x, vec.y, vec.z); };
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec4<V>>::value>,
+            typename = void,
+            typename = void>
+    constexpr auto unpack()
+    {
+        return [](const T& vec) { return std::make_tuple(vec.x, vec.y, vec.z, vec.w); };
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec2<V>>::value>>
+    auto registerVec(sol::table& module, const std::string& name)
+    {
+        module.new_usertype<T>(name,
+                               sol::constructors<T(), T(V, V), T(const T&)>(),
+                               "x", &T::x,
+                               "y", &T::y,
+                               sol::meta_function::call, unpack<T>(),
+                               sol::meta_function::addition, [](const T& a, const T& b)
+                               {
+                                   return a + b;
+                               },
+                               sol::meta_function::subtraction, [](const T& a, const T& b)
+                               {
+                                   return a - b;
+                               },
+                               sol::meta_function::multiplication, [](const T& a, V b)
+                               {
+                                   return a * b;
+                               },
+                               sol::meta_function::division, [](const T& a, V b)
+                               {
+                                   return a / b;
+                               },
+                               sol::meta_function::equal_to, [](const T& a, const T& b)
+                               {
+                                   return a == b;
+                               },
+                               sol::meta_function::to_string, [](const T& a)
+                               {
+                                   return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
+                               }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec3<V>>::value>,
+            typename = void>
+    auto registerVec(sol::table& module, const std::string& name)
+    {
+        module.new_usertype<T>(name,
+                               sol::constructors<T(), T(V, V, V), T(const T&)>(),
+                               "x", &T::x,
+                               "y", &T::y,
+                               "z", &T::z,
+                               sol::meta_function::call, unpack<T>(),
+                               sol::meta_function::addition, [](const T& a, const T& b)
+                               {
+                                   return a + b;
+                               },
+                               sol::meta_function::subtraction, [](const T& a, const T& b)
+                               {
+                                   return a - b;
+                               },
+                               sol::meta_function::multiplication, [](const T& a, V b)
+                               {
+                                   return a * b;
+                               },
+                               sol::meta_function::division, [](const T& a, V b)
+                               {
+                                   return a / b;
+                               },
+                               sol::meta_function::equal_to, [](const T& a, const T& b)
+                               {
+                                   return a == b;
+                               },
+                               sol::meta_function::to_string, [](const T& a)
+                               {
+                                   return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y) + '\t' + std::to_string(a.z));
+                               }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec4<V>>::value>,
+            typename = void,
+            typename = void>
+    auto registerVec(sol::table& module, const std::string& name)
+    {
+        module.new_usertype<T>(name,
+                               sol::constructors<T(), T(V, V, V, V), T(const T&)>(),
+                               "x", &T::x,
+                               "y", &T::y,
+                               "z", &T::z,
+                               "w", &T::w,
+                               sol::meta_function::call, unpack<T>(),
+                               sol::meta_function::addition, [](const T& a, const T& b)
+                               {
+                                   return a + b;
+                               },
+                               sol::meta_function::subtraction, [](const T& a, const T& b)
+                               {
+                                   return a - b;
+                               },
+                               sol::meta_function::multiplication, [](const T& a, V b)
+                               {
+                                   return a * b;
+                               },
+                               sol::meta_function::division, [](const T& a, V b)
+                               {
+                                   return a / b;
+                               },
+                               sol::meta_function::equal_to, [](const T& a, const T& b)
+                               {
+                                   return a == b;
+                               },
+                               sol::meta_function::to_string, [](const T& a)
+                               {
+                                   return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y) + '\t' + std::to_string(a.z) + '\t' + std::to_string(a.w));
+                               }
+        );
     }
 }
 
@@ -47,186 +210,19 @@ sol::table Math::createModule(sol::this_state L)
                 return glm::ivec2(a);
             }
     ));
-    module.new_usertype<glm::vec2>("Vec2f",
-                                   sol::constructors<glm::vec2(), glm::vec2(float, float), glm::vec2(const glm::vec2&), glm::vec2(const glm::uvec2&), glm::vec2(const glm::ivec2&)>(),
-                                   "x", &glm::vec2::x,
-                                   "y", &glm::vec2::y,
-                                   sol::meta_function::addition, [](const glm::vec2& a, const glm::vec2& b)
-                                   {
-                                       return a + b;
-                                   },
-                                   sol::meta_function::subtraction, [](const glm::vec2& a, const glm::vec2& b)
-                                   {
-                                       return a - b;
-                                   },
-                                   sol::meta_function::multiplication, [](const glm::vec2& a, float b)
-                                   {
-                                       return a * b;
-                                   },
-                                   sol::meta_function::division, [](const glm::vec2& a, float b)
-                                   {
-                                       return a / b;
-                                   },
-                                   sol::meta_function::equal_to, [](const glm::vec2& a, const glm::vec2& b)
-                                   {
-                                       return a == b;
-                                   },
-                                   sol::meta_function::to_string, [](const glm::vec2& a)
-                                   {
-                                       return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
-                                   }
-    );
     
-    module.new_usertype<glm::uvec2>("Vec2u",
-                                    sol::constructors<glm::uvec2(), glm::uvec2(unsigned int, unsigned int), glm::uvec2(const glm::uvec2&), glm::uvec2(const glm::vec2&), glm::uvec2(const glm::ivec2&)>(),
-                                    "x", &glm::uvec2::x,
-                                    "y", &glm::uvec2::y,
-                                    sol::meta_function::addition, [](const glm::uvec2& a, const glm::uvec2& b)
-                                    {
-                                        return a + b;
-                                    },
-                                    sol::meta_function::subtraction, [](const glm::uvec2& a, const glm::uvec2& b)
-                                    {
-                                        return a - b;
-                                    },
-                                    sol::meta_function::multiplication, [](const glm::uvec2& a, float b)
-                                    {
-                                        return a * static_cast<unsigned int>(b);
-                                    },
-                                    sol::meta_function::division, [](const glm::uvec2& a, float b)
-                                    {
-                                        return a / static_cast<unsigned int>(b);
-                                    },
-                                    sol::meta_function::equal_to, [](const glm::uvec2& a, const glm::uvec2& b)
-                                    {
-                                        return a == b;
-                                    },
-                                    sol::meta_function::to_string, [](const glm::uvec2& a)
-                                    {
-                                        return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
-                                    }
-    );
-    
-    module.new_usertype<glm::ivec2>("Vec2i",
-                                    sol::constructors<glm::ivec2(), glm::ivec2(int, int), glm::ivec2(const glm::ivec2&), glm::ivec2(const glm::vec2&), glm::ivec2(const glm::uvec2&)>(),
-                                    "x", &glm::ivec2::x,
-                                    "y", &glm::ivec2::y,
-                                    sol::meta_function::addition, [](const glm::ivec2& a, const glm::ivec2& b)
-                                    {
-                                        return a + b;
-                                    },
-                                    sol::meta_function::subtraction, [](const glm::ivec2& a, const glm::ivec2& b)
-                                    {
-                                        return a - b;
-                                    },
-                                    sol::meta_function::multiplication, [](const glm::ivec2& a, float b)
-                                    {
-                                        return a * static_cast<int>(b);
-                                    },
-                                    sol::meta_function::division, [](const glm::ivec2& a, float b)
-                                    {
-                                        return a / static_cast<int>(b);
-                                    },
-                                    sol::meta_function::equal_to, [](const glm::ivec2& a, const glm::ivec2& b)
-                                    {
-                                        return a == b;
-                                    },
-                                    sol::meta_function::to_string, [](const glm::ivec2& a)
-                                    {
-                                        return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
-                                    }
-    );
-    
-    module.new_usertype<glm::vec3>("Vec3f",
-                                   sol::constructors<glm::vec3(), glm::vec3(float, float, float), glm::vec3(const glm::vec3&)>(),
-                                   sol::meta_function::addition, [](const glm::vec3& a, const glm::vec3& b)
-                                   {
-                                       return a + b;
-                                   },
-                                   sol::meta_function::subtraction, [](const glm::vec3& a, const glm::vec3& b)
-                                   {
-                                       return a - b;
-                                   },
-                                   sol::meta_function::multiplication, [](const glm::vec3& a, float b)
-                                   {
-                                       return a * b;
-                                   },
-                                   sol::meta_function::division, [](const glm::vec3& a, float b)
-                                   {
-                                       return a / b;
-                                   },
-                                   sol::meta_function::equal_to, [](const glm::vec3& a, const glm::vec3& b)
-                                   {
-                                       return a == b;
-                                   },
-                                   sol::meta_function::to_string, [](const glm::vec3& a)
-                                   {
-                                       return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
-                                   }
-    );
-    
-    module.new_usertype<glm::uvec3>("Vec3u",
-                                    sol::constructors<glm::uvec3(), glm::uvec3(unsigned int, unsigned int, unsigned int), glm::uvec3(const glm::uvec3&)>(),
-                                    sol::meta_function::addition, [](const glm::uvec3& a, const glm::uvec3& b)
-                                    {
-                                        return a + b;
-                                    },
-                                    sol::meta_function::subtraction, [](const glm::uvec3& a, const glm::uvec3& b)
-                                    {
-                                        return a - b;
-                                    },
-                                    sol::meta_function::multiplication, [](const glm::uvec3& a, float b)
-                                    {
-                                        return a * static_cast<unsigned int>(b);
-                                    },
-                                    sol::meta_function::division, [](const glm::uvec3& a, float b)
-                                    {
-                                        return a / static_cast<unsigned int>(b);
-                                    },
-                                    sol::meta_function::equal_to, [](const glm::uvec3& a, const glm::uvec3& b)
-                                    {
-                                        return a == b;
-                                    },
-                                    sol::meta_function::to_string, [](const glm::uvec3& a)
-                                    {
-                                        return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
-                                    }
-    );
-    
-    module.new_usertype<glm::ivec3>("Vec3i",
-                                    sol::constructors<glm::ivec3(), glm::ivec3(int, int, int), glm::ivec3(const glm::ivec3&)>(),
-                                    sol::meta_function::addition, [](const glm::ivec3& a, const glm::ivec3& b)
-                                    {
-                                        return a + b;
-                                    },
-                                    sol::meta_function::subtraction, [](const glm::ivec3& a, const glm::ivec3& b)
-                                    {
-                                        return a - b;
-                                    },
-                                    sol::meta_function::multiplication, [](const glm::ivec3& a, float b)
-                                    {
-                                        return a * static_cast<int>(b);
-                                    },
-                                    sol::meta_function::division, [](const glm::ivec3& a, float b)
-                                    {
-                                        return a / static_cast<int>(b);
-                                    },
-                                    sol::meta_function::equal_to, [](const glm::ivec3& a, const glm::ivec3& b)
-                                    {
-                                        return a == b;
-                                    },
-                                    sol::meta_function::to_string, [](const glm::ivec3& a)
-                                    {
-                                        return std::string(std::to_string(a.x) + '\t' + std::to_string(a.y));
-                                    }
-    );
-    
-    module.new_usertype<glm::vec4>("Vec4f", sol::constructors<glm::vec4(), glm::vec4(float, float, float, float)>(),
-                                  "x", &glm::vec4::x,
-                                  "y", &glm::vec4::y,
-                                  "z", &glm::vec4::z,
-                                  "w", &glm::vec4::w
-    );
+    //Vec2
+    registerVec<glm::vec2>(module, "Vec2f");
+    registerVec<glm::uvec2>(module, "Vec2u");
+    registerVec<glm::ivec2>(module, "Vec2i");
+    //Vec3
+    registerVec<glm::vec3>(module, "Vec3f");
+    registerVec<glm::uvec3>(module, "Vec3u");
+    registerVec<glm::ivec3>(module, "Vec3i");
+    //Vec4
+    registerVec<glm::vec4>(module, "Vec4f");
+    registerVec<glm::uvec4>(module, "Vec4u");
+    registerVec<glm::ivec4>(module, "Vec4i");
     
     module.new_usertype<glm::mat4>("Matrix4", sol::constructors<glm::mat4(), glm::mat4(const glm::mat4&)>(),
                                    sol::meta_function::addition, [](const glm::mat4& a, const glm::mat4& b)
@@ -250,11 +246,36 @@ sol::table Math::createModule(sol::this_state L)
                                    )
     );
     
-    module["Lerp"] = sol::overload(&lerp<glm::vec2>,
-                                   &lerp<glm::uvec2>,
-                                   &lerp<glm::ivec2>,
-                                   &lerp<float>);
-    module["Normalize"] = &normalize<glm::vec2>;
+    module["Lerp"] = sol::overload(
+            &lerp<glm::vec2>,
+            &lerp<glm::uvec2>,
+            &lerp<glm::ivec2>,
+            &lerp<float>
+    );
+    
+    module["Normalize"] = sol::overload(
+            &normalize<glm::vec2>,
+            &normalize<glm::vec3>,
+            &normalize<glm::vec4>
+    );
+    
+    module["Distance"] = sol::overload(
+            &distance<glm::vec2>,
+            &distance<glm::vec3>,
+            &distance<glm::vec4>
+    );
+    
+    module["Dot"] = sol::overload(
+            &dot<glm::vec2>,
+            &dot<glm::vec3>,
+            &dot<glm::vec4>
+    );
+    
+    module["Length"] = sol::overload(
+            &length<glm::vec2>,
+            &length<glm::vec3>,
+            &length<glm::vec4>
+    );
     
     return module;
 }

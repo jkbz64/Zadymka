@@ -8,7 +8,7 @@ Vec2f = Zadymka.Math.Vec2f
 Vec2u = Zadymka.Math.Vec2u
 class = require("lib.middleclass")
 
--- Register our ECS stuff -- notice that these can be reloaded during runtime
+--[[ Register our ECS stuff -- notice that these can be reloaded during runtime
 -- Components
 dofile('components/Position.lua')
 dofile('components/Movable.lua')
@@ -22,6 +22,11 @@ dofile('systems/MovementSystem.lua')
 dofile('systems/PhysicsSystem.lua')
 -- States
 dofile('states/DemoState.lua')
+--]]
+
+local v = Zadymka.Math.Vec2f:new(10, 15)
+local c, x = v()
+print(c, x)
 
 local window = Zadymka.Graphics.Window:new()
 window:create(Vec2(800, 600), 'Zadymka', 0)
