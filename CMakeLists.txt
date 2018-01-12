@@ -17,8 +17,7 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
-option(DEMO "Build demo?" OFF)
-option(TESTS "Build tests?" ON)
+option(EXAMPLES "Copy examples?" OFF)
 
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
@@ -63,10 +62,6 @@ target_link_libraries(Zadymka
 					${LUA53_LIBRARIES}
 )
 
-if(DEMO)
-	file(COPY demo/ DESTINATION ${CMAKE_BINARY_DIR}/)
-endif()
-
-if(TESTS)
-    file(COPY tests/ DESTINATION ${CMAKE_BINARY_DIR}/tests/)
+if(EXAMPLES)
+    file(COPY examples/ DESTINATION ${CMAKE_BINARY_DIR}/)
 endif()

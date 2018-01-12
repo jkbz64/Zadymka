@@ -91,8 +91,7 @@ bool Window::isOpen()
 {
     if(m_window)
         return !glfwWindowShouldClose(getNativeWindow()) && m_isOpen;
-    else
-        return false;
+    return false;
 }
 
 

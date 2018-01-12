@@ -22,23 +22,13 @@ Before building install GLFW3 / Freetype2 / Lua53 libraries. Header libraries wi
 git clone --recursive https://github.com/jkbz64/Zadymka.git
 cd Zadymka
 mkdir build && cd build
-cmake .. //-DDEMO=ON to enable demo -DTESTS=ON to enable tests
+cmake .. //-DEXAMPLES=ON to copy examples to build directory
 make -j4
 
-// Optional
+// OPTIONALLY run any example
 
-// run tests
-busted .
-
-// or run demo
-cp Zadymka.so demo/Zadymka.so && cd demo/
-lua init.lua //run demo
 ```
 
 ## Usage
 Zadymka is a lua module, so you can just copy libraries along with Zadymka.so/dll and `require("Zadymka")` in your lua code.
 Remember to use function `init` at the start of your program.
-
-## Tests
-If you want to run tests you will need to generate `cmake .. -DTESTS=ON` and install busted lua library.
-To run tests execute `busted .` in build directory.

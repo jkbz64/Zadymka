@@ -1,7 +1,6 @@
 #include <Zadymka.hpp>
 #include <Math.hpp>
 #include <Graphics.hpp>
-#include <ECS.hpp>
 #include <Timer.hpp>
 #include <Input.hpp>
 #include <sol/state_view.hpp>
@@ -15,7 +14,6 @@ sol::table Zadymka::createModule(sol::this_state L)
     module["deinit"] = &Zadymka::deinit;
     module["Math"] = Math::createModule(L);
     module["Graphics"] = Graphics::createModule(L);
-    module["ECS"] = ECS::createModule(L);
     module["Timer"] = Timer::createModule(L);
     module["Input"] = Input::createModule(L);
     module["ImGui"] = ImGUI::createModule(L);
@@ -30,7 +28,6 @@ bool Zadymka::init(sol::this_state L)
 void Zadymka::deinit(sol::this_state)
 {
     Graphics::deinit();
-    ECS::deinit();
 }
 
 extern "C" int luaopen_Zadymka(lua_State* L)

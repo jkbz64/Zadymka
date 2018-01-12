@@ -39,6 +39,18 @@ namespace sol
         });
     }
     
+    template<typename F, typename S>
+    auto readonly_getter(F f, S s)
+    {
+        using C = typename get_class<F>::type;
+        return sol::property([f](C& c)
+                             {
+                                 return (c.*f)();
+                             },
+                             s
+        );
+    }
+    
     template<typename F,
             typename VecType = typename get_argument_type<F>::argument_type,
             typename Val = typename VecType::value_type
@@ -88,7 +100,8 @@ sol::table Graphics::createModule(sol::this_state L)
     );
     module.new_usertype<Window>("Window", sol::constructors<Window()>(),
                                 "Style", sol::var(styles),
-                                "title", sol::readonly_getter(&Window::title),
+                                "isOpen", sol::readonly_property(&Window::isOpen),
+                                "title", sol::readonly_getter(&Window::title, &Window::setTitle),
                                 "size", sol::readonly_getter(&Window::size),
                                 "camera", &Window::m_camera,
                                 "create",
@@ -102,9 +115,7 @@ sol::table Graphics::createModule(sol::this_state L)
                                             window.create(glm::uvec2(w, h), t, style);
                                         }
                                 ),
-                                "isOpen", &Window::isOpen,
                                 "close", &Window::close,
-                                "setTitle", &Window::setTitle,
                                 "resize", sol::vec_as_Ts(&Window::resize),
                                 "draw",
                                 sol::overload(

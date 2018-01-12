@@ -6,6 +6,7 @@
 #include <glm/gtx/compatibility.hpp>
 #include <sol/state_view.hpp>
 #include <cstddef>
+#include <iostream>
 
 namespace
 {
@@ -66,32 +67,181 @@ namespace
         return [](const T& vec) { return std::make_tuple(vec.x, vec.y, vec.z, vec.w); };
     }
     
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec2<V>>::value>>
+    auto add()
+    {
+        return sol::overload(
+                [](const T& a, const glm::vec2& b)  { return a + T(b); },
+                [](const T& a, const glm::ivec2& b) { return a + T(b); },
+                [](const T& a, const glm::uvec2& b) { return a + T(b); },
+                [](const T& a, const glm::vec3& b)  { return a + T(b); },
+                [](const T& a, const glm::ivec3& b) { return a + T(b); },
+                [](const T& a, const glm::uvec3& b) { return a + T(b); }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec3<V>>::value>,
+            typename = void>
+    auto add()
+    {
+        return sol::overload(
+                [](const T& a, const glm::vec2& b)  { return a + T(b, 0.f); },
+                [](const T& a, const glm::ivec2& b) { return a + T(b, 0); },
+                [](const T& a, const glm::uvec2& b) { return a + T(b, 0u); },
+                [](const T& a, const glm::vec3& b)  { return a + T(b); },
+                [](const T& a, const glm::ivec3& b) { return a + T(b); },
+                [](const T& a, const glm::uvec3& b) { return a + T(b); }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec4<V>>::value>,
+            typename = void,
+            typename = void>
+    auto add()
+    {
+        return sol::overload(
+                [](const T& a, const glm::vec2& b)  { return a + T(b, 0.f, 0.f); },
+                [](const T& a, const glm::ivec2& b) { return a + T(b, 0, 0); },
+                [](const T& a, const glm::uvec2& b) { return a + T(b, 0u, 0u); },
+                [](const T& a, const glm::vec3& b)  { return a + T(b, 0.f); },
+                [](const T& a, const glm::ivec3& b) { return a + T(b, 0); },
+                [](const T& a, const glm::uvec3& b) { return a + T(b, 0u); }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec2<V>>::value>>
+    auto sub()
+    {
+        return sol::overload(
+                [](const T& a, const glm::vec2& b)  { return a - T(b); },
+                [](const T& a, const glm::ivec2& b) { return a - T(b); },
+                [](const T& a, const glm::uvec2& b) { return a - T(b); },
+                [](const T& a, const glm::vec3& b)  { return a + T(b); },
+                [](const T& a, const glm::ivec3& b) { return a + T(b); },
+                [](const T& a, const glm::uvec3& b) { return a + T(b); }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec3<V>>::value>,
+            typename = void>
+    auto sub()
+    {
+        return sol::overload(
+                [](const T& a, const glm::vec2& b)  { return a - T(b, 0.f); },
+                [](const T& a, const glm::ivec2& b) { return a - T(b, 0); },
+                [](const T& a, const glm::uvec2& b) { return a - T(b, 0u); },
+                [](const T& a, const glm::vec3& b)  { return a + T(b); },
+                [](const T& a, const glm::ivec3& b) { return a + T(b); },
+                [](const T& a, const glm::uvec3& b) { return a + T(b); }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec4<V>>::value>,
+            typename = void,
+            typename = void>
+    auto sub()
+    {
+        return sol::overload(
+                [](const T& a, const glm::vec2& b)  { return a - T(b, 0.f, 0.f); },
+                [](const T& a, const glm::ivec2& b) { return a - T(b, 0, 0); },
+                [](const T& a, const glm::uvec2& b) { return a - T(b, 0u, 0u); },
+                [](const T& a, const glm::vec3& b)  { return a + T(b, 0.f); },
+                [](const T& a, const glm::ivec3& b) { return a + T(b, 0); },
+                [](const T& a, const glm::uvec3& b) { return a + T(b, 0u); }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec2<V>>::value>>
+    auto mul()
+    {
+        return sol::overload(
+                [](const T& a, int b)  { return a * static_cast<V>(b); },
+                [](const T& a, float b)  { return a * static_cast<V>(b); },
+                [](const T& a, const glm::vec2& b) { return a * T(b); },
+                [](const T& a, const glm::ivec2& b) { return a * T(b); },
+                [](const T& a, const glm::uvec2& b) { return a * T(b); },
+                [](const T& a, const glm::vec3& b) { return a * T(b); },
+                [](const T& a, const glm::ivec3& b) { return a * T(b); },
+                [](const T& a, const glm::uvec3& b) { return a * T(b); }
+         );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec3<V>>::value>,
+            typename = void>
+    auto mul()
+    {
+        return sol::overload(
+                [](const T& a, int b)  { return a * static_cast<V>(b); },
+                [](const T& a, float b)  { return a * static_cast<V>(b); },
+                [](const T& a, const glm::vec2& b) { return a * T(b, 0.f); },
+                [](const T& a, const glm::ivec2& b) { return a * T(b, 0); },
+                [](const T& a, const glm::uvec2& b) { return a * T(b, 0u); },
+                [](const T& a, const glm::vec3& b) { return a * T(b); },
+                [](const T& a, const glm::ivec3& b) { return a * T(b); },
+                [](const T& a, const glm::uvec3& b) { return a * T(b); }
+        );
+    }
+    
+    template<class T,
+            typename V = typename T::value_type,
+            typename = std::enable_if_t<std::is_same<T, glm::tvec4<V>>::value>,
+            typename = void,
+            typename = void>
+    auto mul()
+    {
+        return sol::overload(
+                [](const T& a, int b)  { return a * static_cast<V>(b); },
+                [](const T& a, float b)  { return a * static_cast<V>(b); },
+                [](const T& a, const glm::vec2& b) { return a * T(b, 0.f, 0.f); },
+                [](const T& a, const glm::ivec2& b) { return a * T(b, 0, 0); },
+                [](const T& a, const glm::uvec2& b) { return a * T(b, 0u, 0u); },
+                [](const T& a, const glm::vec3& b) { return a * T(b, 0.f); },
+                [](const T& a, const glm::ivec3& b) { return a * T(b, 0); },
+                [](const T& a, const glm::uvec3& b) { return a * T(b, 0u); }
+        );
+    }
+    
+    template<class T,
+             typename V = typename T::value_type>
+    auto div()
+    {
+        return sol::overload(
+                [](const T& a, int b) { return a / static_cast<V>(b); },
+                [](const T& a, float b) { return a / static_cast<V>(b); }
+        );
+    }
+    
     template<class T,
             typename V = typename T::value_type,
             typename = std::enable_if_t<std::is_same<T, glm::tvec2<V>>::value>>
     auto registerVec(sol::table& module, const std::string& name)
     {
         module.new_usertype<T>(name,
-                               sol::constructors<T(), T(V, V), T(const T&)>(),
+                               sol::constructors<T(), T(V, V), T(const glm::vec2&), T(const glm::ivec2&), T(const glm::uvec2&)>(),
                                "x", &T::x,
                                "y", &T::y,
                                sol::meta_function::call, unpack<T>(),
-                               sol::meta_function::addition, [](const T& a, const T& b)
-                               {
-                                   return a + b;
-                               },
-                               sol::meta_function::subtraction, [](const T& a, const T& b)
-                               {
-                                   return a - b;
-                               },
-                               sol::meta_function::multiplication, [](const T& a, V b)
-                               {
-                                   return a * b;
-                               },
-                               sol::meta_function::division, [](const T& a, V b)
-                               {
-                                   return a / b;
-                               },
+                               sol::meta_function::addition, add<T>(),
+                               sol::meta_function::subtraction, sub<T>(),
+                               sol::meta_function::multiplication, mul<T>(),
+                               sol::meta_function::division, div<T>(),
                                sol::meta_function::equal_to, [](const T& a, const T& b)
                                {
                                    return a == b;
@@ -115,22 +265,10 @@ namespace
                                "y", &T::y,
                                "z", &T::z,
                                sol::meta_function::call, unpack<T>(),
-                               sol::meta_function::addition, [](const T& a, const T& b)
-                               {
-                                   return a + b;
-                               },
-                               sol::meta_function::subtraction, [](const T& a, const T& b)
-                               {
-                                   return a - b;
-                               },
-                               sol::meta_function::multiplication, [](const T& a, V b)
-                               {
-                                   return a * b;
-                               },
-                               sol::meta_function::division, [](const T& a, V b)
-                               {
-                                   return a / b;
-                               },
+                               sol::meta_function::addition, add<T>(),
+                               sol::meta_function::subtraction, sub<T>(),
+                               sol::meta_function::multiplication, mul<T>(),
+                               sol::meta_function::division, div<T>(),
                                sol::meta_function::equal_to, [](const T& a, const T& b)
                                {
                                    return a == b;
@@ -156,22 +294,10 @@ namespace
                                "z", &T::z,
                                "w", &T::w,
                                sol::meta_function::call, unpack<T>(),
-                               sol::meta_function::addition, [](const T& a, const T& b)
-                               {
-                                   return a + b;
-                               },
-                               sol::meta_function::subtraction, [](const T& a, const T& b)
-                               {
-                                   return a - b;
-                               },
-                               sol::meta_function::multiplication, [](const T& a, V b)
-                               {
-                                   return a * b;
-                               },
-                               sol::meta_function::division, [](const T& a, V b)
-                               {
-                                   return a / b;
-                               },
+                               sol::meta_function::addition, add<T>(),
+                               sol::meta_function::subtraction, sub<T>(),
+                               sol::meta_function::multiplication, mul<T>(),
+                               sol::meta_function::division, div<T>(),
                                sol::meta_function::equal_to, [](const T& a, const T& b)
                                {
                                    return a == b;
@@ -213,16 +339,16 @@ sol::table Math::createModule(sol::this_state L)
     
     //Vec2
     registerVec<glm::vec2>(module, "Vec2f");
-    registerVec<glm::uvec2>(module, "Vec2u");
     registerVec<glm::ivec2>(module, "Vec2i");
+    registerVec<glm::uvec2>(module, "Vec2u");
     //Vec3
     registerVec<glm::vec3>(module, "Vec3f");
-    registerVec<glm::uvec3>(module, "Vec3u");
     registerVec<glm::ivec3>(module, "Vec3i");
+    registerVec<glm::uvec3>(module, "Vec3u");
     //Vec4
     registerVec<glm::vec4>(module, "Vec4f");
-    registerVec<glm::uvec4>(module, "Vec4u");
     registerVec<glm::ivec4>(module, "Vec4i");
+    registerVec<glm::uvec4>(module, "Vec4u");
     
     module.new_usertype<glm::mat4>("Matrix4", sol::constructors<glm::mat4(), glm::mat4(const glm::mat4&)>(),
                                    sol::meta_function::addition, [](const glm::mat4& a, const glm::mat4& b)
