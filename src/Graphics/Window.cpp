@@ -2,7 +2,7 @@
 #include <Graphics/Shader.hpp>
 #include <Graphics/Drawable.hpp>
 #include <Input.hpp>
-#include <Graphics/glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Graphics/DefaultRenderer.hpp>
 #include <ImGui.hpp>

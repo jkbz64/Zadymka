@@ -1,6 +1,6 @@
 #include <Graphics/Texture.hpp>
 #include <stb_image.h>
-#include <Graphics/glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Graphics/RenderTexture.hpp>
 

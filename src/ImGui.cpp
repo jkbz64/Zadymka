@@ -3,7 +3,7 @@
 
 #include <imgui.h>
 #include <ImGui/imgui_impl_glfw_gl3.h>
-#include <Graphics/glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Graphics/Texture.hpp>
 #include <glm/vec3.hpp>

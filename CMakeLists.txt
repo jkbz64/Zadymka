@@ -22,12 +22,11 @@ option(EXAMPLES "Copy examples?" OFF)
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(Freetype2 REQUIRED)
-find_package(Lua53 REQUIRED)
 
 file(GLOB_RECURSE HDRS include/*.hpp)
 file(GLOB_RECURSE SRCS src/*.cpp)
 
-set(GLAD_C ${CMAKE_SOURCE_DIR}/src/Graphics/glad/glad.c)
+set(GLAD_C ${CMAKE_SOURCE_DIR}/lib/glad/glad.c)
 set(STB_IMAGE_CPP ${CMAKE_SOURCE_DIR}/src/Graphics/stb_image/stb_image.cpp)
 set(IMGUI_ROOT ${CMAKE_SOURCE_DIR}/lib/imgui/)
 set(IMGUI_CPPS ${IMGUI_ROOT}/imgui.cpp
@@ -43,12 +42,10 @@ add_library(Zadymka SHARED
 
 target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/include/
-						${LUA53_INCLUDE_DIR}
+						${CMAKE_SOURCE_DIR}/lib/
 						${CMAKE_SOURCE_DIR}/lib/sol2/
 						${CMAKE_SOURCE_DIR}/lib/glm/
-						${CMAKE_SOURCE_DIR}/lib/glad/
 						${CMAKE_SOURCE_DIR}/lib/stb/
-						${CMAKE_SOURCE_DIR}/lib/tinyheaders/
 						${CMAKE_SOURCE_DIR}/lib/imgui/
 						${OPENGL_INCLUDE_DIR}
 						${GLFW_INCLUDE_DIR}
@@ -59,7 +56,6 @@ target_link_libraries(Zadymka
 					${OPENGL_LIBRARIES}
 					${GLFW_LIBRARIES}
 					${FREETYPE2_LIBRARIES}
-					${LUA53_LIBRARIES}
 )
 
 if(EXAMPLES)

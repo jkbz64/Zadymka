@@ -15,7 +15,7 @@ Graphics.init()
 local window = Graphics.Window:new()
 -- Create window
 window:create(800, 600, 'title', window.Style.Windowed)
-window.title = 'xd'-
+window.title = 'xd'
 
 while window.isOpen do
     window:clear(125, 125, 125, 255) -- Clear window

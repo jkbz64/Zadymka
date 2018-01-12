@@ -2,7 +2,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <fstream>
 #include <sstream>
-#include <Graphics/glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 Shader::Shader() :

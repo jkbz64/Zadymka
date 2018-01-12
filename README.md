@@ -3,7 +3,7 @@
 
 Zadymka is a simple 2D graphics and input Lua module.
 
-| Language    | C++14 + Lua   |
+| Language    | C++14  |
 |-----------	|-------------	|
 
 
@@ -17,7 +17,7 @@ Zadymka is a simple 2D graphics and input Lua module.
 | Other - freetype2, stb_image, ImGui
 
 ##  Building
-Before building install GLFW3 / Freetype2 / Lua53 libraries. Header libraries will be cloned recursively, so you don't have to ship them yourself.
+Before building install GLFW3 / Freetype2 libraries. Header libraries will be cloned recursively, so you don't have to ship them yourself.
 ```
 git clone --recursive https://github.com/jkbz64/Zadymka.git
 cd Zadymka

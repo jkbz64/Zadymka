@@ -2,7 +2,7 @@
 #include <Graphics/Rectangle.hpp>
 #include <Graphics/Shader.hpp>
 #include <Graphics/Renderer.hpp>
-#include <Graphics/glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Graphics/DefaultRenderer.hpp>
 
