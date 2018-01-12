@@ -45,7 +45,7 @@ Camera& Camera::operator=(Camera&& other)
     return *this;
 }
 
-const glm::vec2& Camera::size() const
+const glm::uvec2& Camera::size() const
 {
     return m_size;
 }

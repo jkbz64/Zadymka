@@ -22,6 +22,7 @@ option(EXAMPLES "Copy examples?" OFF)
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(Freetype2 REQUIRED)
+find_package(Lua REQUIRED)
 
 file(GLOB_RECURSE HDRS include/*.hpp)
 file(GLOB_RECURSE SRCS src/*.cpp)
@@ -48,14 +49,16 @@ target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/lib/stb/
 						${CMAKE_SOURCE_DIR}/lib/imgui/
 						${OPENGL_INCLUDE_DIR}
-						${GLFW_INCLUDE_DIR}
-						${FREETYPE2_ROOT_INCLUDE_DIR}
+						${GLFW3_INCLUDE_DIR}
+						${FREETYPE2_INCLUDE_DIRS}
+						${LUA_INCLUDE_DIR}
 )
 
 target_link_libraries(Zadymka
 					${OPENGL_LIBRARIES}
-					${GLFW_LIBRARIES}
+					${GLFW3_LIBRARIES}
 					${FREETYPE2_LIBRARIES}
+                    ${LUA_LIBRARIES}
 )
 
 if(EXAMPLES)

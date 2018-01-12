@@ -145,7 +145,7 @@ const glm::uvec2& Window::size()
 glm::vec2 Window::mapToWorld(const glm::vec2 &pos)
 {
     auto& camera = m_camera;
-    const auto cameraSize = camera.size();
+    const auto cameraSize = glm::vec2(camera.size());
     auto halfSize = cameraSize;
     halfSize /= 2.f;
     const auto& cameraCenter = camera.center();

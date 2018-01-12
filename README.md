@@ -1,4 +1,4 @@
-# Zadymka
+# Zadymka [![Build Status](https://travis-ci.org/jkbz64/Zadymka.svg?branch=master)](https://travis-ci.org/jkbz64/Zadymka)
 **Work in progress**
 
 Zadymka is a simple 2D graphics and input Lua module.
