@@ -19,6 +19,7 @@ window.title = 'xd'
 
 while window.isOpen do
     window:clear(125, 125, 125, 255) -- Clear window
+    window:drawRect(0, 0, 100, 100, 255, 0, 0, 255)
     window:display() -- Swap buffers and handle window events
 end
 

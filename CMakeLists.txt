@@ -49,14 +49,14 @@ target_include_directories(Zadymka PUBLIC
 						${CMAKE_SOURCE_DIR}/lib/stb/
 						${CMAKE_SOURCE_DIR}/lib/imgui/
 						${OPENGL_INCLUDE_DIR}
-						${GLFW3_INCLUDE_DIR}
+						${GLFW_INCLUDE_DIR}
 						${FREETYPE2_INCLUDE_DIRS}
 						${LUA_INCLUDE_DIR}
 )
 
 target_link_libraries(Zadymka
 					${OPENGL_LIBRARIES}
-					${GLFW3_LIBRARIES}
+					${GLFW_LIBRARIES}
 					${FREETYPE2_LIBRARIES}
                     ${LUA_LIBRARIES}
 )
