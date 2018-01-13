@@ -1,13 +1,14 @@
 # Zadymka [![Build Status](https://travis-ci.org/jkbz64/Zadymka.svg?branch=master)](https://travis-ci.org/jkbz64/Zadymka)
 **Work in progress**
 
-Zadymka is a simple 2D graphics and input Lua module.
+Zadymka is a simple 2D graphics (and Input) module. It also has built in ImGui module.
 
 | Language    | C++14  |
 |-----------	|-------------	|
 
+***Technology Chart***
 
-| Module    	| Technology    |
+|           |               |
 |-----------	|-------------	|
 | Window / Context / Input |  GLFW 3    |
 | Rendering 	| OpenGL 3.3  	|
@@ -24,11 +25,16 @@ cd Zadymka
 mkdir build && cd build
 cmake .. //-DEXAMPLES=ON to copy examples to build directory
 make -j4
-
-// OPTIONALLY run any example
-
 ```
 
 ## Usage
-Zadymka is a lua module, so you can just copy libraries along with Zadymka.so/dll and `require("Zadymka")` in your lua code.
-Remember to use function `init` at the start of your program.
+1. Copy `Zadymka.dll or .so` along with other `.dll's(freetype.dll, lua(version which you compiled Zadymka with).dll, glfw3.dll(maybe?))` to the project directory
+2. `local Zadymka = require('Zadymka')` in your code
+3. `Zadymka.init()` or `Zadymka.Graphics.init()` to init graphics module (may be done automagically in the future)
+4. You are ready to go :)
+
+Check out examples directory to see Zadymka usage.
+
+## Docs?
+.. Not now? I guess?
+If you want to know usertypes/bindings check out src/(module name).cpp's.
