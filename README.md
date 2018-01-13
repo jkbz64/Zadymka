@@ -1,7 +1,7 @@
 # Zadymka [![Build Status](https://travis-ci.org/jkbz64/Zadymka.svg?branch=master)](https://travis-ci.org/jkbz64/Zadymka)
 **Work in progress**
 
-Zadymka is a simple 2D graphics (and Input) module. It also has built in ImGui module.
+Zadymka is a simple 2D graphics (and Input) module. It also has built-in ImGui support.
 
 | Language    | C++14  |
 |-----------	|-------------	|
@@ -15,10 +15,12 @@ Zadymka is a simple 2D graphics (and Input) module. It also has built in ImGui m
 | OpenGL extensions | GLAD    |
 | Math        | glm           |
 | Lua Binding 	| sol2       |
-| Other - freetype2, stb_image, ImGui
+| Font loading | Freetype2 |
+| Image loading | stb_image |
+| Other |ImGui |
 
 ##  Building
-Before building install GLFW3 / Freetype2 libraries. Header libraries will be cloned recursively, so you don't have to ship them yourself.
+Before building install GLFW3 / Freetype2 / any lua version( 5.2 and 5.3 were the only one I tested so far though) libraries. Header libraries will be cloned recursively, so you don't have to ship them yourself.
 ```
 git clone --recursive https://github.com/jkbz64/Zadymka.git
 cd Zadymka
