@@ -30,7 +30,7 @@ make -j4
 ```
 
 ## Usage
-1. Copy `Zadymka.dll or .so` along with other `.dll's(freetype.dll, lua(version which you compiled Zadymka with).dll, glfw3.dll(maybe?))` to the project directory
+1. Copy `Zadymka.dll or .so` along with other `.dll's(freetype.dll and glfw3.dll(maybe?))` to the project directory
 2. `local Zadymka = require('Zadymka')` in your code
 3. `Zadymka.init()` or `Zadymka.Graphics.init()` to init graphics module (may be done automagically in the future)
 4. You are ready to go :)
