@@ -1,11 +1,26 @@
 local Math = require('Zadymka.Math')
 
+-- There are three types of each variantion of vectors
+-- Vec2 -> Vec2f
+--         Vec2i
+--         Vec2u
+-- Vec3 -> Vec3f
+--         Vec3i
+--         Vec3u
+-- Matrix4
+-- Utility Math functions
+-- Lerp (Vec2f, Vec2f, float), (float, float, float)
+-- Normalize (Vec2f), (Vec3f), (Vec4f)
+-- Distance (Vec2f), (Vec3f), (Vec4f)
+-- Dot product (Vec2f), (Vec3f), (Vec4f)
+-- Length (Vec2f), (Vec3f), (Vec4f)
+
 -- Convenient Vec2f factory method
 local vec = Math.Vec2(10.0, 10.0) -- Creates Vec2f
 print(vec)
 
 -- You can unpack vectors into two/three/four variables using call metafunction ()
-local x, y = vec() -- <-
+local x, y = vec() -- <- unpacking vec into two numbers
 print(x, y)
 
 -- Specific types vecs

@@ -365,10 +365,19 @@ sol::table Math::createModule(sol::this_state L)
                                            {
                                                return a * b;
                                            },
+                                           [](const glm::mat4& a, const glm::vec2& b)
+                                           {
+                                               return a * glm::vec4(b, 1.f, 1.f);
+                                           },
+                                           [](const glm::mat4& a, const glm::vec3& b)
+                                           {
+                                               return a * glm::vec4(b, 1.f);
+                                           },
                                            [](const glm::mat4& a, const glm::vec4& b)
                                            {
                                                return a * b;
                                            }
+                                           
                                    )
     );
     
