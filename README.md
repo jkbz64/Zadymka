@@ -37,6 +37,32 @@ make -j4
 
 Check out examples directory to see Zadymka usage.
 
+## Quickstart
+
+```
+local Graphics = require('Zadymka.Graphics')
+Graphics.init()
+local window = Graphics.Window:new()
+window:create(800, 600, 'title', window.Style.Windowed)
+window.title = 'some title'
+
+local font = Graphics.Font:new()
+font:loadFromFile('arial.ttf')
+
+local text = Graphics.Text:new()
+text:setString('test')
+text:setPosition(100, 100)
+
+while window.isOpen do
+    window:clear(125, 125, 125, 255) -- Clear window
+    window:draw(text)
+    window:drawRect(0, 0, 100, 100, 255, 0, 0, 255)
+    window:display()
+end
+
+Graphics.deinit()
+```
+
 ## Docs?
 .. Not now? I guess?
 If you want to know usertypes/bindings check out src/(module name).cpp's.
