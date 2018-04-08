@@ -39,7 +39,7 @@ Check out examples directory to see Zadymka usage.
 
 ## Quickstart
 
-```
+```lua
 local Graphics = require('Zadymka.Graphics')
 Graphics.init()
 local window = Graphics.Window:new()
